@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}
+    비밀번호 재설정
+{% endblock %}
+
+{% block head_account %}
+    <link href="{{ url_for('static', filename='statics/css/account.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <section class="sign-section">
+        <div class="form-container">
+            {% include 'includes/messages.html' %}
+            <form method="POST">
+                {{ form.csrf_token }}
+                <fieldset class="uk-fieldset">
+                    {% if user_obj.is_verified %}
+                        <legend class="uk-legend">비밀번호 재설정을 위한 이메일 인증</legend>
+                    {% else %}
+                        <legend class="uk-legend">비밀번호 재설정후 이메일 가입인증</legend>
+
+                        <br>
+                        <p>가입인증이 완료되지 않은 경우, 비밀번호 재설정후 가입인증을 완료할 수 있습니다.</p>
+                    {% endif %}
+
+                    <br>
+                    <p>등록된 이메일을 입력하고 비밀번호 재설정 신청을 클릭하면, 인증을 위한 이메일이 발송됩니다.</p>
+                    <br>
+                    <p>등록된 이메일을 정확히 입력하고, 스팸편지함도 확인바랍니다.</p>
+
+                    <div class="uk-margin">
+                        {{ form.email(class="uk-input mt-5", placeholder="등록된 이메일") }}
+                    </div>
+
+                    <p uk-margin>
+                        <button type="submit" class="uk-button uk-button-primary uk-width-1-1 mt-10">비밀번호 재설정 신청</button>
+                    </p>
+
+                </fieldset>
+            </form>
+        </div>
+    </section>
+
+{% endblock %}

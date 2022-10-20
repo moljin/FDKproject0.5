@@ -1,0 +1,556 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if current_user.is_authenticated and current_user.id == target_shop.user_id %}
+        상점 상세/수정
+    {% else %}
+        상점 상세
+    {% endif %}
+{% endblock %}
+
+{% block head_css %}
+    <link href="{{ url_for('static', filename='statics/css/product.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block head_js %}
+    <script>
+        CSRF_TOKEN = "{{ csrf_token() }}"
+    </script>
+    {% if current_user.is_authenticated and current_user.id==target_shop.user_id %}
+        <script>
+            shopCategoryCoverImageSaveAjax = "{{ url_for("products.shopcategory_cover_img_save_ajax", _id=target_shop.id) }}"
+            shopCategoryCoverImageDeleteAjax = "{{ url_for("products.shopcategory_cover_img_delete_ajax", _id=target_shop.id) }}"
+            symbolImageSaveAjax = "{{ url_for("products.shopcategory_symbol_img_save_ajax", _id=target_shop.id) }}"
+            symbolImageDeleteAjax = "{{ url_for("products.shopcategory_symbol_img_delete_ajax", _id=target_shop.id) }}"
+            existingShopcategoryCheckAjax = "{{ url_for("products.existing_shopcategory_check_ajax") }}"
+            shopCategoryUpdateAjax = "{{ url_for("products.shopcategory_update_ajax", _id=target_shop.id) }}"
+            shopCategoryDeleteAjax = "{{ url_for("products.shopcategory_delete_ajax") }}"
+
+        </script>
+    {% elif current_user.is_authenticated %}
+        <script>
+            shopCategorySubscribeAjax = "{{ url_for('products.shopcategory_subscribe_ajax', _id=target_shop.id) }}";
+            shopCategorySubscribeCancelAjax = "{{ url_for('products.shopcategory_subscribe_cancel_ajax', _id=target_shop.id) }}";
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block above_main %}
+    <section class="section-cover-img-container">
+        <div class="section-item">
+            <!--cover image display-->
+            <div class="img-container shopcategory_cover-img">
+                <div class="img-item uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow="min-height: 400; max-height: 400; autoplay: true; autoplay-interval: 3000">
+                    <ul class="uk-slideshow-items">
+                        <li>
+                            {% if cover_img.image_1_path %}
+                                <img class="shopcategory-cover-img" id="image_1_path" src="/{{ cover_img.image_1_path }}" uk-cover>
+                            {% else %}
+                                <img class="shopcategory-cover-img" id="image_1_path" src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" uk-cover>
+                            {% endif %}
+                        </li>
+                        <li>
+                            {% if cover_img.image_2_path %}
+                                <img class="shopcategory-cover-img" id="image_2_path" src="/{{ cover_img.image_2_path }}" uk-cover>
+                            {% else %}
+                                <img class="shopcategory-cover-img" id="image_2_path" src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" uk-cover>
+                            {% endif %}
+                        </li>
+                        <li>
+                            {% if cover_img.image_3_path %}
+                                <img class=shopcategory-cover-img" id="image_3_path" src="/{{ cover_img.image_3_path }}" uk-cover>
+                            {% else %}
+                                <img class="shopcategory-cover-img" id="image_3_path" src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" uk-cover>
+                            {% endif %}
+                        </li>
+                    </ul>
+
+                    <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
+                    <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
+                </div>
+            </div>
+        </div>
+        {% if current_user.is_authenticated and current_user.id==target_shop.user_id %}
+            {% if cover_img %}
+                <button type="button" class="shopcategory_cover-img-modal-delete-btn" uk-toggle="target: #shopcategory_cover_img_delete_modal-container"><span uk-icon="icon: trash"></span></button>
+            {% else %}
+                <button type="button" class="shopcategory_cover-img-modal-delete-btn inactive" uk-toggle><span uk-icon="icon: trash"></span></button>
+            {% endif %}
+                <button type="button" class="shopcategory_cover-img-modal-upload-btn" uk-toggle="target: #shopcategory_cover_img_upload_modal-container"><span uk-icon="icon: cloud-upload"></span></button>
+        {% else %}
+            {% if target_profile %}
+            <a href="{{url_for('profiles.detail', _id=target_profile.id)}}">
+                <div class="shop-target-profile">
+                    <div class="uk-inline img-div"><img src="/{{ target_profile.image_path }}" alt="mdo"></div>
+                    <div class="uk-inline nickname">{{ target_profile.nickname }}</div>
+                </div>
+            </a>
+            {% else %}
+                <div class="shop-target-profile">
+                    <div class="uk-inline img-div"><img src="{{ url_for('static', filename='statics/images/user_none.png') }}" alt="mdo"></div>
+                    <div class="uk-inline nickname">프로필 없슴</div>
+                </div>
+            {% endif %}
+        {% endif %}
+        <!--shopcategory cover image upload modal-->
+        <div id="shopcategory_cover_img_upload_modal-container" class="shopcategory_cover-img uk-modal-container uk-flex-top" uk-modal uk-height-match="target: form > div > div > div > div > .cover-img">
+            <form method="POST" class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical" enctype="multipart/form-data">
+                <div>
+                    <button class="uk-modal-close-default" type="button" uk-close></button>
+
+                    <div class="uk-child-width-expand@m" uk-grid>
+                        <div>
+                            <div class="img-item">
+                                {% if cover_img.image_1_path %}
+                                    <img class="shopcategory-cover-img" id="cover-img1-preview" src="/{{ cover_img.image_1_path }}">
+                                {% else %}
+                                    <img class="shopcategory-cover-img" id="cover-img1-preview" src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}">
+                                {% endif %}
+                            </div>
+                            <div class="uk-margin">
+                                <div class="input-file-container">
+                                    <div class="uk-inline">
+                                        <label class="cover-image uk-button uk-button-default custom-button-default" type="button" for="cover_image1">이미지 선택</label>
+                                        <input class="uk-input mt-5" id="cover_image1" name="cover_image1" type="file" accept="image/*" value=""/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="img-item">
+                                {% if cover_img.image_2_path %}
+                                    <img class="shopcategory-cover-img" id="cover-img2-preview" src="/{{ cover_img.image_2_path }}">
+                                {% else %}
+                                    <img class="shopcategory-cover-img" id="cover-img2-preview" src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}">
+                                {% endif %}
+                            </div>
+                            <div class="uk-margin">
+                                <div class="input-file-container">
+                                    <div class="uk-inline">
+                                        <label class="cover-image uk-button uk-button-default custom-button-default" type="button" for="cover_image2">이미지 선택</label>
+                                        <input class="uk-input mt-5" id="cover_image2" name="cover_image2" type="file" accept="image/*" value=""/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="img-item">
+                                {% if cover_img.image_3_path %}
+                                    <img class="shopcategory-cover-img" id="cover-img3-preview" src="/{{ cover_img.image_3_path }}">
+                                {% else %}
+                                    <img class="shopcategory-cover-img" id="cover-img3-preview" src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}">
+                                {% endif %}
+                            </div>
+                            <div class="uk-margin">
+                                <div class="input-file-container">
+                                    <div class="uk-inline">
+                                        <label class="cover-image uk-button uk-button-default custom-button-default" type="button" for="cover_image3">이미지 선택</label>
+                                        <input class="uk-input mt-5" id="cover_image3" name="cover_image3" type="file" accept="image/*" value=""/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-submit-cancel-btn uk-align-right">
+                        <div class="uk-inline cover-img-save-btn mt-15">
+                            <button class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">취소</button>
+                            <button id="cover-img-submit" class="uk-button uk-button-default custom-button-default uk-modal-close ml-15" type="button">저장</button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <!--shopcategory cover image delete modal-->
+        <div id="shopcategory_cover_img_delete_modal-container" class="uk-flex-top" uk-modal>
+            <form method="POST" class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                정말로 커버이미지를 삭제하시겠어요?
+                <div class="modal-submit-cancel-btn">
+                    <div class="cover-img-delete-btn uk-inline">
+                        <button class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">취소</button>
+                    </div>
+                    <div class="cover-img-delete-btn uk-inline ml-15">
+                        <button id="cover-img-delete-btn" class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">삭제</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %}
+
+{% block main %}
+    <section class="section-container">
+        <div class="section-item">
+            <div class="img-container shop-symbol" style="position: relative">
+                <div class="img-item">
+                    {% if target_shop.symbol_path %}
+                        <img id="shop-symbol-image-src" src="/{{ target_shop.symbol_path }}">
+                    {% else %}
+                        <img id="shop-symbol-image-src" src="{{ url_for('static', filename='statics/images/sample_logo.png') }}">
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if current_user.is_authenticated and current_user.id==target_shop.user_id %}
+                <button type="button" class="symbol-img-modal-upload-btn" uk-toggle="target: #symbol_img_upload_modal-container"><span uk-icon="icon: cloud-upload"></span></button>
+                {% if target_shop.symbol_path %}
+                    <button type="button" class="symbol-img-modal-delete-btn" uk-toggle="target: #symbol_img_delete_modal-container"><span uk-icon="icon: trash"></span></button>
+                {% else %}
+                    <button type="button" class="symbol-img-modal-delete-btn inactive" uk-toggle><span uk-icon="icon: trash"></span></button>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="section-item">
+            <!--symbol image upload modal-->
+            <div id="symbol_img_upload_modal-container" class="uk-flex-top" uk-modal>
+                <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+
+                    <button class="uk-modal-close-default" type="button" uk-close></button>
+
+                    {% if target_shop.symbol_path %}
+                        <div class="symbol-img">
+                            <img class="symbol-preview mt-15" id="symbol-preview" src="/{{ target_shop.symbol_path }}" style="margin: 0 auto;">
+                        </div>
+
+                        <div class="uk-margin">
+                            <label class="symbol-img uk-button uk-button-default custom-button-default" type="button" for="symbol_image">상점 심볼</label>
+                            <input accept="image/*" class="uk-input mt-5" id="symbol_image" name="symbol_image" required="" type="file">
+                        </div>
+                    {% else %}
+                        <div class="symbol-img">
+                            <img class="symbol-preview mt-15" id="symbol-preview" src="{{ url_for('static', filename='statics/images/sample_logo.png') }}" style="margin: 0 auto;">
+                        </div>
+
+                        <div class="uk-margin">
+                            <label class="symbol-img uk-button uk-button-default custom-button-default" type="button" for="symbol_image">상점 심볼 선택</label>
+                            <input accept="image/*" class="uk-input mt-5" id="symbol_image" name="symbol_image" required="" type="file">
+                        </div>
+                    {% endif %}
+
+
+
+                    <div class="modal-submit-cancel-btn uk-align-right">
+                        <div class="symbol-img-delete-btn uk-inline">
+                            <button id="symbol-img-submit-btn" class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">저장</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!--symbol image delete modal-->
+            <div id="symbol_img_delete_modal-container" class="uk-flex-top" uk-modal>
+                <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+
+                    <button class="uk-modal-close-default" type="button" uk-close></button>
+                    정말로 심볼마크를 삭제하시겠어요?
+                    <div class="modal-submit-cancel-btn">
+                        <div class="symbol-img-delete-btn uk-inline">
+                            <button class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">취소</button>
+                        </div>
+                        <div class="symbol-img-delete-btn uk-inline ml-15">
+                            <button id="symbol-img-delete-btn" class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">삭제</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-item">
+            <div class="shopcategory-container">
+                <div class="shopcategory-item">
+                    <div class="shop-item">
+                        <div class="uk-inline" id="shop-title">{{ target_shop.title }}</div>
+
+                        {% if current_user.is_authenticated and current_user.id == target_shop.user_id %}
+                            <div class="uk-inline link-div"><a class="uk-link-reset" href="#shop-create-update-modal" uk-toggle><span uk-icon="icon: cog; ratio: 1.1"></span></a></div>
+                            <div class="uk-inline link-div"><a class="uk-link-reset" href="#shop-delete-modal" uk-toggle><span uk-icon="icon: trash; ratio: 1.1"></span></a></div>
+                        {% endif %}
+                    </div>
+
+                    <div class="subscribe-alert"></div>
+                <!--오너는 구독/구독중 안보이고, 비로그인시도 구독/구독중 안보임. 로그인한 다른 유저는 구독/구독중이 보인다. -->
+                    {% set view_count = target_shop.view_count + 7528 %}
+                    {% set subscriber_count = target_shop.subscribers|length + 2653 %}
+                    <div class="shop-item viewcount-subscribe-container">
+                        {% if current_user.is_authenticated and current_user.id==target_shop.user_id %}
+                            <div class="viewcount-subscribe-container">
+                                <div><span>조회: {{ view_count|intcomma }}회</span></div>
+                                <div class="ml-15"><span>구독: {{ subscriber_count|intcomma }}명</span></div>
+                            </div>
+                        {% else %}
+                            <div class="viewcount-subscribe-container">
+                                <div><span>조회: {{ view_count|intcomma }}회</span></div>
+                                <div class="ml-15"><span>구독: {{ subscriber_count|intcomma }}명</span></div>
+                                <div class="s-btn">
+                                    {% if current_user.is_authenticated %}
+                                            <button class="subscribed ml-15" id="subscribing-btn" uk-toggle="target: #shop-subscribe-cancel-modal" type="button">구독중</button>
+                                            <button class="ml-15" id="shop-subscribe-submit" type="button">구독</button>
+                                        <script>
+                                            {% if current_user in target_shop.subscribers %}
+                                                document.querySelector("#shop-subscribe-submit").style.display = "none";
+                                            {% else %}
+                                                document.querySelector("#subscribing-btn").style.display = "none";
+                                            {% endif %}
+                                        </script>
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="subscribe-cancel-modal-container">
+                            <div id="shop-subscribe-cancel-modal" class="uk-flex-top" uk-modal>
+                                <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                                    <button class="uk-modal-close-default" type="button" uk-close></button>
+                                    정말로 구독을 취소하시겠어요?
+                                    <div class="modal-submit-cancel-btn">
+                                        <div class="subscribe-cancel-btn mt-15 uk-inline">
+                                            <button class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">취소</button>
+                                        </div>
+                                        <div class="subscribe-cancel-btn mt-15 uk-inline">
+                                            <button id="subscribe-cancel-btn" class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">구독 취소</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% if not (current_user.is_authenticated or (current_user in target_shop.subscribers)) %}
+                            <script>
+                                document.querySelector("#shop-subscribe-cancel-modal").style.display = "none";
+                            </script>
+                        {% endif %}
+                    </div>
+
+                    <div class="shop-item">
+                        <div class="shop-content mt-10" id="shop-content">{{ target_shop.content }}</div>
+                        <div class="shop-meta-description mt-5" id="shop-meta-description">메타설명: {{ target_shop.meta_description }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% if current_user.is_authenticated and current_user.id == target_shop.user_id %}
+        <!--shop-create-update-modal-->
+        <div id="shop-create-update-modal" class="uk-flex-top" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+
+                <legend class="uk-legend">상점카테고리 수정</legend>
+                <div class="shop-update-alert"></div>
+
+                <div class="uk-margin">
+                    <label>상점 타이틀</label>
+                    <button type="button" class="check-btn" id="shoptitle-check-btn">중복 체크</button>
+                    <input class="uk-input mt-5" id="shopcategory-title" maxlength="100" minlength="1" name="title" type="text" value="{{ target_shop.title }}" required>
+                </div>
+
+                <div class="uk-margin">
+                    <label>간단한 소개글</label>
+                    <textarea class="uk-textarea mt-5" id="shopcategory-content" maxlength="100" minlength="2" name="content" onkeydown="textAreaHeightAuto(this)" onkeyup="textAreaHeightAuto(this)" required>{{ target_shop.content }}</textarea>
+                </div>
+
+                <div class="uk-margin">
+                    <label>메타 설명</label>
+                    <textarea  class="uk-textarea mt-5" id="meta_description" maxlength="100" minlength="2" name="meta_description" style="overscroll-behavior: contain;" onkeydown="textAreaHeightAuto(this)" onkeyup="textAreaHeightAuto(this)" required>{{ target_shop.meta_description }}</textarea>
+                </div>
+                <input type="hidden" id="shopcategory_id" name="_id" value="{{ target_shop.id }}">
+                <p class="uk-text-right">
+                    <button class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">취소</button>
+                    <button id="shop-update-submit" class="uk-button uk-button-default custom-button-default ml-15" type="button">저장</button>
+                </p>
+            </div>
+        </div>
+
+        <!--shop-delete-modal-->
+        <div id="shop-delete-modal" class="uk-flex-top" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                정말로 상점카테고리를 삭제하시겠어요?
+                <div class="uk-align-right">
+                    <div class="shopcategory-delete-btn uk-inline">
+                        <button id="shop-delete-btn" class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">삭제</button>
+                    </div>
+                    <div class="shopcategory-delete-btn uk-inline ml-15">
+                        <button class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">취소</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <section class="grid-section">
+        <div class="uk-grid-column-small uk-grid-row-large uk-child-width-1-2@s uk-child-width-1-3@m uk-child-width-1-4@l" uk-grid="masonry: true">
+            {% if current_profile %}
+                {% if current_user.is_authenticated and current_profile.level == "판매사업자" %}
+                    {% if current_user.id == current_profile.user_id == target_shop.user_id %}
+                        <a href="{{ url_for("products.product_create") }}?shopcategory_id={{ target_shop.id }}&shopcategory_title={{ target_shop.title }}&&ss={{ target_shop.slug }}">
+                            <div>
+                                <div class="uk-card uk-card-default">
+                                    <div class="uk-card-media-top">
+                                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
+                                    </div>
+                                    <div class="uk-card-body">
+                                        <h3 class="uk-card-title">상품 등록</h3>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+            {% for product in product_objs %}
+                <a href="{{ url_for("products.product_detail", _id=product.id, slug=product.slug) }}">
+                    <div>
+                        <div class="uk-card uk-card-default">
+                            <div class="uk-card-media-top">
+                                <img src="/{{ product.image_1_path }}" width="1800" height="1200" alt="">
+                            </div>
+                            <div class="uk-card-body">
+                                <h3 class="uk-card-title">Media Top</h3>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+            <div>
+                <div class="uk-card uk-card-default">
+                    <div class="uk-card-media-top">
+                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
+                    </div>
+                    <div class="uk-card-body">
+                        <h3 class="uk-card-title">Media Top</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-default">
+                    <div class="uk-card-media-top">
+                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
+                    </div>
+                    <div class="uk-card-body">
+                        <h3 class="uk-card-title">Media Top</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-default">
+                    <div class="uk-card-media-top">
+                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
+                    </div>
+                    <div class="uk-card-body">
+                        <h3 class="uk-card-title">Media Top</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="uk-card uk-card-default">
+                    <div class="uk-card-media-top">
+                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
+                    </div>
+                    <div class="uk-card-body">
+                        <h3 class="uk-card-title">Media Top</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                    <div class="uk-card uk-card-default">
+                        <div class="uk-card-media-top">
+                            <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
+                        </div>
+                        <div class="uk-card-body">
+                            <h3 class="uk-card-title">Media Top</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </div>
+                    </div>
+                </div>
+            <div>
+                    <div class="uk-card uk-card-default">
+                        <div class="uk-card-media-top">
+                            <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
+                        </div>
+                        <div class="uk-card-body">
+                            <h3 class="uk-card-title">Media Top</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </div>
+                    </div>
+                </div>
+            <div>
+                    <div class="uk-card uk-card-default">
+                        <div class="uk-card-media-top">
+                            <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
+                        </div>
+                        <div class="uk-card-body">
+                            <h3 class="uk-card-title">Media Top</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </div>
+                    </div>
+                </div>
+            <div>
+                <div class="uk-card uk-card-default">
+                    <div class="uk-card-media-top">
+                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
+                    </div>
+                    <div class="uk-card-body">
+                        <h3 class="uk-card-title">Media Top</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="exam-section" style="padding: 10px">
+        <div class="uk-child-width-1-2@m" uk-grid>
+            <div>
+                <div class="uk-card uk-card-default">
+                    <div class="uk-card-media-top">
+                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
+                    </div>
+                    <div class="uk-card-body">
+                        <h3 class="uk-card-title">Media Top</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+    <section>
+        {% for product in product_objs %}
+            <div><a href="{{ url_for("products.product_detail", _id=product.id, slug=product.slug) }}">{{ product }}</a></div>
+            <div><a href="{{ url_for("products.product_update", _id=product.id, slug=product.slug) }}">수정</a></div>
+            <div><a href="">삭제</a></div>
+            <hr>
+        {% endfor %}
+    </section>
+
+    {% if current_user.is_authenticated and current_user.id == target_shop.user_id %}
+        <script src="{{ url_for('static', filename='statics/js/commons/imagePreview.js') }}"></script>
+        <script src="{{ url_for('static', filename='statics/js/products/shopCategoryCoverImageSubmit.js') }}"></script>
+        <script src="{{ url_for('static', filename='statics/js/products/shopCategoryUpdateSubmit.js') }}"></script>
+        <!--
+        <script>
+            image1Path = document.getElementById("image_1_path").getAttribute("src");
+            image2Path = document.getElementById("image_2_path").getAttribute("src");
+            image3Path = document.getElementById("image_3_path").getAttribute("src");
+            symbolImagePath = document.getElementById("shop-symbol-image-src").getAttribute("src");
+        </script>
+        -->
+
+    {% elif current_user.is_authenticated %}
+        <script src="{{ url_for('static', filename='statics/js/products/shopCategorySubscribe.js') }}"></script>
+    {% endif %}
+{% endblock %}

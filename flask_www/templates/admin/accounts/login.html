@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}
+    Login
+{% endblock %}
+
+{% block head_account %}
+    <link href="{{ url_for('static', filename='statics/css/account.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <section class="sign-section">
+        <div class="form-container">
+            {% include 'includes/messages.html' %}
+            <form method="POST">
+                {{ form.csrf_token }}
+                <fieldset class="uk-fieldset">
+
+                    <legend class="uk-legend">관리자 로그인</legend>
+
+                    <div class="uk-margin">
+                        {{ form.email(class="uk-input mt-5", placeholder="이메일") }}
+                    </div>
+
+                    <div class="uk-margin">
+                        {{ form.password(class="uk-input mt-5", placeholder="비밀번호") }}
+                    </div>
+
+                    <p uk-margin>
+                        <button class="uk-button uk-button-primary uk-width-1-1 mt-10">로그인</button>
+                    </p>
+
+                </fieldset>
+            </form>
+        </div>
+    </section>
+
+{% endblock %}
+

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, maximum-scale=1"/>
+    <title>{% block title %}{% endblock %} | β-03</title>
+
+    {% block main_css %}
+    {% endblock %}
+
+    {% block head_dashboard %}
+    {% endblock %}
+
+    {% block head_account %}
+    {% endblock %}
+
+    {% block head_css %}
+    {% endblock %}
+
+    {% block main_js %}
+    {% endblock %}
+
+    {% block head_js %}
+    {% endblock %}
+</head>
+
+<body>
+    <header>
+        {% block header %}
+        {% endblock %}
+    </header>
+
+    <section class="above_main">
+        {% block above_main %}
+        {% endblock %}
+    </section>
+
+    <section class="main-100">
+        {% block main_100 %}
+        {% endblock %}
+    </section>
+
+    <main>
+        {% block main %}
+        {% endblock %}
+
+        {% block body %}
+            {% block wysiwyg %}
+            {% endblock %}
+        {% endblock %}
+
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        {% block footer %}
+        {% endblock %}
+    </footer>
+
+    {% block script %}
+        {% block common_js %}
+        {% endblock %}
+
+        {% block units_script %}
+        {% endblock %}
+    {% endblock %}
+    {% if current_user.is_authenticated or current_user.is_admin %}
+        {% if "accounts" in request.path %}
+            <script src="{{ url_for('static', filename='statics/js/accounts/accountDeleteSubmit.js') }}"></script>
+        {% endif %}
+    {% endif %}
+
+    {% if current_user.is_authenticated and current_user.is_admin %}
+        {% if "profiles" in request.path %}
+            <script src="{{ url_for('static', filename='statics/js/accounts/profileUpdateSubmit.js') }}"></script>
+        {% endif %}
+    {% endif %}
+    {% if current_user.is_authenticated and current_user.is_admin %}
+        {% if "shops" in request.path %}
+            <script src="{{ url_for('static', filename='statics/js/products/shopCategoryUpdateSubmit.js') }}"></script>
+        {% endif %}
+    {% endif %}
+</body>
+
+</html>

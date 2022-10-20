@@ -1,0 +1,211 @@
+<div class="nav-wrapper">
+
+    <div class="logo-container uk-inline">
+        <a href="{{ url_for('commons.index') }}"><span class="logo">β-0.4</span></a>
+    </div>
+
+    <nav class="nav-container uk-inline uk-visible@l" uk-grid>
+        <div class="uk-inline search-form uk-width-expand">
+            <form>
+                <fieldset class="uk-fieldset">
+                    <div class="uk-margin">
+                        <input class="uk-input" type="search" placeholder="Search..." aria-label="Search">
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="uk-button-group uk-width-auto">
+            <div class="uk-inline">
+                <button class="uk-button uk-button-default" type="button">머라도라</button>
+                <div uk-drop="mode: click; animation: slide-top; animate-out: true; duration: 500">
+                    <a href="#"><div class="drop-item">머라도... 만들기</div></a>
+                    <a href="#"><div class="drop-item">머라도... 만들기</div></a>
+                    <a href="#"><div class="drop-item">머라도... 만들기</div></a>
+                    <a href="#"><div class="drop-item">머라도... 만들기</div></a>
+                </div>
+            </div>
+            <div class="uk-inline">
+                <button class="uk-button uk-button-default" type="button">라도머라</button>
+                <div uk-drop="mode: click; animation: slide-top; animate-out: true; duration: 500">
+                    <a href="#"><div class="drop-item">만들기 머라도... </div></a>
+                    <a href="#"><div class="drop-item">만들기 머라도... </div></a>
+                    <a href="#"><div class="drop-item">만들기 머라도... </div></a>
+                    <a href="#"><div class="drop-item">만들기 머라도... </div></a>
+                </div>
+            </div>
+            <div class="uk-inline">
+                <button class="uk-button uk-button-default" type="button">마이 페이지
+                    {% if current_user.is_authenticated and current_profile %}
+                        <span class="header-profile-img-div">
+                        {% if current_profile.image_path %}
+                            <img class="header-profile-img" id="global-profile-img" src="/{{ current_profile.image_path }}" alt="mdo">
+                        {% else %}
+                            <img class="header-profile-img" id="global-profile-img" src="{{ url_for('static', filename='statics/images/user_none.png') }}" alt="mdo">
+                        {% endif %}
+                    </span>
+                    {% else %}
+                        <img class="user-svg" id="global-profile-img" src="{{ url_for('static', filename='statics/images/user_profile.svg') }}" alt="mdo">
+                    {% endif %}
+                </button>
+                <div uk-drop="mode: click; animation: slide-top; animate-out: true; duration: 500">
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                        <a href="{{ url_for('admin_accounts.index') }}"><div class="drop-item">Admin</div></a>
+                    {% endif %}
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('accounts.dashboard') }}"><div class="drop-item">DashBoard</div></a>
+                    {% endif %}
+                    {% if current_user.is_authenticated %}
+                        {% if (current_cart != None) and (current_cart.cart_total_price != 0) %}
+                            <a href="{{ url_for('carts.cart_view') }}"><div class="drop-item">카트보기:{{ cart_items_total_count }}</div></a>
+                        {% endif %}
+                    {% endif %}
+                    <a href="#"><div class="drop-item">스크립트 자바</div></a>
+                    <a href="#"><div class="drop-item">스크립트 자바</div></a>
+                    <a href="#"><div class="drop-item"><img style="width: 30px; height: 30px; border-radius: 50%"
+                                     src="https://www.placecage.com/c/200/250" alt="Sample image">
+                        <span style="margin-left: 1rem">머시기</span></div></a>
+
+                </div>
+            </div>
+            {% if current_user.is_authenticated %}
+                <div class="uk-inline">
+                    <a class="uk-link-reset" href="{{ url_for('accounts.logout') }}"><button class="uk-button uk-button-default" type="button">로그아웃</button></a>
+                </div>
+                <div class="uk-inline">
+                    <a class="uk-link-reset" href="#"><button class="uk-button uk-button-default" type="button">user Tab</button></a>
+                </div>
+            {% else %}
+                <div class="uk-inline">
+                    <a class="uk-link-reset" href="{{ url_for('accounts.login') }}"><button class="uk-button uk-button-default" type="button">로그인</button></a>
+                </div>
+                <div class="uk-inline">
+                    <a class="uk-link-reset" href="{{ url_for('accounts.register') }}"><button class="uk-button uk-button-default" type="button">회원가입</button></a>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="ham-container uk-inline  uk-hidden@l">
+        <button class="hamburger">
+            <svg width="32" height="36">
+                <rect id="line1" y="8" width="32" height="4"/>
+                <rect id="line2" y="17" width="32" height="4"/>
+                <rect id="line3" y="26" width="32" height="4"/>
+            </svg>
+        </button>
+    </div>
+
+    <nav class="nav-mobile-container uk-hidden@l" uk-drop="mode: click; animation: uk-animation-fade; duration: 300">
+            <div class="search-form">
+                <form>
+                    <fieldset class="uk-fieldset">
+                        <div>
+                            <input class="uk-input" type="search" placeholder="Search..." aria-label="Search">
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div uk-accordion>
+                <div class="nav-mobile-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">머라도라</button>
+                    <div class="uk-accordion-content">
+                        <a href="#">
+                            <div class="accordion-item">머라도... 만들기</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">머라도... 만들기</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">머라도... 만들기</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">머라도... 만들기</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="nav-mobile-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">라도머라</button>
+                    <div  class="uk-accordion-content">
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="nav-mobile-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">마이 페이지
+                        {% if current_user.is_authenticated and current_profile %}
+                            <span class="header-profile-img-div">
+                                <img class="header-profile-img" id="global-profile-img" src="/{{ current_profile.image_path }}" alt="mdo">
+                            </span>
+                        {% else %}
+                            <img class="user-svg" id="global-profile-img" src="{{ url_for('static', filename='statics/images/user_profile.svg') }}" alt="mdo">
+                        {% endif %}
+                    </button>
+                    <div  class="uk-accordion-content">
+                        {% if current_user.is_authenticated and current_user.is_admin %}
+                            <a href="#">
+                                <div class="accordion-item">Admin</div>
+                            </a>
+                        {% endif %}
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('accounts.dashboard') }}">
+                                <div class="accordion-item">DashBoard</div>
+                            </a>
+                        {% endif %}
+                        <a href="#">
+                            <div class="accordion-item">페이지 자바</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">페이지 자바</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">페이지 자바</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item"><img style="width: 30px; height: 30px; border-radius: 50%"
+                                      src="https://www.placecage.com/c/200/250" alt="Sample image">
+                                <span style="margin-left: 1rem">머시기</span></div>
+                        </a>
+
+                    </div>
+                </div>
+                {% if current_user.is_authenticated %}
+                    <div class="nav-mobile-item">
+                        <a class="uk-link-reset" href="{{ url_for('accounts.logout') }}">
+                            <button class="uk-button uk-button-default" type="button">로그아웃</button>
+                        </a>
+                    </div>
+                    <div class="nav-mobile-item">
+                        <a class="uk-link-reset" href="#">
+                            <button class="uk-button uk-button-default" type="button">No Tab</button>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="nav-mobile-item">
+                        <a class="uk-link-reset" href="{{ url_for('accounts.login') }}">
+                            <button class="uk-button uk-button-default" type="button">로그인</button>
+                        </a>
+                    </div>
+                    <div class="nav-mobile-item">
+                        <a class="uk-link-reset" href="{{ url_for('accounts.register') }}">
+                            <button class="uk-button uk-button-default" type="button">회원가입</button>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </nav>
+
+
+
+</div>
+
+

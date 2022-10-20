@@ -1,0 +1,145 @@
+{% extends "admin/admin_dashboard.html" %}
+{% block title %}
+    멤버십
+{% endblock %}
+
+{% block head_css %}
+    <link href="{{ url_for('static', filename='statics/css/admin/main.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block head_js %}
+    <script>
+        accountsDeleteAjax = "{{ url_for('accounts.delete_ajax') }}";
+    </script>
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="uk-width-expand uk-flex uk-flex-right">
+        <ul class="uk-breadcrumb">
+            <li><a href="{{ url_for('admin_accounts.index') }}">관리 홈</a></li>
+            <li><a href="{{ url_for('admin_accounts.create') }}">회원등록</a></li>
+            <li><a href="{{ url_for('admin_accounts._list') }}">회원리스트</a></li>
+            <li><span>회원변경</span></li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block above_main %}
+    <section class="adm-index-above-main">
+        {% include "includes/messages.html" %}
+    </section>
+
+{% endblock %}
+
+{% block dashboard_section %}
+    <section class="admin-section">
+        <div class="accounts-container">
+            <div class="form-container">
+                <form class="accounts" method="POST" action="{{ url_for('admin_accounts.save') }}">
+                    {{ form.csrf_token }}
+                    <fieldset class="uk-fieldset">
+                        <div class="uk-margin" uk-grid>
+                            <div>
+                                E-mail:
+                            </div>
+                            <div class="uk-width-expand pl-10">
+                                {{ form.email(class="uk-input mt-5", value=target_user.email, required="required") }}
+                            </div>
+
+                        </div>
+                        <div class="uk-margin" uk-grid>
+                            <div>
+                                비밀번호:
+                            </div>
+                            <div class="uk-width-expand pl-10">
+                                {{ form.password(class="uk-input mt-5", value=target_user.password) }}
+                            </div>
+                        </div>
+                        <div class="uk-margin" uk-grid>
+                            <div>
+                                비밀번호 확인:
+                            </div>
+                            <div class="uk-width-expand pl-10">
+                                {{ form.repassword(class="uk-input mt-5") }}
+                            </div>
+                        </div>
+                        <div class="uk-margin" uk-grid>
+                            <div>
+                                인증토큰:
+                            </div>
+                            <div class="uk-width-expand pl-10">
+                                {{ form.auth_token(class="uk-input mt-5", value=target_user.auth_token) }}
+                            </div>
+                        </div>
+                        <div class="uk-margin" uk-grid>
+                            <div>
+                                비밀번호 토큰:
+                            </div>
+                            <div class="uk-width-expand pl-10">
+                                {% if target_user.password_token %}{{ form.password_token(class="uk-input mt-5", value=target_user.password_token) }}{% else %}{{ form.password_token(class="uk-input mt-5", value="") }}{% endif %}
+                            </div>
+                        </div>
+                        <div class="uk-margin" uk-grid>
+                            <div>
+                                관리자 토큰:
+                            </div>
+                            <div class="uk-width-expand pl-10">
+                                {% if target_user.admin_token %}{{ form.admin_token(class="uk-input mt-5", value=target_user.admin_token) }}{% else %}{{ form.admin_token(class="uk-input mt-5", value="") }}{% endif %}
+                            </div>
+                        </div>
+                        <div class="uk-margin" uk-grid>
+                            <div>
+                                인&nbsp;&nbsp;&nbsp;&nbsp;증:
+                            </div>
+                            <div class="uk-width-expand pl-10 pb-7">
+                                {% if target_user.is_verified %}<input type="checkbox" class="uk-checkbox mt-5" name="is_verified" checked>{% else %}<input type="checkbox" class="uk-checkbox mt-5" name="is_verified">{% endif %}
+                            </div>
+                        </div>
+                        <div class="uk-margin" uk-grid>
+                            <div>
+                                스태프:
+                            </div>
+                            <div class="uk-width-expand pl-10 pb-7">
+                                {% if target_user.is_staff %}<input type="checkbox" class="uk-checkbox mt-5" name="is_staff" checked>{% else %}<input type="checkbox" class="uk-checkbox mt-5" name="is_staff">{% endif %}
+                            </div>
+                        </div>
+                        <div class="uk-margin" uk-grid>
+                            <div>
+                                관리자:
+                            </div>
+                            <div class="uk-width-expand pl-10 pb-7">
+                                {% if target_user.is_admin %}<input type="checkbox" class="uk-checkbox mt-5" name="is_admin" checked>{% else %}<input type="checkbox" class="uk-checkbox mt-5" name="is_admin">{% endif %}
+                            </div>
+                        </div>
+                        <input type="hidden" id="user_id" name="_id" value="{{ target_user.id }}">
+                        <button class="uk-button uk-button-danger" uk-toggle="target: #user-delete-modal" type="button">삭제</button>
+                        <button class="uk-button uk-button-primary uk-align-right">저장</button>
+
+                        <div id="user-delete-modal" class="uk-flex-top" uk-modal>
+                            <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                                <button class="uk-modal-close-default" type="button" uk-close></button>
+                                정말로 "{{ target_user.email }}"님 회원가입을 삭제하시겠어요?
+                                <div class="modoal-submit-cancel-btn uk-align-right">
+                                    <div class="cancel-btn uk-inline">
+                                        <button class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">취소</button>
+                                    </div>
+                                    <div class="cover-img-save-btn uk-inline ml-15">
+                                        <button id="user-delete-btn" class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">삭제</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </section>
+{#    <script src="{{ url_for('static', filename='statics/js/accounts/accountDeleteSubmit.js') }}"></script>#}
+{% endblock %}
+
+
+
+
+
+

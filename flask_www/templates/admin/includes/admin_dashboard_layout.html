@@ -1,0 +1,54 @@
+{% extends "admin/includes/admin_base.html" %}
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block head_dashboard %}
+    <link href="{{ url_for('static', filename='statics/dashboard/dashboard.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='statics/font-awesome-5.15.1/css/all.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <section class="dashboard-section">
+        <div class="dashboard-body">
+
+            {% block sidebar %}
+            {% endblock %}
+
+            <div class="body-main">
+
+                <div class="body-top" uk-grid>
+                    <div class="uk-width-auto uk-flex">
+                        <a uk-toggle="target: #body-sidebar">
+                            <i class="fas fa-th"></i>
+{#                            <i class="fas fa-th-list"></i>#}
+{#                            <i class="fas fa-align-justify"></i>#}
+{#                            <i class="fas fa-list-alt"></i>#}
+{#                            <i class="fas fa-layer-group"></i>#}
+{#                            <i class="fas fa-bars"></i><i class="fas fa-bars" style="margin-left: -1px"></i>#}
+{#                            <i class="fas fa-pause" style="margin-right: 2px"></i><i class="fas fa-pause"></i>#}
+{#                            <i class="fas fa-sitemap"></i>#}
+{#                            <i class="fas fa-sliders-h"></i>#}
+{#                            <span uk-icon="icon: table"></span>#}
+                        </a>
+                    </div>
+                    {% block breadcrumb %}
+                    {% endblock %}
+                </div>
+
+                <section class="body-section">
+                    {% block dashboard_section %}
+                    {% endblock %}
+                </section>
+
+            </div>
+
+        </div>
+    </section>
+    <script>UIkit.offcanvas('#body-sidebar').hide()</script>
+    {% block dashboard_script %}
+    {% endblock %}
+
+{% endblock %}
+
+

@@ -1,0 +1,27 @@
+/*header {position: relative}*/
+/*main {padding-top: 0}*/
+
+.body-main .body-top div > a > i {font-size: 25px; color: #1B1464}
+
+.dashboard-section .body-sidebar .uk-offcanvas-bar {width: 300px;margin-top: 55px; padding: 0; background: #1B1464}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-header {width:100%; height:55px; background: #130f40; display: flex; justify-content: space-between; align-items: center}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-header .sidebar-logo {padding-left: 30px; display: flex; font-size: 18px; font-weight: 600; color: #ededef; justify-content: space-between; align-items: center}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-header .sidebar-logo .profile-img {width: 2rem; height: 2rem; border-radius: 50%; object-fit: cover; margin-right: 1rem}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-header .sidebar-email {font-size: 14px; color: #b2b2b2; margin-top: -4px}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-header .uk-offcanvas-close{position: relative; top: -1px}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-content {padding-top:10px; padding-bottom: 10px}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-content .sidebar-item {margin-top: 0}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-content .sidebar-item button:hover {background: #0652DD}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-content .sidebar-item button {width: 100%; height: 45px; border: none; color: white; font-size: 16px; text-align: left}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-content .sidebar-item .uk-accordion-title .profile-level {color: #b2b2b2}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-content .sidebar-item .uk-accordion-title::before {display: none}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-content .sidebar-item .uk-accordion-content {margin-top: 0}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-content .sidebar-item .uk-accordion-content .accordion-item{color: white;height: 45px; padding: 10px 45px}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-content .sidebar-item .uk-accordion-content .accordion-item:hover{background: #0652DD;}
+.dashboard-section .body-sidebar .uk-offcanvas-bar .sidebar-content .sidebar-item .uk-accordion-content form .accordion-item {cursor: pointer}
+#account_delete_modal-container > form > div {margin-top: 40px}
+
+.dashboard-section .body-main {padding: 10px 15px}
+.dashboard-section .body-main .body-section {padding-top: 1rem; height: auto !important;}
+.dashboard-section .body-main .body-section .sign-section {padding: 0}
+.dashboard-section .body-main .body-section .sign-section .form-container {margin: 0 auto 2rem}

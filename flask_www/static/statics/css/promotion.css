@@ -1,0 +1,48 @@
+.code-check-alert {display: none}
+.board-container form {max-width: 500px; border: solid 1px #ced6e0; border-radius: 5px; padding: 2rem; margin: 2rem auto}
+.board-container form .form-group {display: flex; align-items: center}
+.board-container form .form-group.mt {margin-top: 30px}
+.board-container form .form-group.coupon {justify-content: flex-end;}
+.board-container form .form-group label {width: auto}
+.board-container form .form-group .check-btn-div {padding-left: 10px;}
+.board-container form .form-group .check-btn {height: 38px}
+
+.above-main .flashes {border-radius: 0}
+table .table-link {color: maroon}
+table .table-link:hover {cursor: pointer; color: #1e3799}
+
+@media screen and (max-width: 960px) {
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  table tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: .625em;
+  }
+
+  table td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    text-align: right;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  table td:last-child {
+    border-bottom: 0;
+  }
+}

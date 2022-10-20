@@ -1,0 +1,52 @@
+{% extends "dashboard/user_dashboard.html" %}
+{% block title %}
+    이메일 변경
+{% endblock %}
+
+{% block head_account %}
+    <link href="{{ url_for('static', filename='statics/css/account.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="uk-width-expand uk-flex uk-flex-right">
+        <ul class="uk-breadcrumb">
+            <li><a href="{{ url_for('accounts.dashboard') }}">마이 보드</a></li>
+            <li><span>이메일 재설정</span></li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block dashboard_section %}
+    <section class="sign-section">
+        <div class="form-container">
+            {% include 'includes/messages.html' %}
+            <form method="POST">
+                {{ form.csrf_token }}
+                <fieldset class="uk-fieldset">
+                    <legend class="uk-legend">로그인 이메일 재설정</legend>
+
+                    <br>
+                    <p>현재 로그인에 사용하는 등록 이메일은 {{ user.email }}입니다.</p>
+                    <br>
+                    <p>이메일 재설정 하기를 진행하면 기존 이메일은 삭제되고 자동 로그아웃 되며, 동시에 새로운 이메일로 인증 메일이 발송됩니다.</p><br>
+                    <p>새로운 이메일을 확인한 후, 인증을 완료하면 새로운 이메일로 로그인이 가능합니다. 기존 비밀번호는 유지됩니다.</p>
+                    <br>
+                    <p>스팸편지함도 확인바랍니다.</p>
+
+                    <div class="uk-margin">
+                        {{ form.email(class="uk-input mt-5", placeholder="새 로그인 이메일") }}
+                    </div>
+
+                    <p uk-margin>
+                        <input type="hidden" name="pk-id" value="{{ user.id }}">
+                        <button type="submit" class="uk-button uk-button-primary uk-width-1-1 mt-10">재설정 하기</button>
+                    </p>
+
+                </fieldset>
+            </form>
+
+        </div>
+    </section>
+
+
+{% endblock %}

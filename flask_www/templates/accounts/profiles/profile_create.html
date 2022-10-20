@@ -1,0 +1,58 @@
+{% extends "dashboard/user_dashboard.html" %}
+{% block title %}
+    프로필 설정
+{% endblock %}
+
+{% block head_account %}
+    <link href="{{ url_for('static', filename='statics/css/account.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block head_js %}
+    <script>
+        existingProfileCheckAjax = "{{ url_for("profiles.existing_profile_check_ajax") }}"
+    </script>
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="uk-width-expand uk-flex uk-flex-right">
+        <ul class="uk-breadcrumb">
+            <li><a href="{{ url_for('accounts.dashboard') }}">마이 보드</a></li>
+            <li><span>프로필 설정</span></li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block dashboard_section %}
+    <section class="sign-section">
+        <div class="form-container">
+            {% include 'includes/messages.html' %}
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.csrf_token }}
+                <fieldset class="uk-fieldset">
+                    <legend class="uk-legend">프로필 만들기</legend>
+                    <div class="profile-update-alert mt-10"></div>
+                    <div class="uk-margin" uk-grid>
+                        <div class="uk-width-expand">
+                            {{ form.nickname(class="uk-input mt-5", placeholder="닉네임", id="profile-nickname", required="required") }}
+                        </div>
+                        <div class="check-btn-div">
+                            <input type="hidden" id="profile_id" name="_id" value="">
+                            <button type="button" class="check-btn" id="nickname-check-btn">중복 체크</button>
+                        </div>
+
+                    </div>
+
+                    <div class="uk-margin">
+                        {{ form.message(class="uk-textarea mt-5", placeholder="간단 메시지", required="required",  onkeydown="textAreaHeightAuto(this)", onkeyup="textAreaHeightAuto(this)") }}
+                    </div>
+
+                    <p uk-margin>
+                        <button class="uk-button uk-button-primary uk-width-1-1 mt-10">프로필 등록</button>
+                    </p>
+
+                </fieldset>
+            </form>
+        </div>
+    </section>
+    <script src="{{ url_for('static', filename='statics/js/accounts/profileUpdateSubmit.js') }}"></script>
+{% endblock %}

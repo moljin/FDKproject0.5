@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}
+    로또
+{% endblock %}
+
+{% block head_css %}
+    <style>
+
+    </style>
+    <link href="{{ url_for('static', filename='statics/css/lotto.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block head_js %}
+    <script>
+        {#getRandom = "{{ url_for("lotto.lotto_return_random") }}"#}
+        CSRF_TOKEN = "{{ csrf_token() }}"
+    </script>
+    {#    <script src="{{ url_for('static', filename='statics/js/lotto/lotto_test.js') }}"></script>#}
+{% endblock %}
+
+{% block main_100 %}
+    <div class="main-width">
+        <br>
+        <a href="https://github.com/2dowon/Project-DOTTO" target="_blank" style="color: red">프로젝트 DOTTO는 1회부터 가장 최근 {{ latest|intcomma }}회까지 추첨된 역대 로또 당첨번호들의 출현 빈도수 데이터를 바탕으로 로또 번호를 생성하는 프로그램</a><br>
+        <div>1️⃣ DOTTO 란? <br>
+            '인생 한 방' 이라는 로또 1등 당첨자의 소감을 보고 우리도 그 꿈의 실현을 위해 데이터를 기반으로 한 로또 번호 생성기를 만들어보는 것이 어떨까 라는 생각에 '데이터 기반 로또 번호 생성기'라는 주제를 이번 프로젝트의 주제로 선정하였습니다. 데이터를 기반한다는 뜻에서 로또의 L 대신 데이터의 D를 가져온 프로젝트 DOTTO는 1회부터
+            {{ latest|intcomma }}회까지 추첨된 역대 로또 당첨번호들의 출현 빈도수 데이터를 바탕으로 로또 번호를 생성하는 프로그램으로 총 936회의 당첨 번호들 중에서 출현 빈도가 높은 10개의 번호를 선정하고 이 번호들 중에서 다시 6개의 번호를 무작위로 추출하는 알고리즘을 구현하고 있습니다.
+        </div>
+        <hr>
+    </div>
+    <div class="bg-100">
+        <div class="main-width lotto mb-20">
+        <div class="grid" uk-grid>
+            <div class="uk-align-center lotto-btn" uk-grid>
+                <button class="uk-button uk-button-default mr-10" id="random-lotto" onclick="window.location.href='{{ url_for( 'lotto.random_lotto') }}';">랜덤 로또</button>
+                <button class="uk-button uk-button-default" id="top10-lotto" onclick="window.location.href='{{ url_for( 'lotto.top10_lotto') }}';">탑10 로또</button>
+            </div>
+        </div>
+        <hr>
+        <div class="newball_container uk-align-center">
+            <div class="grid lotto" uk-grid>
+                <div class="stage">
+                    <div class="ball ball1" tabIndex="-1">
+                        <div class="number">{{ variable[0] }}</div>
+                    </div>
+                </div>
+                <div class="stage">
+                    <div class="ball ball2" tabIndex="-1">
+                        <div class="number">{{ variable[1] }}</div>
+                    </div>
+                </div>
+                <div class="stage">
+                    <div class="ball ball3" tabIndex="-1">
+                        <div class="number">{{ variable[2] }}</div>
+                    </div>
+                </div>
+                <div class="stage">
+                    <div class="ball ball4" tabIndex="-1">
+                        <div class="number">{{ variable[3] }}</div>
+                    </div>
+                    <div class="shadow"></div>
+                </div>
+                <div class="stage">
+                    <div class="ball ball5" tabIndex="-1">
+                        <div class="number">{{ variable[4] }}</div>
+                    </div>
+                </div>
+                <div class="stage">
+                    <div class="ball ball6" tabIndex="-1">
+                        <div class="number">{{ variable[5] }}</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <br>
+    </div>
+    </div>
+
+{% endblock %}

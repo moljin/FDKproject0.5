@@ -1,0 +1,191 @@
+<script type="text/javascript">
+    CSRF_TOKEN = "{{ csrf_token() }}";
+    accountsDeleteAjax = "{{ url_for('accounts.delete_ajax', _id=current_user.id) }}";
+    {#accounts_delete_url = "{{ url_for('accounts.delete', _id=current_user.id) }}";#}
+    {#common_index_url = "{{ url_for('commons.index') }}";#}
+</script>
+<div id="body-sidebar" class="body-sidebar" uk-offcanvas="overlay: true;">
+    <div class="uk-offcanvas-bar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('admin_accounts.index') }}">
+                <div class="sidebar-logo">
+                    <div class="profile-img-div">
+                        {% if current_profile.image_path %}
+                            <img class="profile-img" src="/{{ current_profile.image_path }}" alt="">
+                        {% else %}
+                            <img class="profile-img" src="{{ url_for('static', filename='statics/images/user_none.png') }}" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="sidebar-title-div">
+                        <div class="sidebar-title">
+                            Admin 페이지
+                        </div>
+                        <div class="sidebar-email">
+                            {{ current_user.email }}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <button class="uk-offcanvas-close" type="button" uk-close></button>
+        </div>
+
+        <div class="sidebar-content">
+            <div uk-accordion>
+                <div class="sidebar-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">
+                        멤버십
+                    </button>
+                    <div class="uk-accordion-content">
+                        <a href="{{ url_for('admin_accounts._list') }}">
+                            <div class="accordion-item">회원</div>
+                        </a>
+                        <a href="{{ url_for('admin_profiles._list') }}">
+                            <div class="accordion-item">프로필</div>
+                        </a>
+
+                        <div class="delete-div">
+                            <a class="uk-link-reset" href="#account_delete_modal-container" uk-toggle>
+                                <div class="accordion-item">탈퇴(없어도 될)</div>
+                            </a>
+                        </div>
+                        <div id="account_delete_modal-container" class="uk-modal-container" uk-modal>
+                            <form method="POST" class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                                <button class="uk-modal-close-default" type="button" uk-close></button>
+                                정말로 탈퇴를 진행하시겠어요?
+                                <div style="float: right">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <div class="delete-btn-div mt-15 uk-inline">
+                                        <button id="accounts-delete-btn" class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">삭제</button>
+                                    </div>
+                                    <div class="cover-img-delete-btn mt-15 uk-inline">
+                                        <button class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">취소</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <script src="{{ url_for('static', filename='statics/js/accounts/accountDeleteSubmit.js') }}"></script>
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">e-shop</button>
+                    <div class="uk-accordion-content">
+                        <a href="{{ url_for('admin_shops.shop_list') }}">
+                            <div class="accordion-item">상점</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">상점구독</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">상품</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">상품옵션</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">상품 좋아요</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">라도머라</button>
+                    <div class="uk-accordion-content">
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">라도머라</button>
+                    <div class="uk-accordion-content">
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">라도머라</button>
+                    <div class="uk-accordion-content">
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">페이지
+                        {% if current_profile.image_path %}
+                            <span class="header-profile-img-div">
+                                <img class="header-profile-img" src="/{{ current_profile.image_path }}" alt="mdo">
+                            </span>
+                        {% else %}
+                            <img class="user-svg" src="{{ url_for('static', filename='statics/images/user_profile.svg') }}" alt="mdo">
+                        {% endif %}
+                    </button>
+                    <div class="uk-accordion-content">
+                        {% if current_user.is_admin %}
+                            <a href="#">
+                                <div class="accordion-item">Admin</div>
+                            </a>
+                        {% endif %}
+                        <a href="{{ url_for('accounts.dashboard') }}">
+                            <div class="accordion-item">DashBoard</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">페이지 자바</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">페이지 자바</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">페이지 자바</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item"><img style="width: 30px; height: 30px; border-radius: 50%"
+                                                             src="https://www.placecage.com/c/200/250" alt="Sample image">
+                                <span style="margin-left: 1rem">머시기</span></div>
+                        </a>
+
+                    </div>
+                </div>
+
+            </div>
+
+            {% if current_user.is_admin %}
+                <div class="sidebar-item">
+                    <a class="uk-link-reset" href="{{ url_for('admin_accounts.logout') }}">
+                        <button class="uk-button uk-button-default" type="button">로그아웃</button>
+                    </a>
+                </div>
+            {% endif %}
+
+
+        </div>
+
+    </div>
+</div>

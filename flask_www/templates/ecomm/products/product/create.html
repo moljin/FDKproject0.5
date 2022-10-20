@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}
+    상품 등록
+{% endblock %}
+
+{% block head_css %}
+    <link href="{{ url_for('static', filename='statics/font-awesome-5.15.1/css/all.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='statics/unit_editor/css/unitsEditor.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='statics/css/product.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block head_js %}
+    <script src="{{ url_for('static', filename='statics/unit_editor/js/unitsEditor.js') }}"></script>
+    <script>
+        unitsImagesSaveAjax = "{{ url_for("products.units_images_save_ajax") }}"
+        CSRF_TOKEN = "{{ csrf_token() }}"
+        HOME_URL = "{{ url_for('commons.index') }}"
+    </script>
+{% endblock %}
+
+{% block above_main %}
+{% endblock %}
+
+{% block body %}
+    <section class="product-section">
+        <div class="form-container pt-10 pb-10">
+            <form class="products" method="POST" action="{{ url_for("products.product_save") }}" enctype="multipart/form-data">
+                {{ form.csrf_token }}
+                <section class="product-summary pt-7 pr-7 pb-7 pl-7 uk-child-width-1-2@s" uk-grid>
+                    <div class="product-view">
+                        <div class="uk-card-media-top uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow="ratio: 1:1; autoplay: true; autoplay-interval: 3000">
+                            <ul class="uk-slideshow-items">
+                            <li>
+                                <img class="thumbnail" id="thumbnail-preview1" src="{{ url_for('static', filename='statics/images/product_1.jpg') }}" uk-cover>
+                            </li>
+                            <li>
+                                <img class="thumbnail" id="thumbnail-preview2" src="{{ url_for('static', filename='statics/images/product_2.jpg') }}" uk-cover>
+                            </li>
+                            <li>
+                                <img class="thumbnail" id="thumbnail-preview3" src="{{ url_for('static', filename='statics/images/product_3.jpg') }}" uk-cover>
+                            </li>
+                        </ul>
+                        </div>
+                        <div class="upload-btn-div uk-align-right">
+                            <button  type="button" class="uk-button uk-button-default product-thumbnail-upload-btn mr-5" uk-toggle="target: #upload-tip">도움말</button>
+                            <label type="button" class="uk-button uk-button-default product-thumbnail-upload-btn mr-5" for="image1"><span uk-icon="icon: cloud-upload"></span> 1</label>
+                            <input style="display: none" id="image1" name="image1" type="file" accept="image/*" value=""/>
+
+                            <label type="button" class="uk-button uk-button-default product-thumbnail-upload-btn mr-5" for="image2"><span uk-icon="icon: cloud-upload"></span> 2</label>
+                            <input style="display: none" class="uk-input mt-5" id="image2" name="image2" type="file" accept="image/*" value=""/>
+
+                            <label type="button" class="uk-button uk-button-default product-thumbnail-upload-btn" for="image3"><span uk-icon="icon: cloud-upload"></span> 3</label>
+                            <input style="display: none" id="image3" name="image3" type="file" accept="image/*" value=""/>
+                        </div>
+                        <div id="upload-tip" class="uk-flex-top" uk-modal>
+                            <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                                <button class="uk-modal-close-default" type="button" uk-close></button>
+                                <h5 class="uk-modal-title">업로드 팁</h5>
+                                <div class="mt-15">이미지 해상도는 400*400으로 1:1 비율이 최적이에요. 이미지를 선택하면 슬라이드에 적용됩니다.</div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="info-grid">
+                        <div class="product-info">
+                            <ul class="uk-breadcrumb  mt-5 ml-10">
+                                <li><a href="{{ url_for("profiles.detail", _id=target_profile.id) }}">
+                                    <div class="uk-inline"><img class="profile-img" src="/{{ target_profile.image_path }}" alt="mdo">
+                                        <div class="uk-inline">{{ target_profile.nickname }}</div>
+                                    </div>
+                                </a></li>
+                                <li><a href="{{ url_for("products.shopcategory_detail", _id=shopcategory.id, slug=shopcategory.slug) }}">
+                                    <div class="uk-inline"><img class="symbol-img" src="/{{ shopcategory.symbol_path }}" alt="mdo">
+                                        <div class="uk-inline">{{ shopcategory.title }}</div>
+                                    </div>
+                                </a></li>
+                                <li class="uk-inline"><span><button class="breadcrumb-button"><i class="fas fa-store-alt mr-7"></i></button>상품 등록</span></li>
+                            </ul>
+
+                            <div class="info-content">
+                                <div class="form-input mb-5">{{ form.title(class="uk-input", placeholder="상품명") }}</div>
+                                <div class="pl-7 pr-7 mt-5">{{ form.price(class="uk-input mr-5") }} 원</div>
+                                <div class="pl-7 pr-7 mt-10">{{ form.stock(class="uk-input mr-5") }} 개</div>
+                                <div class="pl-7 pr-7 mt-15" uk-grid>
+                                    <div>기본 할인금액:</div>
+                                    <div class="mt-5 mb-5 uk-width-expand pl-7">{{ form.base_dc_amount(class="uk-input mr-5") }} 원</div>
+                                </div>
+                                <div class="pl-7 pr-7 mt-7" uk-grid>
+                                    <div>배송비:</div>
+                                    <div class="mt-5 mb-5 uk-width-expand pl-7">{{ form.delivery_pay(class="uk-input mr-5") }} 원</div>
+                                </div>
+                                <div class="pl-7 pr-7 mt-7">전시여부 {{ form.available_display(class="uk-checkbox") }}&nbsp; /&nbsp; 주문가능 {{ form.available_order(class="uk-checkbox") }}</div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </section>
+
+                {% block wysiwyg %}
+                    <section class="wysiwyg-wrapper">
+                        {% include 'includes/unit_editor/unit_editor.html' %}
+                    </section>
+                {% endblock %}
+
+                <section class="product-option">
+                    <div class="option-add mt-10 mb-15 pl-7">
+                            <a href="javascript:void(0);" title="옵션 추가하기"><button class="add-input-btn">옵션추가<i class="fas fa-folder-plus ml-7"></i></button></a>
+                        </div>
+                    <div class="option-form-wrapper uk-child-width-1-2@s uk-child-width-1-3@m uk-grid-small" uk-grid >
+
+                    </div>
+                </section>
+
+                <section class="product-others mt-7">
+                    <div class="pl-7 pr-7">{{ form.meta_description(class="uk-textarea", rows="2", placeholder="메타설명(최대 160자)") }}</div>
+                </section>
+
+                <div class="units-submit-div">
+                    <button id="form-submit" class="units-submit mt-15" type="submit">저장</button>
+                </div>
+                <input type="hidden" id="product_id" name="_id" value="">
+                <input type="hidden" id="orm_id" name="orm_id" value="{{ orm_id }}">
+                <input type="hidden" name="shopcategory_id" value="{{ request.full_path }}">
+                상점카테고리 ID: {{ request.full_path.split("?")[1].split("&")[0].split("=")[1] }}
+                <p>orm_id::: {{ orm_id }}</p>
+            </form>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block content %}
+    <section class="body-wrapper other-body mb-15">
+        <a href="https://github.com/improvise0828/stone-editor" target="_blank">Github: stone editor :: Reference</a>
+    </section>
+
+{% endblock %}
+
+{% block units_script %}
+    <!--redo undo display none
+    <script>
+        document.querySelector(".units-btn-group.cancel-group > span:nth-child(1)").style.display = "none";
+        document.querySelector(".units-btn-group.cancel-group > span:nth-child(2)").style.display = "none";
+    </script>
+    -->
+    <script src="{{ url_for('static', filename='statics/js/commons/imagePreview.js') }}"></script>
+    <script src="{{ url_for('static', filename='statics/js/commons/slideToggle.js') }}"></script>
+    <script src="{{ url_for('static', filename='statics/unit_editor/js/toolbar.js') }}"></script>
+    <script src="{{ url_for('static', filename='statics/unit_editor/js/toolbarMediaQuery.js') }}"></script>
+    <script src="{{ url_for('static', filename='statics/js/products/product/productOption.js') }}"></script>
+    <script src="{{ url_for('static', filename='statics/unit_editor/js/submit.js') }}"></script>
+{% endblock %}

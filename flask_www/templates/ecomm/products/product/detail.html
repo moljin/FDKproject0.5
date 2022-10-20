@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}
+    상품 상세
+{% endblock %}
+
+{% block head_css %}
+    <link href="{{ url_for('static', filename='statics/font-awesome-5.15.1/css/all.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='statics/css/product.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block head_js %}
+    <script>
+        optionSelectAjax = "{{ url_for("products.option_select_ajax") }}"
+
+        CSRF_TOKEN = "{{ csrf_token() }}"
+
+        productVoteAjax = "{{ url_for('products.product_vote_ajax', _id=product_obj.id) }}";
+        productVoteCancelAjax = "{{ url_for('products.product_vote_cancel_ajax', _id=product_obj.id) }}";
+        productDeleteAjax = "{{ url_for('products.product_delete_ajax') }}"
+    </script>
+{% endblock %}
+
+{% block above_main %}
+{% endblock %}
+
+{% block body %}
+    <section class="section-container">
+        <article class="article-container pt-10">
+            <div class="board-container">
+
+                    <div class="product-summary uk-child-width-1-2@s" uk-grid>
+                        <div class="product-view">
+                            <div class="uk-card-media-top uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow="ratio: 1:1; autoplay: true; autoplay-interval: 3500">
+                                <ul class="uk-slideshow-items">
+                                    <li>
+                                        {% if product_obj.image_1_path %}
+                                            <img class="thumbnail" id="thumbnail-preview1" src="/{{ product_obj.image_1_path }}" uk-cover>
+                                        {% else %}
+                                            <img class="thumbnail" id="thumbnail-preview1" src="{{ url_for('static', filename='statics/images/product_1.jpg') }}" uk-cover>
+                                        {% endif %}
+                                    </li>
+                                    <li>
+                                        {% if product_obj.image_2_path %}
+                                            <img class="thumbnail" id="thumbnail-preview2" src="/{{ product_obj.image_2_path }}" uk-cover>
+                                        {% else %}
+                                            <img class="thumbnail" id="thumbnail-preview2" src="{{ url_for('static', filename='statics/images/product_2.jpg') }}" uk-cover>
+                                        {% endif %}
+                                    </li>
+                                    <li>
+                                        {% if product_obj.image_3_path %}
+                                            <img class="thumbnail" id="thumbnail-preview3" src="/{{ product_obj.image_3_path }}" uk-cover>
+                                        {% else %}
+                                            <img class="thumbnail" id="thumbnail-preview3" src="{{ url_for('static', filename='statics/images/product_3.jpg') }}" uk-cover>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                            <div class="info-grid">
+                                <div class="product-info">
+                                    <ul class="uk-breadcrumb  mt-5 ml-4 mb-7">
+                                        <li><a href="{{ url_for("profiles.detail", _id=target_profile.id) }}">
+                                            <div class="uk-inline"><img class="profile-img" src="/{{ target_profile.image_path }}" alt="mdo">
+                                                <div class="uk-inline">{{ target_profile.nickname }}</div>
+                                            </div>
+                                        </a></li>
+                                        <li><a href="{{ url_for("products.shopcategory_detail", _id=target_shopcategory.id, slug=target_shopcategory.slug) }}">
+                                            <div class="uk-inline"><img class="symbol-img" src="/{{ target_shopcategory.symbol_path }}" alt="mdo">
+                                                <div class="uk-inline">{{ target_shopcategory.title }}</div>
+                                            </div>
+                                        </a></li>
+                                    </ul>
+
+                                    <div class="info-content detail">
+                                        <!--오너는 추천/추천중 안보이고, 비로그인시도 추천/추천중 안보임. 로그인한 다른 유저는 추천/추천중이 보인다. -->
+                                        {% set view_count = product_obj.view_count + 7528 %}
+                                        {% set vote_count = product_obj.voters|length + 2653 %}
+                                        <div class="mb-10">
+                                            <div class="vote-alert"></div>
+                                            <div class="view-vote-container">
+                                                <div class="view-vote" uk-grid="">
+                                                    <div class="view-count">조회: <span>{{ view_count|intcomma }}</span>명 /</div>
+                                                    <div class="vote-count pl-5">추천: <span>{{ vote_count|intcomma }}</span>명</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div style="display: flex">
+                                            <div><h3>{{ product_obj.title }}</h3></div>
+                                        </div>
+
+                                        {% if current_user.is_authenticated and current_user.id != product_obj.user_id %}
+                                            <span><button id="product-voting-btn" uk-toggle="target: #vote-cancel-modal" type="button">추천중</button></span>
+                                            <span><button id="product-vote-btn" type="button">추천</button></span>
+                                            <script>
+                                                {% if current_user in product_obj.voters %}
+                                                    document.querySelector("#product-vote-btn").style.display = "none";
+                                                {% else %}
+                                                    document.querySelector("#product-voting-btn").style.display = "none";
+                                                {% endif %}
+                                            </script>
+                                        {% endif %}
+
+                                        <div class="vote-cancel-modal-container">
+                                            <div id="vote-cancel-modal" class="uk-flex-top" uk-modal>
+                                                <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                                                    <button class="uk-modal-close-default" type="button" uk-close></button>
+                                                    정말로 추천을 취소하시겠어요?
+                                                    <div class="modal-submit-cancel-btn">
+                                                        <div class="vote-cancel-btn mt-15 uk-inline">
+                                                            <button class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">취소</button>
+                                                        </div>
+                                                        <div class="vote-cancel-btn mt-15 uk-inline">
+                                                            <button id="vote-cancel-btn" class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">추천 취소</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% if not (current_user.is_authenticated or (current_user in product_obj.voters)) %}
+                                                <script>
+                                                    document.querySelector("#vote-cancel-modal").style.display = "none";
+                                                </script>
+                                            {% endif %}
+                                        </div>
+                                        <form method="POST" action="{{ url_for("carts.add_to_cart", _id=product_obj.id) }}">
+                                            <div class="applied-price" uk-grid>
+                                                <div class="original-price pt-3" style="text-decoration: line-through">{{ product_obj.price|intcomma }} 원</div>
+                                                <div class="uk-width-expand expand-pl">{{ (product_obj.price - product_obj.base_dc_amount)|intcomma }} 원</div>
+                                            </div>
+
+                                            <div class="mt-10">
+                                                <button class="uk-button uk-button-default pd-minus"><span uk-icon="minus"></span></button>
+                                                <input readonly class="uk-input uk-form-width-xsmall pd" data-pd-id="{{ product_obj.id }}" id="pd-count" name="pd-count" type="text" value="1">
+                                                <input type="hidden" id="pd-id" name="pd-id" value="{{ product_obj.id }}">
+                                                <input type="hidden" id="pd-price" value="{{ product_obj.price }}">
+                                                <input type="hidden" id="pd-applied-price" name="pd-applied-price" value="{{ product_obj.price - product_obj.base_dc_amount }}">
+                                                <input type="hidden" id="pd-total-price" name="pd-total-price" value="{{ product_obj.price - product_obj.base_dc_amount }}">
+                                                <button class="uk-button uk-button-default pd-plus"><span uk-icon="plus"></span></button>
+                                                <div class="uk-inline uk-align-right ml-0 mt-5 mb-0"><span id="pd-total-price-span">{{ (product_obj.price - product_obj.base_dc_amount)|intcomma }}</span> 원
+                                                </div>
+                                            </div>
+
+                                            <div class="uk-grid-mt" uk-grid>
+                                                <div class="delivery">배송비:</div>
+                                                <div class="uk-width-expand expand-pl">{{ product_obj.delivery_pay|intcomma }} 원</div>
+                                            </div>
+                                            <hr class="mt-7 mb-7">
+                                            {% if product_obj.productoption_product_set %}
+                                                <div class="select-container grid-align-items uk-grid-mt mb-7" uk-grid>
+                                                    <div class="expand-mr">옵션:</div>
+                                                    <div class="uk-width-expand expand-pl">
+                                                        <select name="option_id" class="uk-select">
+                                                            <option class="none" value="none">&nbsp;&nbsp;--- &nbsp;선택&nbsp; ---</option>
+                                                            {% for option in target_options %}
+                                                                <option value="{{ option.id }}">
+                                                                    {{ option.title }}/+{{ option.price|intcomma }}원
+                                                                </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            <div class="total-price-container">
+                                                <div class="pd-op-total-price mt-3">
+                                                    <input type="hidden" id="total-price" name="total-price" value="{{ product_obj.price - product_obj.base_dc_amount }}">
+                                                    합계: <span class="total-price">{{ (product_obj.price - product_obj.base_dc_amount)|intcomma }}</span> 원
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-3">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                                <button class="uk-button uk-button-default add-to-cart" type="submit">구매하기</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                    </div>
+
+                <div class="detail-container pt-10" id="detail-container">
+                    {{ product_obj.content|safe }}<br>
+                </div>
+
+                <hr>
+            </div>
+        </article>
+    </section>
+    {% if current_user.is_authenticated and current_user.id == product_obj.user_id %}
+        <div class="pd-updel-btn" uk-grid>
+            <button class="uk-button uk-button-default custom-button-default" type="button" uk-toggle="target: #product_delete_modal">삭제</button>
+            <a href="{{ url_for("products.product_update", _id=product_obj.id, slug=product_obj.slug) }}">
+                <button class="uk-button uk-button-default custom-button-default ml-10" type="button">수정</button>
+            </a>
+        </div>
+        <div id="product_delete_modal" class="uk-flex-top" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                정말로 상품을 삭제하시겠어요?
+                <div class="uk-align-right">
+                    <div class="product-delete-btn uk-inline">
+                        <button class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">취소</button>
+                    </div>
+                    <div class="product-delete-btn uk-inline ml-15">
+                        <button id="product-delete-btn" class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">삭제</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <script src="{{ url_for('static', filename='statics/js/products/product/optionSelectAddCart.js') }}"></script>
+    <script src="{{ url_for('static', filename='statics/js/products/product/productVote.js') }}"></script>
+    {% if current_user.is_authenticated and current_user.id == product_obj.user_id %}
+        <script src="{{ url_for('static', filename='statics/js/products/product/productDeleteSubmit.js') }}"></script>
+    {% endif %}
+{% endblock %}

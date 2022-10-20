@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}
+    쿠폰등록
+{% endblock %}
+
+{% block head_css %}
+    <link href="{{ url_for('static', filename='statics/font-awesome-5.15.1/css/all.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='statics/css/promotion.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block head_js %}
+    <script>
+        couponCodeCheckAjax = "{{ url_for("coupons.coupon_code_check_ajax") }}"
+        CSRF_TOKEN = "{{ csrf_token() }}"
+    </script>
+{% endblock %}
+
+{% block above_main %}
+    <div>
+
+    </div>
+{% endblock %}
+
+{% block main %}
+    <section class="section-container">
+        <article class="article-container">
+            <div class="board-container">
+                <form method="POST" action="{{ url_for("coupons.save") }}" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+
+                    <div class="board-form">
+                        {% include 'includes/messages.html' %}
+                        <div class="code-check-alert mt-10"></div>
+                        <div class="form-group" uk-grid>
+                            <div>쿠폰코드: </div>
+                            <div class="uk-width-expand pl-10">{{ form.code(class="uk-input", placeholder="쿠폰코드") }}</div>
+                            <div class="check-btn-div">
+                                <input type="hidden" id="profile_id" name="profile_id" value="{{ current_profile.id }}">
+                                <input type="hidden" id="coupon_id" name="coupon_id" value="none">
+                                <button type="button" class="check-btn" id="coupon-code-check-btn">중복 체크</button>
+                            </div>
+                        </div>
+                        <div class="form-group mt" uk-grid>
+                            <div>시작일: </div>
+                            <div class="uk-width-expand pl-10">{{ form.use_from(class="uk-input", placeholder="시작일") }}</div>
+                        </div>
+                        <div class="form-group mt" uk-grid>
+                            <div>종료일: </div>
+                            <div class="uk-width-expand pl-10">{{ form.use_to(class="uk-input", placeholder="종료일") }}</div>
+                        </div>
+                        <div class="form-group mt" uk-grid>
+                            <div>할인가격: </div>
+                            <div class="uk-width-expand pl-10">{{ form.amount(class="uk-input", placeholder="할인가격") }}</div>
+                        </div>
+                        <div class="form-group mt" uk-grid>
+                            <div>사용 가능횟수: </div>
+                            <div class="uk-width-expand pl-10">{{ form.available_count(class="uk-input", placeholder="사용 가능횟수") }}</div>
+                        </div>
+                        <div class="form-group mt" uk-grid>
+                            <div>활성화: </div>
+                            <div class="uk-width-expand pl-10">{{ form.is_active(class="uk-checkbox", type="checkbox") }}</div>
+                        </div>
+                        <div class="form-group coupon">
+                            <button type="submit" class="uk-button uk-button-default">등록</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </article>
+    </section>
+    <script src="{{ url_for('static', filename='statics/js/carts/promotions.js') }}"></script>
+{% endblock %}

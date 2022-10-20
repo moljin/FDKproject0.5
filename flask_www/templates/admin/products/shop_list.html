@@ -1,0 +1,83 @@
+{% extends "admin/admin_dashboard.html" %}
+{% block title %}
+    상점카테고리
+{% endblock %}
+
+{% block head_css %}
+    <link href="{{ url_for('static', filename='statics/css/admin/main.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block head_js %}
+    <script>
+        shopCategoryDeleteAjax = "{{ url_for("products.shopcategory_delete_ajax") }}"
+    </script>
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="uk-width-expand uk-flex uk-flex-right">
+        <ul class="uk-breadcrumb">
+            <li><a href="{{ url_for('admin_accounts.index') }}">관리 홈</a></li>
+            <li><a href="{{ url_for('admin_shops.shop_create') }}">상점등록</a></li>
+            <li><span>상점리스트</span></li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block above_main %}
+    <section class="adm-index-above-main">
+        {% include "includes/messages.html" %}
+    </section>
+
+{% endblock %}
+
+{% block dashboard_section %}
+        <div class="shop-list uk-overflow-auto">
+            <table class="uk-table uk-table-middle uk-table-divider">
+                <thead>
+                <tr>
+                    <th scope="col" class="uk-table-shrink"><input class="uk-checkbox" id="all-check" type="checkbox" name="all_checked"></th>
+                    <th scope="col" class="uk-text-nowrap">ID</th>
+                    <th scope="col" class="uk-table-expand uk-text-nowrap">상점이름</th>
+                    <th scope="col" class="uk-table-expand uk-text-nowrap">닉네임</th>
+                    <th scope="col" class="uk-text-nowrap">심볼마크</th>
+                    <th scope="col" class="uk-text-nowrap">조회수</th>
+                    <th scope="col" class="uk-text-nowrap">전시여부</th>
+                    <th scope="col" class="uk-table-shrink uk-text-nowrap">등록일</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for shop in shops %}
+                    <tr>
+                    <td data-label="체크"><input class="uk-checkbox single" id="{{ shop.id }}" type="checkbox" name="is_checked"></td>
+                    <td data-label="ID" class="">{{ shop.id }}</td>
+                    <td data-label="상점이름" class="table-link">
+                        <a class="uk-link-reset" href="{{ url_for('admin_shops.shop_change', _id=shop.id) }}">{{ shop.title }}</a>
+                    </td>
+                    <td data-label="닉네임" class="uk-text-nowrap">
+                        {% for profile in shop.user.profile_user_set %}
+                            {{ profile.nickname }}
+                        {% endfor %}
+                    </td>
+                    <td data-label="심볼마크" class="profile-img">
+                        {% if shop.symbol_path %}
+                            <img class="img-preview" id="img-preview" src="/{{ shop.symbol_path }}" style="margin: 0 auto;">
+                        {% else %}
+                            없슴
+                        {% endif %}
+                    </td>
+                    <td data-label="조회수" class="">{{ shop.view_count }}</td>
+                    <td data-label="전시여부" class="">{% if shop.available_display %}<input class="uk-checkbox" checked="checked" id="available_display" name="available_display" type="checkbox">{% else %}<input class="uk-checkbox" id="available_display" name="available_display" type="checkbox">{% endif %}</td>
+                    <td data-label="등록일" class="uk-text-nowrap">{{ shop.created_at|daytime("small") }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        <button class="uk-button uk-button-default" id="checked-delete-btn">선택 삭제</button>
+        </div>
+{% endblock %}
+
+
+
+
+
+

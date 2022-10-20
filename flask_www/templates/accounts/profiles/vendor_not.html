@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}
+    Not Vendor
+{% endblock %}
+<body>
+{% block body %}
+<h3>vendor not</h3>
+    {% if not current_user.is_authenticated %}
+        로그인하지 않았습니다. <br>
+    <div><a href="{{ url_for('accounts.register') }}">회원가입</a></div>
+    <div><a href="{{ url_for('accounts.login') }}">로그인</a></div>
+    {% endif %}
+
+    {% if current_user.is_authenticated and current_user.id==profile.user_id and profile.level == "일반이용자" %}
+        <div>{{ profile.nickname }} <a href="{{url_for('profiles.detail', _id=profile.id)}}">vendor 신청하기</a></div>
+    {% elif current_user.is_authenticated and current_user.id==profile.user_id and profile.level == "심사중 판매사업자" %}
+    현재 판매사업자 신청에 대한 심사중입니다.
+    {% endif %}
+    <div></div>
+{% endblock %}
+
+</body>

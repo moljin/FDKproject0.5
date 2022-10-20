@@ -1,0 +1,135 @@
+/*shop category*/
+.shop-create-section {padding: 15px}
+.shop-create-section .form-container {max-width: 500px; border: solid 1px #ced6e0; border-radius: 5px; padding: 2rem; margin: 2rem auto}
+.shop-create-section .form-container form .check-btn-div {padding-left: 10px; margin-top: 0.33rem}
+.shop-create-section .form-container form .check-btn {height: 38px}
+.shop-create-section .uk-margin input {border-radius: 5px}
+.shop-create-section .uk-margin textarea {border-radius: 5px; height: 5rem; resize: none}
+.shop-create-section > div > form > fieldset > div:nth-child(6) > label {position: absolute; top: 5px; width: 102px; border: solid 1px #5f27cd; padding-left: 5px; padding-right: 5px; border-radius: 5px 0 0 5px}
+.shop-create-section > div > form > fieldset > p > button {border-radius: 5px}
+.shop-create-section > div > form > fieldset > div.symbol-img img {display: none}
+.shop-create-section > div > form > fieldset > div.symbol-img img.active {display: block}
+
+body > main > section > div:nth-child(1) > button.symbol-img-modal-delete-btn.inactive{display: none}
+#symbol_img_delete_modal-container > div > div {margin-top: 40px}
+body > main > section > div:nth-child(1) > button.symbol-img-modal-upload-btn {position: absolute; top: 460px; left: calc(50% + 80px); cursor: pointer; border: none; width: 35px; height: 35px; border-radius: 50%; color: white; background: #7959bf !important; opacity: 0.7}
+body > main > section > div:nth-child(1) > button.symbol-img-modal-delete-btn {position: absolute; top: 460px; left: calc(50% + 120px); cursor: pointer; border: none; width: 35px; height: 35px; border-radius: 50%; color: white; background: #7959bf !important; opacity: 0.7}
+#symbol_img_upload_modal-container > div > div.uk-margin {position: relative; margin-bottom: 10px}
+#symbol_img_upload_modal-container > div > div.uk-margin > label {position: absolute;}
+
+body > section > section > button.shopcategory_cover-img-modal-delete-btn.inactive {display: none}
+body > section > section > button.shopcategory_cover-img-modal-delete-btn {position: absolute; top: 400px; left: 10px; cursor: pointer; border: none; width: 45px; height: 45px; border-radius: 50%; color: white; background: #7959bf !important; opacity: 0.7}
+body > section > section > button.shopcategory_cover-img-modal-upload-btn {position: absolute; top: 400px; right: 10px; cursor: pointer; border: none; width: 45px; height: 45px; border-radius: 50%; color: white; background: #7959bf !important; opacity: 0.7}
+#shop-symbol-image-src {position:absolute; top: -100px; left: calc(50% - 85px); width: 170px; height: 170px; border: solid 8px white; border-radius: 50%; object-fit: cover}
+
+body > main > section > div:nth-child(3) {padding-top: 75px; max-width: 500px; margin: auto}
+body > main > section > div:nth-child(3) > div > div > div:nth-child(1) {text-align: center}
+#shop-title {font-size: 36px; font-weight: 550}
+
+#shopcategory_cover_img_upload_modal-container > form > div > div.uk-child-width-expand\@m.uk-grid > div.uk-first-column > div.uk-margin > div > div > label,
+#shopcategory_cover_img_upload_modal-container > form > div > div.uk-child-width-expand\@m.uk-grid > div:nth-child(2) > div.uk-margin > div > div > label,
+#shopcategory_cover_img_upload_modal-container > form > div > div.uk-child-width-expand\@m.uk-grid > div:nth-child(3) > div.uk-margin > div > div > label {position: absolute; margin-top: -30px}
+
+#shopcategory_cover_img_upload_modal-container > form > div > div.uk-child-width-expand\@m.uk-grid > div.uk-first-column > div.uk-margin > div > div,
+#shopcategory_cover_img_upload_modal-container > form > div > div.uk-child-width-expand\@m.uk-grid > div:nth-child(2) > div.uk-margin > div > div,
+#shopcategory_cover_img_upload_modal-container > form > div > div.uk-child-width-expand\@m.uk-grid > div:nth-child(3) > div.uk-margin > div > div {width: 100%}
+#shopcategory_cover_img_upload_modal-container .modal-submit-cancel-btn.uk-align-right {margin-top: -5px; margin-bottom: -10px}
+
+#shopcategory_cover_img_delete_modal-container > form > div {margin-top: 40px}
+
+#cover-img1-preview,
+#cover-img2-preview,
+#cover-img3-preview {width: 100%; height: 250px; display: block; margin: 0 auto; object-fit: cover}
+
+#shopcategory-content, #meta_description {overscroll-behavior: contain; resize: none; border-radius: 5px}
+
+.section-cover-img-container .shop-target-profile {position:absolute; top: 462px; left: calc(50% + 80px)}
+.section-cover-img-container .shop-target-profile > .img-div > img {width: 35px; height: 35px; border-radius: 50%; object-fit: cover}
+.section-cover-img-container .shop-target-profile > .nickname {font-weight: 600; color: #666666}
+
+#shop-delete-modal > div > div {margin-top: 20px}
+
+.shop-item.viewcount-subscribe-container {display: flex; justify-content: right; align-items: center}
+.shop-item.viewcount-subscribe-container .viewcount-subscribe-container {display: flex}
+.shop-item.viewcount-subscribe-container .viewcount-subscribe-container span {font-size: 15px; color: #57606f}
+.shop-item.viewcount-subscribe-container > div button.ml-15 {width: 60px; height: 30px; border-radius: 3px; background: #0652DD; color: white; cursor: pointer}
+.shop-item.viewcount-subscribe-container > div button.ml-15:hover {background: #0f7ae5}
+.shop-item.viewcount-subscribe-container > div button.ml-15.subscribed {background: #7f8c8d; color: white}
+.shop-item.viewcount-subscribe-container > div button.ml-15.subscribed:hover {background: #666666}
+#cover_image1, #cover_image2, #cover_image3 {display: none}
+#symbol_image {display: none}
+
+/*product create*/
+.product-summary {margin-left: 0;}
+.product-view, .product-info {padding-left: 0}
+.product-summary .uk-grid-margin.uk-first-column {margin-top: 10px}
+.product-view img {width: 100%; object-fit: cover}
+.product-view .upload-btn-div {margin-top: 7px; margin-bottom: 0}
+.product-thumbnail-upload-btn {padding: 0 10px}
+.product-thumbnail-upload-btn svg {margin-top: -3px; margin-right: 5px}
+.product-info {padding-top: 5px}
+.product-info.uk-grid-margin.uk-first-column {margin-top: 15px}
+.product-info img.profile-img,
+.product-info img.symbol-img {width: 28px; height: 28px; border-radius: 50%; object-fit: cover; margin: 0 7px}
+.product-info .uk-breadcrumb .breadcrumb-button {width: 28px; height: 28px; border-radius: 50%; background: #9398D5; color: white;  margin: 0 7px}
+.product-info .uk-breadcrumb .breadcrumb-button > i {margin-left: 0}
+.product-info .uk-breadcrumb>:nth-child(n+2):not(.uk-first-column)::before {margin: 0 7px 0 calc(7px - 4px)}
+.product-info .info-content {margin-left: 3%}
+.product-info .info-content .pl-7.pr-7.mt-15.uk-grid {align-items: center}
+.product-info .info-content .pl-7.pr-7.mt-7.uk-grid {align-items: center; margin-top: 7px}
+
+.product-info .info-content > div.pl-7.pr-7.mt-5,
+.product-info .info-content > div.pl-7.pr-7.mt-10 {width: 100%; display: flex; align-items: center}
+.product-info .info-content > div.pl-7.pr-7 .mt-5.mb-5 {display: flex; align-items: center}
+.product-info .form-input {padding: 7px}
+
+.product-option {padding: 0 7px}
+.product-option .option-add {position: sticky; top: 10px; z-index: 1}
+.product-option div.option-add {display: flex; justify-content: flex-end;}
+.product-option .option-add button.add-input-btn {width: 5.8rem; background: #0652DD; font-size: 14px; color: white; cursor: pointer;height: 35px; display: flex; align-items: center;border-radius: 5px}
+.product-option .option-add button.add-input-btn:hover {background: #1a73e8 }
+
+.product-option .option-form-wrapper {margin-left: 1px}
+.product-option .option-form-wrapper .option-form .form-group {display: flex; align-items: center}
+.product-option div.option-add i.fa-folder-plus {font-size: 20px}
+.product-option .option-form-wrapper .cancel-input-btn.remove-input {width: 5.8rem; background: #faa05a; font-size: 14px; color: white; cursor: pointer;height: 28px; display: flex; align-items: center;border-radius: 5px}
+.product-option .option-form-wrapper .cancel-input-btn.remove-input:hover {background: coral}
+.product-option .option-form-wrapper i.fa-folder-minus {font-size: 20px}
+.cancel-input-btn.remove-input.uk-alert-close.uk-close {right: 30px; opacity: 1}
+
+/*product detail*/
+.info-grid {padding-left: 20px}
+.info-content.detail .applied-price {margin-top: 0 !important;}
+.info-content.detail .original-price {color: #7f8c8d}
+.info-content.detail .uk-grid-mt {margin-top: 10px !important;}
+.info-content.detail .expand-pl {padding-left: 10px}
+.info-content.detail .applied-price .expand-pl {font-weight: bold; font-size: 20px}
+.info-content.detail .grid-align-items {align-items: center}
+.info-content.detail .grid-align-items .expand-mr {font-size: 17px}
+.info-content.detail .grid-align-items select {height: 32px; font-size: 15px}
+/*.delivery {padding-left: 0}*/
+
+.op-select-insert {margin-left: 5%; margin-bottom: 10px}
+.op-select-insert .op-title {margin-bottom: 7px}
+.pd-plus, .pd-minus, .op-plus, .op-minus {padding: 0 10px; border-radius: 0}
+.pd.uk-form-width-xsmall, .op.uk-form-width-xsmall {width: 2.5rem !important; text-align: center; border-radius: 0}
+.op-select-insert.uk-alert {margin-top: 0; margin-left: 0; margin-bottom: 5px; padding: 8px 29px 8px 15px}
+body > main > section > article > div > div.product-summary.uk-child-width-1-2\@s.uk-grid > div.info-grid > div > div > form > div.op-select-insert.uk-alert > button {margin-top: -20px; width: 28px; background: transparent; font-size: 35px !important; transform: rotate(45deg)}
+.total-price-container {text-align: right}
+.view-vote {font-size: 15px; color: #57606f}
+#product-voting-btn {width: 55px; height: 23px; margin-top: 4px; padding-bottom: 0.13rem; border-radius: 3px; background: #00008C; font-size: 13px; color: white; cursor: pointer}
+#product-vote-btn {width: 55px; height: 23px; margin-top: 4px; padding-bottom: 0.13rem; border-radius: 3px; background: #c23616; font-size: 13px; color: white; cursor: pointer}
+
+.add-to-cart {position: fixed; height: 45px; left: 0; bottom: 0; background: #0652DD; font-size: 16px; color: white;border: none; border-radius: 0; width: 100%; opacity: 0.8}
+.add-to-cart:hover {background: #0e6dcd; color: white}
+.pd-updel-btn {position: fixed; right: 10px; bottom: 55px}
+.pd-updel-btn a {padding-left: 0}
+.pd-updel-btn button {padding: 0 20px}
+#product_delete_modal > div > div {margin-top: 40px}
+
+/*list*/
+.grid-section .each-product .content.uk-card-body {padding: 20px 0 0!important;}
+.grid-section .each-product .view, .grid-section .each-product .vote {position: relative}
+.grid-section .each-product .view .count {position: absolute; top: 0; left: 0}
+.grid-section .each-product .vote .count {position: absolute; top: 0; left: 120px}
+.grid-section .each-product .view .count span, .grid-section .each-product .vote .count span {font-size: 15px; color: #57606f}

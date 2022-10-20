@@ -1,0 +1,73 @@
+.adm-index-above-main .flashes {border-radius: 0}
+table .table-link {color: maroon}
+table .table-link:hover {cursor: pointer; color: #1e3799}
+.site-view {text-align: right}
+.site-view button {border: solid 1px #dcdde1; color: #0652DD}
+.site-view button:hover {background: #ecf0f1; color: maroon}
+
+@media screen and (max-width: 1170px) {
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  table tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: .625em;
+  }
+
+  table td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    text-align: right;
+  }
+
+  table td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  table td:last-child {
+    border-bottom: 0;
+  }
+}
+
+/*accounts*/
+.accounts-container .form-container {max-width: 800px; border: solid 1px #ced6e0; border-radius: 5px; padding: 1.5rem 1.5rem 1rem; margin: 0 auto 1rem auto}
+.accounts-container .form-container form > fieldset > button {margin-bottom: 0}
+.form-container form.accounts .uk-fieldset .uk-margin {align-items: center}
+#user-delete-modal > div > div {margin-top: 40px}
+
+/*profiles*/
+.form-container form.profiles .check-btn-div {padding-left: 10px; margin-top: 0.21875rem}
+.form-container form.profiles .check-btn {height: 38px}
+.form-container form.profiles .uk-fieldset .uk-margin {align-items: center}
+.form-container form.profiles .uk-textarea {resize: none; height: auto}
+.body-section .profile-list table .profile-img img.img-preview {width: 35px; height: 35px; border-radius: 50%; object-fit: cover}
+.form-container form.profiles .img-preview {width: 40px; height: 40px; object-fit: cover}
+.form-container form.profiles .profile-cover-img {width: 100%; height: 130px; object-fit: cover}
+.form-container form.profiles .cover-title {background: cornflowerblue; color: white; margin-bottom: 10px; padding: 7px 10px}
+.form-container form.profiles > fieldset > button {margin-bottom: 0}
+#profile-delete-modal > div > div {margin-top: 40px}
+
+/*shop category*/
+.products-container .form-container {max-width: 800px; border: solid 1px #ced6e0; border-radius: 5px; padding: 1.5rem 1.5rem 1rem; margin: 0 auto 1rem auto}
+.form-container form.shops .check-btn-div {padding-left: 10px; margin-top: 0.21875rem}
+.form-container form.shops .check-btn {height: 38px}
+.form-container form.shops .uk-fieldset .uk-margin {align-items: center}
+.form-container form.shops .uk-textarea {resize: none; height: auto}
+.body-section .shop-list table .profile-img img.img-preview {width: 30px; height: 30px; border-radius: 50%; object-fit: cover}
+.form-container form.shops .img-preview {width: 40px; height: 40px; object-fit: cover}
+.form-container form.shops .shop-cover-img {width: 100%; height: 130px; object-fit: cover}
+.form-container form.shops .cover-title {background: cornflowerblue; color: white; margin-bottom: 10px; padding: 7px 10px}
+.form-container form.shops > fieldset > button {margin-bottom: 0}
+#shop-delete-modal > div > div {margin-top: 40px}

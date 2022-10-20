@@ -1,0 +1,90 @@
+.sign-section {padding: 15px}
+.sign-section .form-container {max-width: 500px; border: solid 1px #ced6e0; border-radius: 5px; padding: 2rem; margin: 2rem auto}
+.sign-section .form-container form .check-btn-div {padding-left: 10px; margin-top: 0.33rem}
+.sign-section .form-container form .check-btn {height: 38px}
+.sign-section .uk-margin input {border-radius: 5px}
+.sign-section .uk-margin textarea {border-radius: 5px; height: 5rem; resize: none}
+
+.sign-section .profile-img img.img-preview {display: none}
+.sign-section .profile-img img.img-preview.active {display: block}
+.sign-section .profile-img.get-image img.img-preview {display: block}
+
+#vendor-update-modal > div > div.corp-img > img.img-preview {display: none}
+#vendor-update-modal > div > div.corp-img > img.img-preview.active {display: block}
+#vendor-update-modal > div > div.corp-img.get-image > img.img-preview {display: block}
+.sign-section .corp-img img.img-preview {display: none}
+.sign-section .corp-img img.img-preview.active {display: block}
+.sign-section .corp-img.get-image img.img-preview {display: block}
+
+.sign-section  .uk-button.uk-button-default.custom-button-default {position: absolute; top: 5px; width: 102px; border: solid 1px #5f27cd; padding-left: 5px; padding-right: 5px}
+.sign-section  .uk-button.uk-button-default.custom-button-default:hover {border: solid 1px #7d5fff;}
+.sign-section  .uk-button.uk-button-default.custom-button-green {position: absolute; top: 5px; width: 102px; border: solid 1px #006400; padding-left: 5px; padding-right: 5px}
+.sign-section  .uk-button.uk-button-default.custom-button-green:hover {border: solid 1px #008000;}
+body > main > section > div > div.body-main > section > section > div > form > fieldset > p > button {border-radius: 5px}
+body > main > section > div > div.body-main > section > section > div > form > fieldset > div:nth-child(5) > label {border-radius: 5px 0 0 5px}
+
+.section-cover-img-container .img-container.account_cover-img img {object-fit: cover}
+.section-cover-img-container > button.account_cover-img-modal-delete-btn.inactive {display: none}
+.section-cover-img-container > button.account_cover-img-modal-delete-btn {position: absolute; top: 400px; left: 10px; cursor: pointer; border: none; width: 45px; height: 45px; border-radius: 50%; color: white; background: #7959bf !important; opacity: 0.7}
+.section-cover-img-container > button.account_cover-img-modal-upload-btn {position: absolute; top: 400px; right: 10px; cursor: pointer; border: none; width: 45px; height: 45px; border-radius: 50%; color: white; background: #7959bf !important; opacity: 0.7}
+body > main > section:nth-child(1) > div:nth-child(1) > div.img-container.profile-img > div > img {position:absolute; top: -100px; left: calc(50% - 85px); width: 170px; height: 170px; border: solid 8px white; border-radius: 50%; object-fit: cover}
+body > main > section:nth-child(1) > div:nth-child(1) > div.nickname > p {font-size: 36px}
+
+body > main > section > div:nth-child(3) {padding-top: 75px; max-width: 500px; margin: auto}
+body > main > section:nth-child(1) > div:nth-child(3) > div > div.nickname {text-align: center}
+body > main > section > div:nth-child(3) > div > div.nickname > div:nth-child(1) {font-size: 36px; font-weight: 550}
+body > main > section > div:nth-child(3) > div > div.nickname > div.profile-user-email {font-size: 18px; color: #7f8c8d; text-align: center}
+body > main > section > div:nth-child(3) > div > div.level {font-size: 15px; color: #999999; text-align: right}
+body > main > section > div:nth-child(3) > div > div.uk-inline.link-div {display: flex; justify-content: right}
+
+body > main > section > div:nth-child(1) > button.profile-img-modal-delete-btn.inactive {display: none}
+body > main > section > div:nth-child(1) > button.profile-img-modal-upload-btn {position: absolute; top: 460px; left: calc(50% + 80px); cursor: pointer; border: none; width: 35px; height: 35px; border-radius: 50%; color: white; background: #7959bf !important; opacity: 0.7}
+body > main > section > div:nth-child(1) > button.profile-img-modal-delete-btn {position: absolute; top: 460px; left: calc(50% + 120px); cursor: pointer; border: none; width: 35px; height: 35px; border-radius: 50%; color: white; background: #7959bf !important; opacity: 0.7}
+#profile_img_upload_modal-container > div > div.uk-margin {position: relative; margin-bottom: 10px}
+#profile_img_upload_modal-container > div > div.uk-margin > label {position: absolute;}
+
+#cover-img-delete-btn, #account_cover_img_delete_modal-container > form > div > div:nth-child(3) > button, #cover-img-submit,
+#profile-update-submit, #vendor-update-submit,
+#vendor-update-modal > div > p > button.uk-button.uk-button-default.uk-modal-close,
+#profile-delete-btn,
+#profile-delete-modal > div > div > div:nth-child(3) > button,
+#vendor-delete-btn,
+#vendor-delete-modal > form > div > div:nth-child(3) > button {border-radius: 5px}
+#vendor-delete-modal > form > div {margin-top: 40px}
+
+#basic-profile-update > div > fieldset > div:nth-child(5) > label,
+#vendor-update-modal > div > div:nth-child(8) > label {border-radius: 5px 0 0 5px}
+
+#cover-img1-preview,
+#cover-img2-preview,
+#cover-img3-preview {width: 100%; height: 250px; display: block; margin: 0 auto; object-fit: cover}
+
+#account_cover_img_upload_modal-container > form > div > div.cover-img-save-btn.uk-align-right.mt-15 {margin-bottom: 0}
+#account_cover_img_upload_modal-container > form > div > div.uk-child-width-expand\@m.uk-grid > div > div.uk-margin > div.input-file-container {position: relative}
+#account_cover_img_upload_modal-container > form > div > div.uk-child-width-expand\@m.uk-grid > div > div.uk-margin > div > div > label {position: absolute; top: -30px;}
+#account_cover_img_upload_modal-container > form > div > div.uk-child-width-expand\@m.uk-grid > div > div.uk-margin > div > div {width: 100%}
+/*#account_cover_img_upload_modal-container > form > div > div.cover-img-save-btn {float: right}*/
+#account_cover_img_delete_modal-container > form > div {margin-top: 40px}
+#account_cover_img_upload_modal-container .cover-img-save-btn.uk-align-right {margin-top: 10px; margin-bottom: -10px}
+
+
+#profile-message {border-radius: 5px; height: 5rem; resize: none}
+body > main > section > div:nth-child(2) > div > div.nickname > div.profile-user-email {font-size: 16px; font-weight: 400; color: gray}
+/*#basic-profile-update > div {top: 25px}*/
+/*#basic-profile-update > div > fieldset > div:nth-child(6) > label {position: absolute; top: 6px; width: 102px; padding: 0}*/
+body > main > section > div:nth-child(2) > div > div.flashes.uk-alert {margin-top: 5px; margin-bottom: 0 !important;}
+#basic-profile-update > div > fieldset > div.flashes.uk-alert {display: none; }
+#vendor-update-modal > div > div.flashes.uk-alert {display: none}
+#vendor-update-modal > div > div:nth-child(11) > div.uk-margin > label {position: absolute}
+#vendor-update-modal > div > div:nth-child(11) > div.corp-img img {display: none}
+#vendor-update-modal > div > div:nth-child(11) > div.corp-img img.active {display: block}
+#corp-modal-image > div > div.uk-margin > label {position: absolute;}
+#cover_image1, #cover_image2, #cover_image3 {display: none}
+#profile_image {display: none}
+#corp_image {display: none}
+
+
+.section-container .section-item .profile-container > div .uk-text-right.mt-5 > a {font-size: 14px; color: gray}
+body > main > section:nth-child(1) > div:nth-child(3) > div > ul > li > div > div > div > div:nth-child(2) > div:nth-child(1) {flex: 1}
+
+#profile-delete-modal > div > div {margin-top: 40px}

@@ -1,0 +1,194 @@
+<script type="text/javascript">
+    CSRF_TOKEN = "{{ csrf_token() }}";
+    accountsDeleteAjax = "{{ url_for('accounts.delete_ajax') }}";
+    {#accounts_delete_url = "{{ url_for('accounts.delete', _id=current_user.id) }}";#}
+    {#common_index_url = "{{ url_for('commons.index') }}";#}
+</script>
+<div id="body-sidebar" class="body-sidebar" uk-offcanvas="overlay: true;">
+    <div class="uk-offcanvas-bar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('accounts.dashboard') }}">
+                <div class="sidebar-logo">
+                    <div class="profile-img-div">
+                        {% if current_profile.image_path %}
+                            <img class="profile-img" src="/{{ current_profile.image_path }}" alt="">
+                        {% else %}
+                            <img class="profile-img" src="{{ url_for('static', filename='statics/images/user_none.png') }}" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="sidebar-title-div">
+                        <div class="sidebar-title">
+                            마이 보드
+                        </div>
+                        <div class="sidebar-email">
+                            {{ current_user.email }}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <button class="uk-offcanvas-close" type="button" uk-close></button>
+        </div>
+
+        <div class="sidebar-content">
+            <div uk-accordion>
+                <div class="sidebar-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">
+                        계정 설정 {% if current_profile %}
+                                    <span class="profile-level">({{ current_profile.level }})</span>
+                                 {% elif current_user.is_authenticated %}
+                                    <span class="profile-level">(프로필 미등록)</span>
+                                 {% endif %}
+                    </button>
+                    <div class="uk-accordion-content">
+                        <a href="{{ url_for('accounts.email_update', _id=current_user.id) }}">
+                            <div class="accordion-item">이메일 재설정</div>
+                        </a>
+                        <a href="{{ url_for('accounts.password_update', _id=current_user.id) }}">
+                            <div class="accordion-item">비밀번호 재설정</div>
+                        </a>
+                        {% if not current_profile %}
+                            <a href="{{ url_for('profiles.create') }}">
+                                <div class="accordion-item">프로필 만들기</div>
+                            </a>
+                        {% else %}
+                            {% if current_profile.level == '일반이용자' %}
+                                <a href="{{url_for('profiles.detail', _id=current_profile.id)}}">
+                                    <div class="accordion-item">프로필 보기/설정</div>
+                                </a>
+                            {% else %}
+                                <a href="{{ url_for('profiles.vendor_detail', _id=current_profile.id) }}">
+                                    <div class="accordion-item">프로필 보기/설정</div>
+                                </a>
+                            {% endif %}
+                        {% endif %}
+
+                        <div class="delete-div">
+                            <a class="uk-link-reset" href="#account_delete_modal-container" uk-toggle><div class="accordion-item">탈퇴</div></a>
+                        </div>
+                        <div id="account_delete_modal-container" class="uk-flex-top" uk-modal>
+                            <form method="POST" class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                                <button class="uk-modal-close-default" type="button" uk-close></button>
+                                정말로 탈퇴를 진행하시겠어요?
+                                <div class="modoal-submit-cancel-btn uk-align-right">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <div class="cancel-btn uk-inline">
+                                        <button class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">취소</button>
+                                    </div>
+                                    <div class="delete-btn-div uk-inline ml-15">
+                                        <input type="hidden" id="account_id" name="_id" value="{{ current_user.id }}">
+                                        <button id="accounts-delete-btn" class="uk-button uk-button-default custom-button-default uk-modal-close" type="button">삭제</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <a href="#">
+                            <div class="accordion-item">머라도... 만들기</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">머라도... 만들기</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">머라도라</button>
+                    <div class="uk-accordion-content">
+                        <a href="#">
+                            <div class="accordion-item">머라도... 만들기</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">머라도... 만들기</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">머라도... 만들기</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">머라도... 만들기</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">라도머라</button>
+                    <div class="uk-accordion-content">
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">만들기 머라도...</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="sidebar-item">
+                    <button class="uk-accordion-title uk-button uk-button-default" type="button">페이지
+                        {% if current_profile.image_path %}
+                            <span class="header-profile-img-div">
+                                <img class="header-profile-img" src="/{{ current_profile.image_path }}" alt="mdo">
+                            </span>
+                        {% else %}
+                            <img class="user-svg" src="{{ url_for('static', filename='statics/images/user_profile.svg') }}" alt="mdo">
+                        {% endif %}
+                    </button>
+                    <div class="uk-accordion-content">
+                        {% if current_user.is_admin %}
+                            <a href="#">
+                                <div class="accordion-item">Admin</div>
+                            </a>
+                        {% endif %}
+                        <a href="{{ url_for('accounts.dashboard') }}">
+                            <div class="accordion-item">DashBoard</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">페이지 자바</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">페이지 자바</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item">페이지 자바</div>
+                        </a>
+                        <a href="#">
+                            <div class="accordion-item"><img style="width: 30px; height: 30px; border-radius: 50%"
+                                                             src="https://www.placecage.com/c/200/250" alt="Sample image">
+                                <span style="margin-left: 1rem">머시기</span></div>
+                        </a>
+
+                    </div>
+                </div>
+
+            </div>
+
+            {% if current_user.is_authenticated %}
+                <div class="sidebar-item">
+                    <a class="uk-link-reset" href="{{ url_for('accounts.logout') }}">
+                        <button class="uk-button uk-button-default" type="button">로그아웃</button>
+                    </a>
+                </div>
+                <div class="sidebar-item">
+                    <a class="uk-link-reset" href="#">
+                        <button class="uk-button uk-button-default" type="button">No Tab</button>
+                    </a>
+                </div>
+            {% else %}
+                <div class="sidebar-item">
+                    <a class="uk-link-reset" href="{{ url_for('accounts.login') }}">
+                        <button class="uk-button uk-button-default" type="button">로그인</button>
+                    </a>
+                </div>
+                <div class="sidebar-item">
+                    <a class="uk-link-reset" href="{{ url_for('accounts.register') }}">
+                        <button class="uk-button uk-button-default" type="button">회원가입</button>
+                    </a>
+                </div>
+            {% endif %}
+
+
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block body %}
+    {% include 'includes/messages.html' %}
+
+    <div class="global-container">
+        <div class="card login-form">
+            <div class="card-body" style="max-width:1418px; margin: 0 auto;" >
+                <h3 class="card-title text-center" style="padding-top: 55px">We have sent an email to you </h3>
+                <div class="card-text text-center">
+                    Please check your mail{% if email %}({{ email }}){% endif %}
+                    <p>이메일을 확인하고, 24시간 이내에 인증 절차를 완료하셔야 해요 . . .(86,400초)</p>
+                <p>인증메일이 오지 않았다면, 스팸편지함을 확인해보시고, 거기에도 없다면 가입 혹은 이메일 변경에 사용한 이메일을 확인해보세요 . . . </p>
+                <p>이메일 인증 절차를 완료하지 않으면, 정상적인 로그인이 불가능합니다.</p>
+                <p>24시간이 지난 후에 인증 토큰이 죽게되므로.... (db에 저장되었던 인증되지 않은 가입자도 삭제되도록....)</p>
+{#                    {{ msg }} 당신의 이메일({{  }})를 확인 하세요...#}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

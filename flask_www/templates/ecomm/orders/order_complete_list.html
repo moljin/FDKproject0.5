@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% if orders|length != 0 %}
+    {% for order in orders %}
+        <a href="{{ url_for("orders.order_complete_detail")+'?order_id='+ order.id | string }}">{{ order }}</a> <br>
+
+    {% endfor %}
+{% endif %}
+</body>
+</html>

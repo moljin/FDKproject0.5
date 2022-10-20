@@ -1,0 +1,33 @@
+header {height: 55px; background: #1B1464; width: 100%; z-index: 9999}/*position: fixed; */
+.logo-container {padding-left: 1.5rem}
+.logo {font-size: 30px; color: white; font-weight: 700}
+.nav-wrapper, .nav-container {height: 55px; display: flex; justify-content: space-between; align-items: center}
+
+.nav-wrapper .logo-container {margin-right: 2rem}
+
+.nav-container {padding-top: 7px; width: 100%}
+.nav-container .search-form input {border-radius: 8px; background: white}
+.nav-container .search-form input:focus {outline: none; border: none; background: white; opacity: 1}
+.nav-container .uk-button-group .uk-button {height: 55px; margin-top: -20px; padding-top: 3px; border: none; font-size: 16px; color: white}
+.nav-container .uk-button-group .uk-button:hover {background: #1e3799;}
+.nav-container .uk-button-group .uk-drop {background: #1e3799; color: white;}
+.nav-container .uk-button-group .uk-drop.uk-open {top:35px !important}
+.nav-container .uk-button-group .uk-drop .drop-item {height: 55px; padding: 15px 15px; color: white}
+.nav-container .uk-button-group .uk-drop .drop-item:hover {background: #0652DD;}
+
+.header-profile-img {width:25px; height:25px; border-radius:50%; object-fit: cover }
+
+.ham-container {padding-right: 1.5rem}
+.ham-container .hamburger {line-height: 36px; margin-top: 1px; border: none; background: transparent;}
+.ham-container .hamburger svg {fill: white}
+
+.nav-mobile-container .uk-accordion-title::before {display: none}
+.nav-mobile-container .search-form {margin: 5px 30px}
+.nav-mobile-container .search-form input {border-radius: 8px;}
+.nav-mobile-container .uk-accordion>:nth-child(n+2) {margin-top: 0}
+.nav-mobile-container.uk-drop {background: #1e3799; max-width: 100% !important; width: 100% !important; top: 55px !important; left: 0 !important}
+.nav-mobile-container .nav-mobile-item  button{width: 100%; height: 45px; border: none; color: white; font-size: 16px; text-align: left}
+.nav-mobile-container .nav-mobile-item  button:hover{background: #0652DD;}
+.nav-mobile-container .nav-mobile-item .uk-accordion-content {margin-top: 0}
+.nav-mobile-container .nav-mobile-item .uk-accordion-content .accordion-item{color: white;height: 45px; padding: 10px 45px}
+.nav-mobile-container .nav-mobile-item .uk-accordion-content .accordion-item:hover{background: #0652DD;}

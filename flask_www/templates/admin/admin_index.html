@@ -1,0 +1,39 @@
+{% extends "admin/admin_dashboard.html" %}
+{% block title %}
+    Admin
+{% endblock %}
+
+{% block head_css %}
+    <link href="{{ url_for('static', filename='statics/css/admin/main.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="uk-width-expand uk-flex uk-flex-right">
+        <ul class="uk-breadcrumb">
+            <li><span>관리자 홈</span></li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block above_main %}
+    <section class="adm-index-above-main">
+        {% include "includes/messages.html" %}
+    </section>
+
+{% endblock %}
+
+{% block dashboard_section %}
+    admin index
+{% endblock %}
+
+{% block dashboard_script %}
+    <script>
+        UIkit.offcanvas('#body-sidebar').hide()
+    </script>
+{% endblock %}
+
+
+
+
+
+

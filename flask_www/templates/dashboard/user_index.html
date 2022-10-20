@@ -1,0 +1,28 @@
+{% extends "dashboard/user_dashboard.html" %}
+{% block title %}
+    마이 보드
+{% endblock %}
+
+{% block dashboard_head %}
+
+{% endblock %}
+
+{% block breadcrumb %}
+    <div class="uk-width-expand uk-flex uk-flex-right">
+        <ul class="uk-breadcrumb">
+            <li><span>마이 보드</span></li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block dashboard_section %}
+    마이보드 index
+{% endblock %}
+
+{% block dashboard_script %}
+    <script>
+        UIkit.offcanvas('#body-sidebar').show()
+    </script>
+{% endblock %}
+
+

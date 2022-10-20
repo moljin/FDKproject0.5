@@ -32,6 +32,9 @@ class Config(object):
     DEBUG = False
     TESTING = False
 
+    NUM_WORKERS = 10
+    TIMEOUT = 1200  # 초
+
     SESSION_COOKIE_NAME = 'FDK_project0.5'
     # TIMEZONE = datetime.datetime.now(timezone('Asia/Seoul'))
     TIMEZONE = 'Asia/Seoul'

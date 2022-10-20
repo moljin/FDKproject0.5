@@ -287,11 +287,16 @@ function cartInit () {
                 }
             });
         }, false);
+    } catch (e) {
+        // console.log(e);
+    }
 
-        // point apply
+    try { // point apply
         const pointApplyBtn = document.querySelector("#point-apply");
+         console.log("포인트 적용 pointApplyBtn", pointApplyBtn)
         pointApplyBtn.addEventListener("click", function (e) {
             e.preventDefault();
+            console.log("포인트 적용 클릭")
             const usedPoint = document.querySelector("#used-point").value;
 
             let formData = new FormData();
@@ -313,6 +318,7 @@ function cartInit () {
                         alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + response.error);
                     } else {
                         if (response.point_log_id) {
+                            console.log(response)
                             const appliedCpGroupTag = document.querySelector(".cp-group.applied");
                             appliedCpGroupTag.innerHTML = `<div class="point-log">
                                                             <div class="label">할인 적용포인트</div>

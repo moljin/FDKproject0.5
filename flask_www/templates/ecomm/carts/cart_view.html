@@ -29,6 +29,8 @@
         orderImpTransaction = "{{ url_for("orders.order_imp_transaction") }}"
         orderCompleteDetailUrl = "{{ url_for("orders.order_complete_detail") }}"
 
+        payCompleteMobile = "{{ url_for("orders.pay_complete_mobile") }}"
+
         billingKeyCheckoutAjax = "{{ url_for("orders.billing_key_checkout_ajax") }}"
     </script>
     <script src="{{ url_for('static', filename='statics/js/orders/iamport.payment-1.1.8.js') }}"></script>

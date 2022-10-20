@@ -1,3 +1,4 @@
+import requests
 from flask import Blueprint, request, g, make_response, jsonify, render_template, flash, redirect, abort
 from flask_login import current_user
 from sqlalchemy import desc
@@ -7,9 +8,9 @@ from flask_www.configs import db
 from flask_www.configs.config import NOW
 from flask_www.ecomm.carts.models import Cart, CartProduct, CartProductOption
 from flask_www.ecomm.orders.forms import OrderCreateForm
-from flask_www.ecomm.orders.iamport import req_cancel_pay, req_billing_key, onetime_pay_billing_key, onetime_pay_without_key
+from flask_www.ecomm.orders.iamport import req_cancel_pay, req_billing_key, onetime_pay_billing_key, onetime_pay_without_key, find_transaction, get_token
 from flask_www.ecomm.orders.models import Order, OrderCoupon, OrderProduct, OrderProductOption, OrderTransaction, ORDER_STATUS, PAY_TYPE, CancelPayOrder, CustomerUid
-from flask_www.ecomm.orders.utils import order_transaction_create, product_stock_update, product_option_stock_update, iamport_client_validation, check_customer_uid
+from flask_www.ecomm.orders.utils import order_transaction_create, product_stock_update, product_option_stock_update, iamport_client_validation, check_customer_uid, get_transaction
 from flask_www.ecomm.promotions.models import PointLog, UsedCoupon, Point
 from flask_www.ecomm.promotions.utils import coupon_count_update, order_point_update
 
@@ -205,6 +206,18 @@ def order_imp_transaction():
         return make_response(jsonify(data), 200)
     else:
         return make_response(jsonify({}), 401)
+
+
+@orders_bp.route('/pay/complete/mobile', methods=['GET'])
+@login_required
+def pay_complete_mobile():
+    imp_uid = request.args.get("imp_uid")
+    merchant_uid = request.args.get("merchant_uid ")
+    return render_template('ecomm/orders/mobile_complete.html',
+                           imp_uid=imp_uid,
+                           merchant_uid=merchant_uid,
+                           request=request.args
+                           )
 
 
 @orders_bp.route('/complete/detail', methods=['GET'])

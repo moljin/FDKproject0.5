@@ -31,7 +31,8 @@ $(function () {
                 buyer_name: $('input[name="name"]').val(),//+" "+$('input[name="last_name"]').val(),
                 buyer_email: $('input[name="email"]').val(),
                 amount: amount,
-                m_redirect_url: location.origin + orderCompleteDetailUrl + '?order_id=' + order_id
+                //location.origin + payCompleteMobile + '?imp_uid=' + imp_uid + '&merchant_uid=' +merchant_id+'&imp_success=true'
+                m_redirect_url: location.origin + payCompleteMobile // + '?imp_uid=' + imp_uid + '&merchant_uid=' +merchant_id+'&imp_success=true'
             }, function (rsp) {
                 console.log('결제 첫단계', rsp)
                 if (rsp.success) {
@@ -56,6 +57,10 @@ $(function () {
         return false;
     });
 });
+
+function PayCompleteMobile() {
+
+}
 
 function OrderCreateAjax(e) {
     e.preventDefault();

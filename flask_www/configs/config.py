@@ -32,13 +32,13 @@ class Config(object):
     DEBUG = False
     TESTING = False
 
-    SESSION_COOKIE_NAME = 'FDK_project0.4'
+    SESSION_COOKIE_NAME = 'FDK_project0.5'
     # TIMEZONE = datetime.datetime.now(timezone('Asia/Seoul'))
     TIMEZONE = 'Asia/Seoul'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
-    SQLALCHEMY_ECHO = True  # lazy='dynamic' lazy='select' lazy='joined' lazy='subquery'
+    # SQLALCHEMY_ECHO = True  # lazy='dynamic' lazy='select' lazy='joined' lazy='subquery'
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     # 파일 업로드 용량 제한 단위:바이트 16MB
     # (cf. 20MB: 20 * 1024 * 1024)
@@ -68,7 +68,7 @@ class DevelopmentConfig(Config):
 
     MYSQL_ROOT_USER = 'root'
     MYSQL_ROOT_PASSWORD = os.environ.get("MYSQL_ROOT_PASSWORD")# '981011'
-    MYSQL_DATABASE = 'fdk_project0.4'
+    MYSQL_DATABASE = 'fdk_project0.5'
     MYSQL_HOST = 'localhost'
     MYSQL_PORT = '3306'
 
@@ -91,7 +91,7 @@ class ProductionConfig(Config):
 
     MYSQL_ROOT_USER = 'root'
     MYSQL_ROOT_PASSWORD = 'moljin!981011'
-    MYSQL_DATABASE = 'fdk_project0.4'
+    MYSQL_DATABASE = 'fdk_project0.5'
     MYSQL_HOST = '112.186.157.226'
     MYSQL_PORT = '56033'
 

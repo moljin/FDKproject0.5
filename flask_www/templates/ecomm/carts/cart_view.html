@@ -79,14 +79,14 @@
                                     <div class="shop-info pt-10 pr-10 pb-10">
                                         <div class="profile mr-10">
                                             {% for profile in cart_product.product.user.profile_user_set %}
-                                                <a class="profile-link" href="">
+                                                <a class="profile-link" href="{{ url_for('profiles.detail', _id=profile.id) }}">
                                                     <div class="mr-10"><img class="profile-img" src="/{{ profile.image_path }}" alt="mdo"></div>
                                                     <div>{{ profile.nickname }}</div>
                                                 </a>
                                             {% endfor %}
                                         </div>
                                         <div class="shop">
-                                            <a class="shop-link" href="">
+                                            <a class="shop-link" href="{{ url_for('products.shopcategory_detail', _id=cart_product.shopcategory.id, slug=cart_product.shopcategory.slug) }}">
                                                 <div class="mr-10">/&nbsp; <img class="symbol-img" src="/{{ cart_product.shopcategory.symbol_path }}" alt="mdo"></div>
                                                 <div>{{ cart_product.shopcategory.title }}</div>
                                             </a>

@@ -26,13 +26,20 @@ def lotto_return_random():
 """GitHub 방법"""
 """# 랜덤으로 로또번호를 추출하는 함수"""
 
+latest_round_num = ""
+lotto_top10 = ""
+top10_latest_round_num = ""
+
 
 # @lotto_bp.route("/lotto/create")
 @lotto_bp.route("/random/lotto")
 def random_lotto():
+    global latest_round_num
     top10_latest_extract = LottoFirstWinNum.query.filter_by(status=STATUS[1]).first()
+    if top10_latest_extract:
+        latest_round_num = top10_latest_extract.latest_round_num
     lotto_random_num = sorted(random.sample(range(1, 46), 6))
-    return render_template("lotto/lotto.html", variable=lotto_random_num, latest=int(top10_latest_extract.latest_round_num))
+    return render_template("lotto/lotto.html", variable=lotto_random_num, latest=int(latest_round_num))
 
 
 """# TOP10으로 로또번호를 추출하는 함수"""
@@ -41,13 +48,16 @@ def random_lotto():
 # @lotto_bp.route("/lotto/create")
 @lotto_bp.route("/top10/lotto")
 def top10_lotto():
+    global lotto_top10, top10_latest_round_num
     top10_latest_extract = LottoFirstWinNum.query.filter_by(status=STATUS[1]).first()
-    top10_str_list = top10_latest_extract.extract_num.split(" ")
-    """string 로 저장된 최다빈도 번호를 integer list 로 다시 변환"""
-    top10_int_list = list(map(int, top10_str_list))
-    # top10_int_list = [34, 18, 12, 27, 13, 17, 39, 14, 45, 1]
-    lotto_top10 = sorted(random.sample(top10_int_list, 6))
-    return render_template("lotto/lotto.html", variable=lotto_top10, latest=int(top10_latest_extract.latest_round_num))
+    if top10_latest_extract:
+        top10_latest_round_num = top10_latest_extract.latest_round_num
+        top10_str_list = top10_latest_extract.extract_num.split(" ")
+        """string 로 저장된 최다빈도 번호를 integer list 로 다시 변환"""
+        top10_int_list = list(map(int, top10_str_list))
+        # top10_int_list = [34, 18, 12, 27, 13, 17, 39, 14, 45, 1]
+        lotto_top10 = sorted(random.sample(top10_int_list, 6))
+    return render_template("lotto/lotto.html", variable=lotto_top10, latest=int(top10_latest_round_num))
 
 
 new_extract = ""

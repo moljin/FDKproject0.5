@@ -165,6 +165,7 @@ def order_imp_transaction():
         return make_response(jsonify({}), 401)
 
 
+order_coupons = ""
 cancel_pay = ""
 
 
@@ -172,7 +173,7 @@ cancel_pay = ""
 @login_required
 def order_complete_mobile():
     """모바일에서 결제가 완료되면 리다이렉트 되면서, 아임포트에서 날라오는 get_data 4개"""
-    global cancel_pay
+    global order_coupons, cancel_pay
     imp_uid = request.args.get("imp_uid")
     merchant_uid = request.args.get("merchant_uid")
     imp_success = request.args.get("imp_success")
@@ -183,12 +184,12 @@ def order_complete_mobile():
     cart = Cart.query.filter_by(id=order.cart_id).first()
     order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()
     order_optionitems = OrderProductOption.query.filter_by(order_id=order_id).all()
-    order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
 
     if imp_success:
         order_items_complete_transaction(order_id, cart)
         order_complete_transaction(trans, imp_uid, order, merchant_uid, order_id, cart)
         # order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
+        order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
         cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
     return render_template('ecomm/orders/order_complete_detail.html',
                            order=order,

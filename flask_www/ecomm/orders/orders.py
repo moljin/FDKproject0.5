@@ -212,11 +212,15 @@ def order_imp_transaction():
 @login_required
 def pay_complete_mobile():
     imp_uid = request.args.get("imp_uid")
-    merchant_uid = request.args.get("merchant_uid ")
+    merchant_uid = request.args.get("merchant_uid")
+    imp_success = request.args.get("imp_success")
+    error_msg = request.args.get("error_msg")
     return render_template('ecomm/orders/mobile_complete.html',
                            imp_uid=imp_uid,
                            merchant_uid=merchant_uid,
-                           request=request.args
+                           request=request.args,
+                           imp_success=imp_success,
+                           error_msg=error_msg
                            )
 
 

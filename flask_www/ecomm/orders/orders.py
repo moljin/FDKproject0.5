@@ -165,34 +165,37 @@ def order_imp_transaction():
         return make_response(jsonify({}), 401)
 
 
+cancel_pay = ""
+
+
 @orders_bp.route('/pay/complete/mobile', methods=['GET'])
 @login_required
 def order_complete_mobile():
     """모바일에서 결제가 완료되면 리다이렉트 되면서, 아임포트에서 날라오는 get_data 4개"""
+    global cancel_pay
     imp_uid = request.args.get("imp_uid")
     merchant_uid = request.args.get("merchant_uid")
     imp_success = request.args.get("imp_success")
     error_msg = request.args.get("error_msg")
-
     trans = OrderTransaction.query.filter_by(merchant_order_id=merchant_uid).first()
     order_id = trans.order_id
     order = Order.query.filter_by(id=order_id).first()
     cart = Cart.query.filter_by(id=order.cart_id).first()
-
-    order_items_complete_transaction(order_id, cart)
-    order_complete_transaction(trans, imp_uid, order, merchant_uid, order_id, cart)
-
     order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()
     order_optionitems = OrderProductOption.query.filter_by(order_id=order_id).all()
     order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
-    order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
-    cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
+
+    if imp_success:
+        order_items_complete_transaction(order_id, cart)
+        order_complete_transaction(trans, imp_uid, order, merchant_uid, order_id, cart)
+        # order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
+        cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
     return render_template('ecomm/orders/order_complete_detail.html',
                            order=order,
                            order_productitems=order_productitems,
                            order_optionitems=order_optionitems,
                            order_coupons=order_coupons,
-                           order_transaction=order_transaction,
+                           order_transaction=trans,
                            cancel_pay=cancel_pay,
                            imp_success=imp_success,
                            error_msg=error_msg

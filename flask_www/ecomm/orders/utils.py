@@ -66,7 +66,7 @@ def order_items_complete_transaction(order_id, cart):
         order_point_update(cart, point_obj)
 
 
-def order_transaction_complete(trans, imp_uid, order, merchant_id, order_id, cart):
+def order_complete_transaction(trans, imp_uid, order, merchant_id, order_id, cart):
     trans.transaction_id = imp_uid
     trans.is_success = True
     trans.transaction_status = "OK"

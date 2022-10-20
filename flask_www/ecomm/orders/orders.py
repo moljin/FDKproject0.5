@@ -1,5 +1,4 @@
-import requests
-from flask import Blueprint, request, g, make_response, jsonify, render_template, flash, redirect, abort
+from flask import Blueprint, request, g, make_response, jsonify, render_template, abort
 from flask_login import current_user
 from sqlalchemy import desc
 
@@ -8,12 +7,10 @@ from flask_www.configs import db
 from flask_www.configs.config import NOW
 from flask_www.ecomm.carts.models import Cart, CartProduct, CartProductOption
 from flask_www.ecomm.orders.forms import OrderCreateForm
-from flask_www.ecomm.orders.iamport import req_cancel_pay, req_billing_key, onetime_pay_billing_key, onetime_pay_without_key, find_transaction, get_token
-from flask_www.ecomm.orders.models import Order, OrderCoupon, OrderProduct, OrderProductOption, OrderTransaction, ORDER_STATUS, PAY_TYPE, CancelPayOrder, CustomerUid
-from flask_www.ecomm.orders.utils import order_transaction_create, product_stock_update, product_option_stock_update, iamport_client_validation, check_customer_uid, get_transaction, \
-    order_items_complete_transaction, order_transaction_complete
-from flask_www.ecomm.promotions.models import PointLog, UsedCoupon, Point
-from flask_www.ecomm.promotions.utils import coupon_count_update, order_point_update
+from flask_www.ecomm.orders.iamport import req_cancel_pay, onetime_pay_billing_key
+from flask_www.ecomm.orders.models import Order, OrderCoupon, OrderProduct, OrderProductOption, OrderTransaction, CancelPayOrder, CustomerUid
+from flask_www.ecomm.orders.utils import order_transaction_create, check_customer_uid, order_items_complete_transaction, order_complete_transaction
+from flask_www.ecomm.promotions.models import PointLog, UsedCoupon
 
 NAME = 'orders'
 orders_bp = Blueprint(NAME, __name__, url_prefix='/orders')
@@ -142,28 +139,8 @@ def order_imp_transaction():
     merchant_id = request.form['merchant_id']
     imp_uid = request.form['imp_id']
     amount = request.form['amount']
-    print('class OrderImpAjaxView;;;order', order)
-    print("class OrderImpAjaxView;;;merchant_id", merchant_id)
-    print("class OrderImpAjaxView;;;imp_id", imp_uid)
-    print('class OrderImpAjaxView;;;amount', amount)
 
     order_items_complete_transaction(order_id, cart)
-    """
-    order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()
-    order_optionitems = OrderProductOption.query.filter_by(order_id=order_id).all()
-    if order_productitems and not order_optionitems:
-        product_stock_update(order_productitems)
-    if order_productitems and order_optionitems:
-        product_option_stock_update(order_productitems, order_optionitems)
-
-    used_coupons = UsedCoupon.query.filter_by(cart_id=cart.id, consumer_id=current_user.id).all()
-    if used_coupons:
-        coupon_count_update(used_coupons)
-
-    point_obj = Point.query.filter_by(user_id=current_user.id).first() # 카트에 담을때 이미 포인트객체를 만들어 놓는다.
-    if point_obj:
-        order_point_update(cart, point_obj)
-    """
     # # 구매 메일링 여기에 넣으면 될 듯...
 
     try:
@@ -176,38 +153,12 @@ def order_imp_transaction():
         trans = None
 
     if trans is not None:
-        order_transaction_complete(trans, imp_uid, order, merchant_id, order_id, cart)
-        """
-        trans.transaction_id = imp_uid
-        trans.is_success = True
-        trans.transaction_status = "OK"
-        trans.type = PAY_TYPE[0]  # 가상계좌, 계좌이체 사용시 받아서 저장
-        current_db_sessions = db.session.object_session(trans)
-        current_db_sessions.add(trans)
-
-        order.is_paid = True
-        order.order_status = ORDER_STATUS[1]
-        current_db_sessions = db.session.object_session(order)
-        current_db_sessions.add(order)
-        db.session.commit()
-        print('00000000000 ;;iamport_client_;; order_payment_validation 이 위치에서 실행된다.')
-        iamport_client_validation(merchant_id, order_id)
-        
-        # cart.delete()
-        cart.is_active = False
-        cart.cart_id = '주문완료된 카트'
-        current_db_sessions = db.session.object_session(cart)
-        current_db_sessions.add(cart)
-        db.session.commit()
-        """
+        order_complete_transaction(trans, imp_uid, order, merchant_id, order_id, cart)
 
         data = {
             "works": True,
             "order_id": order_id
         }
-
-        print("여기3333")
-        print('OrderImpAjaxView :::data', data)
 
         return make_response(jsonify(data), 200)
     else:
@@ -216,7 +167,7 @@ def order_imp_transaction():
 
 @orders_bp.route('/pay/complete/mobile', methods=['GET'])
 @login_required
-def pay_complete_mobile():
+def order_complete_mobile():
     imp_uid = request.args.get("imp_uid")
     merchant_uid = request.args.get("merchant_uid")
     imp_success = request.args.get("imp_success")
@@ -228,11 +179,20 @@ def pay_complete_mobile():
     cart = Cart.query.filter_by(id=order.cart_id).first()
 
     order_items_complete_transaction(order_id, cart)
-    order_transaction_complete(trans, imp_uid, order, merchant_uid, order_id, cart)
-    return render_template('ecomm/orders/mobile_complete.html',
-                           imp_uid=imp_uid,
-                           merchant_uid=merchant_uid,
-                           request=request.args,
+    order_complete_transaction(trans, imp_uid, order, merchant_uid, order_id, cart)
+
+    order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()
+    order_optionitems = OrderProductOption.query.filter_by(order_id=order_id).all()
+    order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
+    order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
+    cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
+    return render_template('ecomm/orders/order_complete_detail.html',
+                           order=order,
+                           order_productitems=order_productitems,
+                           order_optionitems=order_optionitems,
+                           order_coupons=order_coupons,
+                           order_transaction=order_transaction,
+                           cancel_pay=cancel_pay,
                            imp_success=imp_success,
                            error_msg=error_msg
                            )
@@ -248,10 +208,6 @@ def order_complete_detail():
     order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
     order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
     cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
-    print(type(order))
-    print("order_productitems", order_productitems)
-    print("order_optionitems", order_optionitems)
-    print("order_coupons", order_coupons)
     return render_template('ecomm/orders/order_complete_detail.html',
                            order=order,
                            order_productitems=order_productitems,

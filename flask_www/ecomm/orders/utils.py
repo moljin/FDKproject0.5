@@ -7,8 +7,10 @@ from flask_www.commons.utils import random_word
 from flask_www.configs import db
 from flask_www.configs.config import NOW
 from flask_www.ecomm.orders.iamport import payments_prepare, find_transaction
-from flask_www.ecomm.orders.models import Order, OrderTransaction, CustomerUid
+from flask_www.ecomm.orders.models import Order, OrderTransaction, CustomerUid, OrderProduct, OrderProductOption, PAY_TYPE, ORDER_STATUS
 from flask_www.ecomm.products.models import Product, ProductOption
+from flask_www.ecomm.promotions.models import UsedCoupon, Point
+from flask_www.ecomm.promotions.utils import coupon_count_update, order_point_update
 
 prod = ''
 option = ''
@@ -45,6 +47,47 @@ def order_transaction_create(order_id, amount, success=None, transaction_status=
         print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
         print("save error", e)
     return transaction.merchant_order_id
+
+
+def order_items_complete_transaction(order_id, cart):
+    order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()
+    order_optionitems = OrderProductOption.query.filter_by(order_id=order_id).all()
+    if order_productitems and not order_optionitems:
+        product_stock_update(order_productitems)
+    if order_productitems and order_optionitems:
+        product_option_stock_update(order_productitems, order_optionitems)
+
+    used_coupons = UsedCoupon.query.filter_by(cart_id=cart.id, consumer_id=current_user.id).all()
+    if used_coupons:
+        coupon_count_update(used_coupons)
+
+    point_obj = Point.query.filter_by(user_id=current_user.id).first()  # 카트에 담을때 이미 포인트객체를 만들어 놓는다.
+    if point_obj:
+        order_point_update(cart, point_obj)
+
+
+def order_transaction_complete(trans, imp_uid, order, merchant_id, order_id, cart):
+    trans.transaction_id = imp_uid
+    trans.is_success = True
+    trans.transaction_status = "OK"
+    trans.type = PAY_TYPE[0]  # 가상계좌, 계좌이체 사용시 받아서 저장
+    current_db_sessions = db.session.object_session(trans)
+    current_db_sessions.add(trans)
+
+    order.is_paid = True
+    order.order_status = ORDER_STATUS[1]
+    current_db_sessions = db.session.object_session(order)
+    current_db_sessions.add(order)
+    db.session.commit()
+    print('00000000000 ;;iamport_client_;; order_payment_validation 이 위치에서 실행된다.')
+    iamport_client_validation(merchant_id, order_id)
+
+    # cart.delete()
+    cart.is_active = False
+    cart.cart_id = '주문완료된 카트'
+    current_db_sessions = db.session.object_session(cart)
+    current_db_sessions.add(cart)
+    db.session.commit()
 
 
 def product_stock_update(order_products):

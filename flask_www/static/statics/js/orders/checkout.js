@@ -134,8 +134,6 @@ function OrderCheckoutAjax(e, order_id, amount) { //, type
 
 function OrderImpTransaction(e, cart_id, order_id, merchant_id, imp_id, amount) {
     e.preventDefault();
-    //let origin_merchant_id = merchant_id.split('@')[0];
-    //console.log('ImpTransaction:::origin_merchant_id:::', origin_merchant_id);
     console.log('OrderImpTransaction:::merchant_id:::', merchant_id);
     let request = $.ajax({
         method: "POST",

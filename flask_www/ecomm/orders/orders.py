@@ -168,6 +168,7 @@ def order_imp_transaction():
 @orders_bp.route('/pay/complete/mobile', methods=['GET'])
 @login_required
 def order_complete_mobile():
+    """모바일에서 결제가 완료되면 리다이렉트 되면서, 아임포트에서 날라오는 get_data 4개"""
     imp_uid = request.args.get("imp_uid")
     merchant_uid = request.args.get("merchant_uid")
     imp_success = request.args.get("imp_success")
@@ -201,6 +202,7 @@ def order_complete_mobile():
 @orders_bp.route('/complete/detail', methods=['GET'])
 @login_required
 def order_complete_detail():
+    """PC 에서 결제가 완료되면 여기로 리다이렉트 된다."""
     order_id = request.full_path.split('=')[1] #ajax reload url의 full_path에서 잘라냄
     order = Order.query.filter_by(id=order_id).first()
     order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()

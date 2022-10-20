@@ -197,14 +197,16 @@ def order_complete_mobile():
         order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
         cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
     """
-    return render_template('ecomm/orders/order_complete_detail.html',
+    # return render_template('ecomm/orders/order_complete_detail.html',
+    return render_template('ecomm/orders/mobile_complete.html',
                            # order=order,
                            # order_productitems=order_productitems,
                            # order_optionitems=order_optionitems,
                            # order_transaction=trans,
                            # order_coupons=order_coupons,
                            # cancel_pay=cancel_pay,
-
+                           imp_uid=imp_uid,
+                           merchant_uid=merchant_uid,
                            imp_success=imp_success,
                            error_msg=error_msg
                            )

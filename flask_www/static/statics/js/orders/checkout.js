@@ -30,7 +30,8 @@ $(function () {
                 name: $('input[name="item-1-name"]').val(), // 이렇게...첫 상품 적어준다.
                 buyer_name: $('input[name="name"]').val(),//+" "+$('input[name="last_name"]').val(),
                 buyer_email: $('input[name="email"]').val(),
-                amount: amount
+                amount: amount,
+                 m_redirect_url: orderCompleteDetailUrl + '?order_id=' + order_id
             }, function (rsp) {
                 console.log('결제 첫단계', rsp)
                 if (rsp.success) {

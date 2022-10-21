@@ -29,11 +29,6 @@
     <section class="section-main cart-section">
         <article class="article-container pt-10">
             <div class="board-container main-width">
-                <!--모바일 리다이렉트-->
-                {{ type(imp_success) }}
-                {{ imp_success|string }}
-                {{ imp_success }}
-                {{ error_msg }}
                 {% if device == "pc" %}
                     order: {{ order }}
                     order_productitems: {{ order_productitems }} <br>

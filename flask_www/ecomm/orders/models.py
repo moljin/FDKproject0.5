@@ -22,7 +22,7 @@ class Order(BaseModel):
     __tablename__ = 'orders'
     order_num = db.Column(db.String(50))
     name = db.Column(db.String(250), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     user = db.relationship('User', backref=db.backref('user_order_set'))
 
     cart_id = db.Column(db.Integer)
@@ -51,6 +51,9 @@ class Order(BaseModel):
     total_delivery_pay_amount = db.Column(db.Integer, default="")
     real_paid_amount = db.Column(db.Integer, default="")
 
+    is_display = db.Column(db.Boolean(), nullable=False, default=True)
+    """order 는 영원히 삭제 안되네..이용자가 삭제하더라도.false 로만 변경. 통계 보관..."""
+
     def order_coupon_total(self):
         order_coupons = OrderCoupon.query.filter_by(order_id=self.id, consumer_id=self.user_id).all()
         total = 0
@@ -65,26 +68,33 @@ class OrderCoupon(BaseModel):
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id', ondelete='CASCADE'), nullable=True)
     order = db.relationship('Order', backref=db.backref('order_coupon_set'))
 
-    coupon_id = db.Column(db.Integer, nullable=False)  # , db.ForeignKey('coupons.id', ondelete='CASCADE'), nullable=False)
+    consumer_id = db.Column(db.Integer, nullable=False)
+    consumer = db.relationship('User', backref=db.backref('ordercoupon_consumer_set'),
+                               primaryjoin='foreign(OrderCoupon.consumer_id) == remote(User.id)')
+
+    coupon_id = db.Column(db.Integer, nullable=False)
     coupon = db.relationship('Coupon', backref=db.backref('ordercoupon_coupon_set'),
                              primaryjoin='foreign(OrderCoupon.coupon_id) == remote(Coupon.id)')
 
     code = db.Column(db.String(250))
     amount = db.Column(db.Integer, default="")
+    is_paid = db.Column(db.Boolean(), nullable=False, default=False)
+    """결제하기 버튼을 누르면 order_coupon 객체 를 만든다.
+    그래서, 결제하기 클릭후 완료하지 않고 도중에 벗어났다가, 결제하기를 누른경우와 구분하기 위해"""
 
-    owner_id = db.Column(db.Integer, nullable=False)  # , db.ForeignKey('users.id', ondelete='CASCADE'), nullable=True)
+    owner_id = db.Column(db.Integer, nullable=False)
     owner = db.relationship('User', backref=db.backref('ordercoupon_owner_set'),
                             primaryjoin='foreign(OrderCoupon.owner_id) == remote(User.id)')
-
-    consumer_id = db.Column(db.Integer, nullable=False)  # , db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    consumer = db.relationship('User', backref=db.backref('ordercoupon_consumer_set'),
-                               primaryjoin='foreign(OrderCoupon.consumer_id) == remote(User.id)')
 
 
 class OrderProduct(BaseModel):
     __tablename__ = 'order_products'
-    order_id = db.Column(db.Integer, db.ForeignKey('orders.id', ondelete='CASCADE'), nullable=True)
-    order = db.relationship('Order', backref=db.backref('order_product_set'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    user = db.relationship('User', backref=db.backref('user_orderproduct_set'))
+
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=True)
+    order = db.relationship('Order', backref=db.backref('order_orderproduct_set', cascade='all, delete-orphan'),
+                            primaryjoin='foreign(OrderProduct.order_id) == remote(Order.id)')
 
     product_id = db.Column(db.Integer)
     product = db.relationship('Product', backref=db.backref('orderproduct_product_set'),
@@ -101,14 +111,18 @@ class OrderProduct(BaseModel):
 
 class OrderProductOption(BaseModel):
     __tablename__ = 'order_productoptions'
-    order_id = db.Column(db.Integer, db.ForeignKey('orders.id', ondelete='CASCADE'), nullable=True)
-    order = db.relationship('Order', backref=db.backref('order_option_set'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    user = db.relationship('User', backref=db.backref('user_orderproductoption_set'))
 
-    orderproduct_product_id = db.Column(db.Integer)  # , db.ForeignKey('cart_product_items.id'), nullable=False)  # , ondelete='CASCADE'
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=True)
+    order = db.relationship('Order', backref=db.backref('order_orderproductoption_set', cascade='all, delete-orphan'),
+                            primaryjoin='foreign(OrderProductOption.order_id) == remote(Order.id)')
+
+    product_id = db.Column(db.Integer)
     orderproduct = db.relationship('OrderProduct', backref=db.backref('orderoption_orderproduct_set', cascade='all, delete-orphan'),
-                                   primaryjoin='foreign(OrderProductOption.orderproduct_product_id) == remote(OrderProduct.product_id)')
+                                   primaryjoin='foreign(OrderProductOption.product_id) == remote(OrderProduct.product_id)')
 
-    option_id = db.Column(db.Integer)  #, db.ForeignKey('p_option.id', ondelete='CASCADE'), nullable=True)
+    option_id = db.Column(db.Integer)
     option = db.relationship('ProductOption', backref=db.backref('orderoption_option_set'),
                              primaryjoin='foreign(OrderProductOption.option_id) == remote(ProductOption.id)')
 
@@ -120,8 +134,12 @@ class OrderProductOption(BaseModel):
 
 class OrderTransaction(BaseModel):
     __tablename__ = 'order_transactions'
-    order_id = db.Column(db.Integer, db.ForeignKey('orders.id', ondelete='CASCADE'), nullable=True)
-    order = db.relationship('Order', backref=db.backref('order_transaction_set'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    user = db.relationship('User', backref=db.backref('user_ordertransaction_set'))
+
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=True)
+    order = db.relationship('Order', backref=db.backref('order_ordertransaction_set'),
+                            primaryjoin='foreign(OrderTransaction.order_id) == remote(Order.id)')
 
     amount = db.Column(db.Integer)
     merchant_order_id = db.Column(db.String(250), nullable=False)
@@ -142,11 +160,11 @@ class CancelPayOrder(BaseModel):
     user = db.relationship('User', backref=db.backref('user_cancelpay_set'))
 
     order_id = db.Column(db.Integer)
-    order = db.relationship('Order', backref=db.backref('cancelpay_order_set'),
+    order = db.relationship('Order', backref=db.backref('cancelpay_order_set', cascade='all, delete-orphan'),
                             primaryjoin='foreign(CancelPayOrder.order_id) == remote(Order.id)')
 
     ordertransaction_id = db.Column(db.Integer)
-    ordertransaction = db.relationship('OrderTransaction', backref=db.backref('cancelpay_ordertransaction_set'),
+    ordertransaction = db.relationship('OrderTransaction', backref=db.backref('cancelpay_ordertransaction_set', cascade='all, delete-orphan'),
                                        primaryjoin='foreign(CancelPayOrder.ordertransaction_id) == remote(OrderTransaction.id)')
 
     order_title = db.Column(db.String(120))

@@ -22,11 +22,16 @@
 {% block content %}
     <section class="section-container" style="display: flex">
         <div class="rt">
-            <h3>머라도</h3>
+            <h3>머라도 {{ current_user.email }}</h3>
             <a href="{{ url_for("lotto.lotto_test") }}">로또 생성 테스트</a><br>
             <a href="{{ url_for("lotto.lotto") }}">로또 1등 최다빈도 번호 추출</a><br>
             <a href="{{ url_for("lotto.random_lotto") }}">로또 생성 github(시작은 랜덤)</a><br>
             <hr>
+            도커로 배포시, <br>
+            최초 배포시에 db migrate시행하고 난후 <br>
+            다시 models를 수정하는 경우는 다시 완전 db 초기화 migrate를 해야 한다. <br>
+            최초 migrate시에 판매수수료율, 포인트율, 기본 최소 결제금액, 로또 최근 탑10 번호는 직접 워크벤치를 통해 입력해놔야 한다. <br>
+            그래야 카트에 담고 뷰를 할때 internal error가 발생하지 않는다. <br>
             <a href="https://chai-iamport.gitbook.io/iamport/" target="_blank" style="color: #c23616">New 아임포트 결제 연동 Docs</a> <br>
             <a href="https://docs.iamport.kr/implementation/subscription#issue-billing-b" target="_blank" style="color: red">카드를 등록하여 빌링키를 발급 받은 후 결제(정기결제) 연동하기(아임포트)</a><br>
             <a href="https://iamport.gitbooks.io/iamport/content/rest_api.html" target="_blank">아임포트 비인증 결제모듈, REST API</a><br>
@@ -36,7 +41,14 @@
             <a href="https://docs.iamport.kr/sdk/javascript-sdk?lang=ko#request_pay-pg" target="_blank"></a>PG사 코드값(클릭하여 자세히보기)<br>
             <a href="https://github.com/iamport/iamport-manual/tree/master/%EB%B9%84%EC%9D%B8%EC%A6%9D%EA%B2%B0%EC%A0%9C" target="_blank">PG사별 정기결제(빌링) 연동 가이드</a><br>
             <a href="https://velog.io/@silmxmail/%EC%95%84%EC%9E%84%ED%8F%AC%ED%8A%B8-%EA%B2%B0%EC%A0%9C-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0" target="_blank">블로그]로직 설명::: 아임포트 결제 구현하기</a><br>
-            <a href="https://guide.iamport.kr/d5e9a573-c083-4c0e-bec4-edd894c520b7" target="_blank">테스트모드 설정</a><br>
+            <a href="https://guide.iamport.kr/d5e9a573-c083-4c0e-bec4-edd894c520b7" target="_blank">아임포트 테스트모드 설정</a><br>
+            <a href="" target="_blank"></a><br>
+            <a href="" target="_blank"></a><br>
+            <a href="" target="_blank"></a><br>
+            <a href="" target="_blank"></a><br>
+            <hr>
+            <a href="https://m.blog.naver.com/tius1234/220615180031" target="_blank" style="color: red">flask 웹 브라우저 정보를 통해, iphone / android 구분하기.</a><br>
+            <a href="" target="_blank"></a><br>
             <a href="" target="_blank"></a><br>
             <a href="" target="_blank"></a><br>
             <a href="" target="_blank"></a><br>

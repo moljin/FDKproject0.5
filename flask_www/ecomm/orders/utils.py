@@ -30,6 +30,7 @@ def order_transaction_create(order_id, amount, success=None, transaction_status=
     payments_prepare(merchant_order_id, amount)
 
     transaction = OrderTransaction(
+        user_id=current_user.id,
         order_id=order_id,
         merchant_order_id=merchant_order_id,
         amount=amount
@@ -49,7 +50,7 @@ def order_transaction_create(order_id, amount, success=None, transaction_status=
     return transaction.merchant_order_id
 
 
-def order_items_complete_transaction(order_id, cart):
+def order_items_complete_transaction(order_id, cart, order_coupons):
     order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()
     order_optionitems = OrderProductOption.query.filter_by(order_id=order_id).all()
     if order_productitems and not order_optionitems:
@@ -60,6 +61,10 @@ def order_items_complete_transaction(order_id, cart):
     used_coupons = UsedCoupon.query.filter_by(cart_id=cart.id, consumer_id=current_user.id).all()
     if used_coupons:
         coupon_count_update(used_coupons)
+        for order_coupon in order_coupons:
+            order_coupon.is_paid = True
+            db.session.add(order_coupon)
+            db.session.commit()
 
     point_obj = Point.query.filter_by(user_id=current_user.id).first()  # 카트에 담을때 이미 포인트객체를 만들어 놓는다.
     if point_obj:

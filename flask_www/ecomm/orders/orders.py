@@ -70,6 +70,7 @@ def order_create_ajax():
             g.db.commit()
         for cart_productitem in cart_productitems:
             new_order_productitem = OrderProduct(
+                user_id=user_id,
                 order_id=new_order.id,
                 product_id=cart_productitem.product_id,
                 pd_price=cart_productitem.price,
@@ -83,8 +84,9 @@ def order_create_ajax():
         if cart_optionitems:
             for cart_optionitem in cart_optionitems:
                 new_order_optionitem = OrderProductOption(
+                    user_id=user_id,
                     order_id=new_order.id,
-                    orderproduct_product_id=cart_optionitem.product_id,
+                    product_id=cart_optionitem.product_id,
                     option_id=cart_optionitem.option_id,
                     op_title=cart_optionitem.title,
                     op_price=cart_optionitem.price,
@@ -132,15 +134,17 @@ def order_checkout_ajax():
 @orders_bp.route('/imp/ajax', methods=['POST'])
 @login_required
 def order_imp_transaction():
+    """모바일 결제 완료시에는 여기를 거치지 않는다. PC 만 여기를 거친다."""
     cart = Cart.query.filter_by(id=request.form.get("cart_id")).first()
     order_id = request.form['order_id']
     order = Order.query.filter_by(id=order_id).first()
+    order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
 
     merchant_id = request.form['merchant_id']
     imp_uid = request.form['imp_id']
     amount = request.form['amount']
 
-    order_items_complete_transaction(order_id, cart)
+    order_items_complete_transaction(order_id, cart, order_coupons)
     # # 구매 메일링 여기에 넣으면 될 듯...
 
     try:
@@ -165,49 +169,51 @@ def order_imp_transaction():
         return make_response(jsonify({}), 401)
 
 
-order_coupons = ""
-cancel_pay = ""
-order = ""
-order_productitems = ""
-order_optionitems = ""
-trans = ""
+# m_order_coupons = ""
+# m_cancel_pay = ""
+# m_order_productitems = ""
+# m_order_optionitems = ""
+# m_trans = ""
 
 
 @orders_bp.route('/pay/complete/mobile', methods=['GET'])
 @login_required
 def order_complete_mobile():
     """모바일에서 결제가 완료되면 리다이렉트 되면서, 아임포트에서 날라오는 get_data 4개"""
-    global order_coupons, cancel_pay, order, order_productitems, order_optionitems, trans
+    # global m_order_coupons, m_cancel_pay, m_order_productitems, m_order_optionitems, m_trans
     imp_uid = request.args.get("imp_uid")
     merchant_uid = request.args.get("merchant_uid")
     imp_success = request.args.get("imp_success")
     error_msg = request.args.get("error_msg")
 
-    trans = OrderTransaction.query.filter_by(merchant_order_id=merchant_uid).first()
-    trans.device = "mobile"
-    db.session.add(trans)
+    m_trans = OrderTransaction.query.filter_by(merchant_order_id=merchant_uid).first()
+    m_trans.device = "mobile"
+    db.session.add(m_trans)
     db.session.commit()
-    order_id = trans.order_id
-    order = Order.query.filter_by(id=order_id).first()
-    cart = Cart.query.filter_by(id=order.cart_id).first()
-    order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()
-    order_optionitems = OrderProductOption.query.filter_by(order_id=order_id).all()
+
+    order_id = m_trans.order_id
+    m_order = Order.query.filter_by(id=order_id).first()
+    cart = Cart.query.filter_by(id=m_order.cart_id).first()
+
+    m_order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()
+    m_order_optionitems = OrderProductOption.query.filter_by(order_id=order_id).all()
+    m_order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
+    m_cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
 
     if imp_success == "true":
-        order_items_complete_transaction(order_id, cart)
-        order_complete_transaction(trans, imp_uid, order, merchant_uid, order_id, cart)
-        # order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
-        order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
-        cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
+        """아임포트에서 imp_success 키에 string 으로 true 를 담아서 보내준다.
+         모바일 결제완료시에는 order_imp_transaction 을 거치지 않으므로 여기에서 시행해줘야 한다."""
+        order_items_complete_transaction(order_id, cart, m_order_coupons)
+        order_complete_transaction(m_trans, imp_uid, m_order, merchant_uid, order_id, cart)
+
     return render_template('ecomm/orders/order_complete_detail.html',
-    # return render_template('ecomm/orders/mobile_complete.html',
-                           cart=cart,
-                           order=order,
-                           order_productitems=order_productitems,
-                           order_optionitems=order_optionitems,
-                           order_transaction=trans,
-                           # order_coupons=order_coupons,
-                           # cancel_pay=cancel_pay,
+                           # cart=cart,
+                           order=m_order,
+                           order_productitems=m_order_productitems,
+                           order_optionitems=m_order_optionitems,
+                           order_transaction=m_trans,
+                           order_coupons=m_order_coupons,
+                           cancel_pay=m_cancel_pay,
                            device="mobile",
                            imp_uid=imp_uid,
                            merchant_uid=merchant_uid,
@@ -220,25 +226,29 @@ def order_complete_mobile():
 @login_required
 def order_complete_detail():
     """PC 에서 결제가 완료되면 여기로 리다이렉트 된다."""
-    order_id = request.full_path.split('=')[1] #ajax reload url의 full_path에서 잘라냄
+    order_id = request.full_path.split('=')[1]  # ajax reload url 의 full_path 에서 잘라냄
     pc_order = Order.query.filter_by(id=order_id).first()
     cart = Cart.query.filter_by(id=pc_order.cart_id).first()
-    order_products = OrderProduct.query.filter_by(order_id=order_id).all()
-    order_options = OrderProductOption.query.filter_by(order_id=order_id).all()
-    pc_order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
+
+    pc_order_products = OrderProduct.query.filter_by(order_id=order_id).all()
+    pc_order_options = OrderProductOption.query.filter_by(order_id=order_id).all()
+
+    pc_order_coupons = OrderCoupon.query.filter_by(order_id=order_id, is_paid=True).all()
     pc_cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
 
-    order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
-    if not order_transaction.device:
-        order_transaction.device = "pc"
-        db.session.add(order_transaction)
+    pc_trans = OrderTransaction.query.filter_by(order_id=order_id).first()
+    if not pc_trans.device:
+        """모바일에서 결제진행한것에는 mobile 로 입력되어 있기 때문에,
+         pc 에서 모바일 결제된 경우 pc 에서 열어볼 경우, 이것을 pc로 변경되지 않게 하기 위해"""
+        pc_trans.device = "pc"
+        db.session.add(pc_trans)
         db.session.commit()
     return render_template('ecomm/orders/order_complete_detail.html',
-                           cart=cart,
+                           # cart=cart,
                            order=pc_order,
-                           order_productitems=order_products,
-                           order_optionitems=order_options,
-                           order_transaction=order_transaction,
+                           order_productitems=pc_order_products,
+                           order_optionitems=pc_order_options,
+                           order_transaction=pc_trans,
                            order_coupons=pc_order_coupons,
                            cancel_pay=pc_cancel_pay,
                            device="pc")
@@ -247,10 +257,19 @@ def order_complete_detail():
 @orders_bp.route('/complete/list', methods=['GET'])
 @login_required
 def order_complete_list():
-    orders = Order.query.filter_by(user_id=current_user.id).order_by(desc(Order.created_at)).all()
-    order_coupons = OrderCoupon.query.all()
+    orders = Order.query.filter_by(user_id=current_user.id, is_paid=True).order_by(desc(Order.created_at)).all()
+    order_optionitems = OrderProductOption.query.filter_by(user_id=current_user.id).all()
+    point_logs = PointLog.query.filter_by(user_id=current_user.id).all()
+    order_coupons = OrderCoupon.query.filter_by(consumer_id=current_user.id, is_paid=True).all()
+    trans = OrderTransaction.query.filter_by(user_id=current_user.id).all()
 
-    return render_template('ecomm/orders/order_complete_list.html', orders=orders)
+    return render_template('ecomm/orders/order_complete_list.html',
+                           orders=orders,
+                           order_optionitems=order_optionitems,
+                           point_logs=point_logs,
+                           order_coupons=order_coupons,
+                           order_trans=trans
+                           )
 
 
 @orders_bp.route('/cancel/pay/ajax', methods=['POST'])
@@ -286,7 +305,7 @@ def cancel_pay_ajax():
             merchant_uid = cancel_response['response']['merchant_uid']
             try:
                 cancel_pay = CancelPayOrder.query.filter_by(
-                    buyer_id=buyer_id,
+                    user_id=buyer_id,
                     order_id=order_id,
                     ordertransaction_id=ordertransaction_id,
                     merchant_uid=merchant_uid,

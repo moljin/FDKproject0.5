@@ -182,29 +182,30 @@ def order_complete_mobile():
     merchant_uid = request.args.get("merchant_uid")
     imp_success = request.args.get("imp_success")
     error_msg = request.args.get("error_msg")
-    print(imp_success)
-    """
-    if imp_success:
-        trans = OrderTransaction.query.filter_by(merchant_order_id=merchant_uid).first()
-        order_id = trans.order_id
-        order = Order.query.filter_by(id=order_id).first()
-        cart = Cart.query.filter_by(id=order.cart_id).first()
-        order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()
-        order_optionitems = OrderProductOption.query.filter_by(order_id=order_id).all()
+
+    trans = OrderTransaction.query.filter_by(merchant_order_id=merchant_uid).first()
+    order_id = trans.order_id
+    order = Order.query.filter_by(id=order_id).first()
+    cart = Cart.query.filter_by(id=order.cart_id).first()
+    order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()
+    order_optionitems = OrderProductOption.query.filter_by(order_id=order_id).all()
+
+    if imp_success == "true":
         order_items_complete_transaction(order_id, cart)
         order_complete_transaction(trans, imp_uid, order, merchant_uid, order_id, cart)
         # order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
         order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
         cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
-    """
-    # return render_template('ecomm/orders/order_complete_detail.html',
-    return render_template('ecomm/orders/mobile_complete.html',
-                           # order=order,
-                           # order_productitems=order_productitems,
-                           # order_optionitems=order_optionitems,
-                           # order_transaction=trans,
+    return render_template('ecomm/orders/order_complete_detail.html',
+    # return render_template('ecomm/orders/mobile_complete.html',
+                           cart=cart,
+                           order=order,
+                           order_productitems=order_productitems,
+                           order_optionitems=order_optionitems,
+                           order_transaction=trans,
                            # order_coupons=order_coupons,
                            # cancel_pay=cancel_pay,
+                           device="mobile",
                            imp_uid=imp_uid,
                            merchant_uid=merchant_uid,
                            imp_success=imp_success,
@@ -224,12 +225,14 @@ def order_complete_detail():
     order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
     cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
     return render_template('ecomm/orders/order_complete_detail.html',
+                           cart=cart,
                            order=order,
                            order_productitems=order_productitems,
                            order_optionitems=order_optionitems,
-                           order_coupons=order_coupons,
                            order_transaction=order_transaction,
-                           cancel_pay=cancel_pay)
+                           order_coupons=order_coupons,
+                           cancel_pay=cancel_pay,
+                           device="pc")
 
 
 @orders_bp.route('/complete/list', methods=['GET'])

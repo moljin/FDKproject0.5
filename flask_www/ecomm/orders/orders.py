@@ -229,9 +229,10 @@ def order_complete_detail():
     pc_cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
 
     order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
-    order_transaction.device = "pc"
-    db.session.add(order_transaction)
-    db.session.commit()
+    if not order_transaction.device:
+        order_transaction.device = "pc"
+        db.session.add(order_transaction)
+        db.session.commit()
     return render_template('ecomm/orders/order_complete_detail.html',
                            cart=cart,
                            order=pc_order,

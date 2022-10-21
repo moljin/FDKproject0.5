@@ -218,20 +218,21 @@ def order_complete_mobile():
 def order_complete_detail():
     """PC 에서 결제가 완료되면 여기로 리다이렉트 된다."""
     order_id = request.full_path.split('=')[1] #ajax reload url의 full_path에서 잘라냄
-    order = Order.query.filter_by(id=order_id).first()
-    order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()
-    order_optionitems = OrderProductOption.query.filter_by(order_id=order_id).all()
-    order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
+    pc_order = Order.query.filter_by(id=order_id).first()
+    cart = Cart.query.filter_by(id=pc_order.cart_id).first()
+    order_products = OrderProduct.query.filter_by(order_id=order_id).all()
+    order_options = OrderProductOption.query.filter_by(order_id=order_id).all()
+    pc_order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
     order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
-    cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
+    pc_cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
     return render_template('ecomm/orders/order_complete_detail.html',
                            cart=cart,
-                           order=order,
-                           order_productitems=order_productitems,
-                           order_optionitems=order_optionitems,
+                           order=pc_order,
+                           order_productitems=order_products,
+                           order_optionitems=order_options,
                            order_transaction=order_transaction,
-                           order_coupons=order_coupons,
-                           cancel_pay=cancel_pay,
+                           order_coupons=pc_order_coupons,
+                           cancel_pay=pc_cancel_pay,
                            device="pc")
 
 

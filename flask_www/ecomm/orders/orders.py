@@ -184,6 +184,9 @@ def order_complete_mobile():
     error_msg = request.args.get("error_msg")
 
     trans = OrderTransaction.query.filter_by(merchant_order_id=merchant_uid).first()
+    trans.device = "mobile"
+    db.session.add(trans)
+    db.session.commit()
     order_id = trans.order_id
     order = Order.query.filter_by(id=order_id).first()
     cart = Cart.query.filter_by(id=order.cart_id).first()
@@ -223,8 +226,12 @@ def order_complete_detail():
     order_products = OrderProduct.query.filter_by(order_id=order_id).all()
     order_options = OrderProductOption.query.filter_by(order_id=order_id).all()
     pc_order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
-    order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
     pc_cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
+
+    order_transaction = OrderTransaction.query.filter_by(order_id=order_id).first()
+    order_transaction.device = "pc"
+    db.session.add(order_transaction)
+    db.session.commit()
     return render_template('ecomm/orders/order_complete_detail.html',
                            cart=cart,
                            order=pc_order,

@@ -129,6 +129,7 @@ class OrderTransaction(BaseModel):
     transaction_id = db.Column(db.String(120), nullable=True)
     transaction_status = db.Column(db.String(120), nullable=True)
     type = db.Column(db.String(120), default="none")
+    device = db.Column(db.String(120), nullable=True)
 
     is_success = db.Column(db.Boolean(), nullable=False, default=False)
     cancel_amount = db.Column(db.Integer, default=0)

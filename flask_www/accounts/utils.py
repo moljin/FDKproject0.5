@@ -75,19 +75,22 @@ def optimal_password_check(password):
 
 
 link = ""
+img_link = ""
 
 
 def send_mail_for_any(subject, user, email, token, msg_txt, msg_html, add_if):
     """통합: 회원등록 인증메일, 비밀번호 분실시 재설정 인증메일, vendor update 알림메일"""
-    global link
+    global link, img_link
     msg = Message(subject, sender=Config().MAIL_USERNAME, recipients=[email])
     # add_if: "템플릿단에서 조건을 추가하고자 할 때... 이게 False 이면 회원등록완료하기 html 을 준다."
     if add_if == "register" or "email_update" or "forget_password" or "not_verified":
         link = url_for('accounts.confirm_email', token=token, add_if=add_if, _external=True)
+        img_link = url_for('static', filename='statics/images/product_1.jpg', _external=True)
     elif add_if == "vendor_update":
         link = None
     msg.body = render_template(msg_txt)
-    msg.html = render_template(msg_html, link=link, user=user, email=email, add_if=add_if)
+    # msg.html = render_template(msg_html, link=link, user=user, email=email, add_if=add_if)
+    msg.html = render_template(msg_html, link=link, img_link=img_link, user=user, email=email, add_if=add_if)# , token=token
     mail.send(msg)
 
     return True

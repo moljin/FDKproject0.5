@@ -97,8 +97,9 @@ def register():
             msg_txt = 'accounts/send_mails/register/account_register_mail.txt'
             msg_html = 'accounts/send_mails/register/account_register_mail.html'
             send_mail_for_verification(subject, email, auth_token, msg_txt, msg_html)
-            return redirect(url_for('accounts.token_send', email=email))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
             """
+            return redirect(url_for('accounts.token_send', email=email))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
+
         else:
             print("flash_form_errors(form)")
             flash_form_errors(form)

@@ -24,6 +24,7 @@
 
         CSRF_TOKEN = "{{ csrf_token() }}"
 
+        orderInt = "{{ url_for("orders.order_init") }}"
         orderCreateAjax = "{{ url_for("orders.order_create_ajax") }}"
         orderCheckoutAjax = "{{ url_for("orders.order_checkout_ajax") }}"
         orderImpTransaction = "{{ url_for("orders.order_imp_transaction") }}"
@@ -258,6 +259,7 @@
                                 <div class="decision" uk-grid>
                                     <a href="{{ url_for("products.product_list") }}"><button class="uk-button uk-button-default cont">쇼핑 계속하기</button></a>
                                     <button class="order-form-display-btn uk-button uk-button-default pay ml-20" onclick="orderFormDisplay()">주문정보 작성</button>
+{#                                    <button class="order-form-display-btn uk-button uk-button-default pay ml-20" id="order_form_display">주문정보 작성</button>#}
                                 </div>
                             </div>
                             <div class="main-width" id="order_form_div">
@@ -357,18 +359,18 @@
                                     <div class="cp-group uk-width-expand">
                                         {% if remained_point and (remained_point != 0) %}
                                             <div class="label">현재 총적립포인트</div>
-                                            <div>{{ remained_point|intcomma }}점</div>
+                                            <div>{{ remained_point|intcomma }}원</div>
                                         {% endif %}
                                     </div>
                                     <div class="cp-group">
                                         <div class="label">적립 예정포인트</div>
-                                        <div><span id="prep-point">{{ prep_point|intcomma }}</span>점</div>
+                                        <div><span id="prep-point">{{ prep_point|intcomma }}</span>원</div>
                                     </div>
                                 </div>
                                 <div class="used-container">
                                     <div class="cp-group">
                                         <div class="label">결제후 예정 총적립포인트</div>
-                                        <div><span id="new-remained-point">{{ new_remained_point|intcomma }}</span>점</div>
+                                        <div><span id="new-remained-point">{{ new_remained_point|intcomma }}</span>원</div>
                                     </div>
                                     <div class="cp-group applied">
                                         {% if point_log_obj and used_point > 0 %}
@@ -376,7 +378,7 @@
                                                 <div class="label">할인 적용포인트</div>
                                                 <input type="hidden" name="cart_point_log_id" value="{{ cart.point_log_id }}">
                                                 <div class="cancel" uk-grid>
-                                                    <div><span id="applied-used-point">{{ used_point|intcomma }}</span>점</div>
+                                                    <div><span id="applied-used-point">{{ used_point|intcomma }}</span>원</div>
                                                     <div class="button"><button type="button" class="uk-button uk-button-default point-cancel-btn" uk-toggle="target: #usedpoint-cancel-modal-{{ cart.point_log_id }}" data-point-log-id="{{ cart.point_log_id }}">적용취소</button></div>
                                                 </div>
                                             </div>

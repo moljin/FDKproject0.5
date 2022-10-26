@@ -13,7 +13,7 @@ common_bp = Blueprint(NAME, __name__)
 def index():
     if current_user.is_authenticated:
         cart = Cart.query.filter_by(user_id=current_user.id, is_active=True).first()
-        orders = Order.query.filter_by(user_id=current_user.id).all()
+        orders = Order.query.filter_by(buyer_id=current_user.id).all()
         if cart:
             return render_template('index.html', cart=cart, orders=orders)
         else:

@@ -94,6 +94,7 @@ def over_discount_cart_apply(used_coupons, used_point, used_coupons_amount, cart
 
                     coupon_obj = Coupon.query.filter_by(id=coupon_id).first()
                     coupon_obj.available_count += 1
+                    coupon_obj.used_count -= 1
                     current_db_sessions = db.session.object_session(coupon_obj)
                     current_db_sessions.add(coupon_obj)
                     db.session.commit()
@@ -114,6 +115,7 @@ def over_discount_cart_apply(used_coupons, used_point, used_coupons_amount, cart
 
                     coupon_obj = Coupon.query.filter_by(id=coupon_id).first()
                     coupon_obj.available_count += 1
+                    coupon_obj.used_count -= 1
                     current_db_sessions = db.session.object_session(coupon_obj)
                     current_db_sessions.add(coupon_obj)
                     db.session.commit()

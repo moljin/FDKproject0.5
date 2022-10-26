@@ -166,7 +166,7 @@ def cart_view():
             """혹시 cart_update 시 저장을 하지않고 넘어가면, cart_view 를 이용자가 새로고침하면 적용하기 위해"""
             over_discount_cart_apply(used_coupons, point_log_obj.used_point, used_coupons_amount, cart, base_pay_amount, point_log_obj)
 
-            customer_uid_obj = CustomerUid.query.filter_by(user_id=current_user.id).first()
+            customer_uid_obj = CustomerUid.query.filter_by(buyer_id=current_user.id).first()
             if customer_uid_obj:
                 customer_uid = customer_uid_obj.customer_uid
             else:
@@ -367,6 +367,7 @@ def cart_product_delete_ajax():
         point_log_obj = cart_point_log_update(cart, point_obj)
 
         over_discount_cart_apply(_used_coupons, used_point, used_coupons_amount, cart, base_pay_amount, point_log)
+        print("cart.coupon_discount_total()", cart.coupon_discount_total())
         delete_data_response = {
             "_success": "delete_success",
             'coupon_total': cart.coupon_discount_total(),

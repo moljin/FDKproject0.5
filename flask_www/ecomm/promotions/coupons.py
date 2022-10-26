@@ -159,7 +159,9 @@ def add_coupon_ajax():
             old_used_coupon = UsedCoupon.query.filter_by(coupon_id=available_coupon.id,
                                                          code=code,
                                                          owner_id=available_coupon.user.id,
-                                                         consumer_id=current_user.id).first()
+                                                         consumer_id=current_user.id,
+                                                         is_used=True,
+                                                         is_cancel=False).first()
             if old_used_coupon:
                 new_used_coupon_amount = 0
                 if point_log.used_point:  # cart.coupon_discount_total()는 이미 사용된 쿠폰 총합
@@ -185,6 +187,7 @@ def add_coupon_ajax():
                     db.session.commit()
 
                     available_coupon.available_count -= 1
+                    available_coupon.used_count += 1
                     current_db_sessions = db.session.object_session(available_coupon)
                     current_db_sessions.add(available_coupon)
                     db.session.commit()

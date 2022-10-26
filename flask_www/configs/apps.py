@@ -9,6 +9,8 @@ from flask_www.configs.config import NOW
 
 def related_app(app):
     from flask_www.configs import db
+    """템플릿단에서 loop break : {% break %}"""
+    app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 
     """ === Request hook === """
     @app.errorhandler(404)

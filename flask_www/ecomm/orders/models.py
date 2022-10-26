@@ -9,7 +9,7 @@ ORDER_STATUS = ('미결제',
                 '배송완료',
                 '거래완료',
                 '반송중',
-                '주문취소중',
+                '결제취소',
                 '주문취소완료')
 
 
@@ -17,48 +17,57 @@ PAY_TYPE = ('카드결제',
             '가상계좌',
             '계좌이체')
 
+VALIDATION_STATUS = ('not request',
+                     'normal',
+                     'abnormal')
+
 
 class Order(BaseModel):
     __tablename__ = 'orders'
     order_num = db.Column(db.String(50))
-    name = db.Column(db.String(250), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
-    user = db.relationship('User', backref=db.backref('user_order_set'))
 
     cart_id = db.Column(db.Integer)
     cart = db.relationship('Cart', backref=db.backref('order_cart_set'),
                            primaryjoin='foreign(Order.cart_id) == remote(Cart.id)')
 
-    email = db.Column(db.String(120), nullable=False)
-    phonenumber = db.Column(db.String(20), nullable=False)
+    buyer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    buyer = db.relationship('User', backref=db.backref('buyer_order_set'))
 
-    postal_code = db.Column(db.String(20), nullable=False)
-    address = db.Column('주소', db.String(250), nullable=False)
-    detail_address = db.Column('상세주소', db.String(250), nullable=False)
+    name = db.Column(db.String(250), nullable=True)
+    email = db.Column(db.String(120), nullable=True)
+    phonenumber = db.Column(db.String(20), nullable=True)
+
+    postal_code = db.Column(db.String(20), nullable=True)
+    address = db.Column('주소', db.String(250), nullable=True)
+    detail_address = db.Column('상세주소', db.String(250), nullable=True)
     extra_address = db.Column('주소 참고항목', db.String(250), nullable=True)
 
     order_memo = db.Column(db.String(250), nullable=True)
 
     is_paid = db.Column(db.Boolean(), nullable=False, default=False)
-    order_status = db.Column(db.String(250), default=ORDER_STATUS[0])  # , choices=ORDER_STATUS) # Form에서  적용
-
-    used_point = db.Column(db.Integer, default="")
-    get_point = db.Column(db.Integer, default="")
-
-    total_order_amount = db.Column(db.Integer, default="")
-    total_discount_amount = db.Column(db.Integer, default="")
-    get_total_amount = db.Column(db.Integer, default="")
-    total_delivery_pay_amount = db.Column(db.Integer, default="")
-    real_paid_amount = db.Column(db.Integer, default="")
-
     is_display = db.Column(db.Boolean(), nullable=False, default=True)
-    """order 는 영원히 삭제 안되네..이용자가 삭제하더라도.false 로만 변경. 통계 보관..."""
+    """order 는 영원히 삭제 안되게..이용자가 삭제하더라도.false 로만 변경. 통계 보관..."""
+    order_status = db.Column(db.String(250), default=ORDER_STATUS[0])  # , choices=ORDER_STATUS) # Form에서  적용
+    merchant_order_id = db.Column(db.String(250), nullable=True)
+
+    used_point = db.Column(db.Integer, default=0)
+    get_point = db.Column(db.Integer, default=0)
+
+    total_order_amount = db.Column(db.Integer, default=0)
+    total_discount_amount = db.Column(db.Integer, default=0)
+    get_total_amount = db.Column(db.Integer, default=0)
+    total_delivery_pay_amount = db.Column(db.Integer, default=0)
+    real_paid_amount = db.Column(db.Integer, default=0)
 
     def order_coupon_total(self):
-        order_coupons = OrderCoupon.query.filter_by(order_id=self.id, consumer_id=self.user_id).all()
+        order_coupons = OrderCoupon.query.filter_by(order_id=self.id,
+                                                    consumer_id=self.buyer_id,
+                                                    is_paid=True,
+                                                    is_cancel=False).all()
         total = 0
         if order_coupons:
             for order_coupon in order_coupons:
+                print(order_coupon)
                 total += order_coupon.amount
         return total
 
@@ -78,7 +87,8 @@ class OrderCoupon(BaseModel):
 
     code = db.Column(db.String(250))
     amount = db.Column(db.Integer, default="")
-    is_paid = db.Column(db.Boolean(), nullable=False, default=False)
+    is_paid = db.Column(db.Boolean(), nullable=False, default=True)
+    is_cancel = db.Column(db.Boolean(), nullable=False, default=False)
     """결제하기 버튼을 누르면 order_coupon 객체 를 만든다.
     그래서, 결제하기 클릭후 완료하지 않고 도중에 벗어났다가, 결제하기를 누른경우와 구분하기 위해"""
 
@@ -89,8 +99,8 @@ class OrderCoupon(BaseModel):
 
 class OrderProduct(BaseModel):
     __tablename__ = 'order_products'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
-    user = db.relationship('User', backref=db.backref('user_orderproduct_set'))
+    buyer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    buyer = db.relationship('User', backref=db.backref('buyer_orderproduct_set'))
 
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=True)
     order = db.relationship('Order', backref=db.backref('order_orderproduct_set', cascade='all, delete-orphan'),
@@ -99,6 +109,10 @@ class OrderProduct(BaseModel):
     product_id = db.Column(db.Integer)
     product = db.relationship('Product', backref=db.backref('orderproduct_product_set'),
                               primaryjoin='foreign(OrderProduct.product_id) == remote(Product.id)')
+
+    shopcategory_id = db.Column(db.Integer, db.ForeignKey('shopcategories.id', ondelete='CASCADE'), nullable=False)
+    shopcategory = db.relationship('ShopCategory', backref=db.backref('order_shopcategory_set'),  # , cascade='all, delete-orphan'
+                                   primaryjoin='foreign(OrderProduct.shopcategory_id) == remote(ShopCategory.id)')
 
     pd_price = db.Column(db.Integer, default="")
     pd_subtotal_price = db.Column(db.Integer, default="")
@@ -111,8 +125,8 @@ class OrderProduct(BaseModel):
 
 class OrderProductOption(BaseModel):
     __tablename__ = 'order_productoptions'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
-    user = db.relationship('User', backref=db.backref('user_orderproductoption_set'))
+    buyer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    buyer = db.relationship('User', backref=db.backref('buyer_orderproductoption_set'))
 
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=True)
     order = db.relationship('Order', backref=db.backref('order_orderproductoption_set', cascade='all, delete-orphan'),
@@ -134,8 +148,8 @@ class OrderProductOption(BaseModel):
 
 class OrderTransaction(BaseModel):
     __tablename__ = 'order_transactions'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
-    user = db.relationship('User', backref=db.backref('user_ordertransaction_set'))
+    buyer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    buyer = db.relationship('User', backref=db.backref('buyer_ordertransaction_set'))
 
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=True)
     order = db.relationship('Order', backref=db.backref('order_ordertransaction_set'),
@@ -145,19 +159,19 @@ class OrderTransaction(BaseModel):
     merchant_order_id = db.Column(db.String(250), nullable=False)
 
     transaction_id = db.Column(db.String(120), nullable=True)
-    transaction_status = db.Column(db.String(120), nullable=True)
     type = db.Column(db.String(120), default="none")
     device = db.Column(db.String(120), nullable=True)
 
     is_success = db.Column(db.Boolean(), nullable=False, default=False)
+    validation_status = db.Column(db.String(120), nullable=False, default=VALIDATION_STATUS[0])
     cancel_amount = db.Column(db.Integer, default=0)
     is_cancel = db.Column(db.Boolean(), nullable=False, default=False)
 
 
 class CancelPayOrder(BaseModel):
     __tablename__ = 'cancelpay_orders'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=True)
-    user = db.relationship('User', backref=db.backref('user_cancelpay_set'))
+    buyer_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=True)
+    buyer = db.relationship('User', backref=db.backref('buyer_cancelpay_set'))
 
     order_id = db.Column(db.Integer)
     order = db.relationship('Order', backref=db.backref('cancelpay_order_set', cascade='all, delete-orphan'),
@@ -186,8 +200,8 @@ class CancelPayOrder(BaseModel):
 
 class CustomerUid(BaseModel):
     __tablename__ = 'customer_uids'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=True)
-    user = db.relationship('User', backref=db.backref('user_customeruid_set'))
+    buyer_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=True)
+    buyer = db.relationship('User', backref=db.backref('buyer_customeruid_set'))
 
     card_number = db.Column(db.String(120))
     card_expiry = db.Column(db.String(120))

@@ -4,6 +4,9 @@
 $(function () {
     let IMP = window.IMP;
     IMP.init('imp27746059'); // iamport 가맹점 식별코드
+    const cartId = document.querySelector("#cart-id").value;
+    OrderInt(cartId);
+
     $('.order-form').on('submit', function (e) {
         let cart_id = $('input[name="ordercart_id"]').val();
         let amount = parseInt($('.order-form input[name="amount"]').val().replace(',', ''));
@@ -12,13 +15,12 @@ $(function () {
             alert('주문 생성 실패\n다시 시도해주세요.');
             return false;
         }
-        let merchant_id = OrderCheckoutAjax(e, order_id, amount);
+        let merchant_id = OrderCheckoutAjax(e, cart_id, order_id, amount);
 
         if (merchant_id !== '') {
             IMP.request_pay({
                 pg : "html5_inicis.INIpayTest",
-                merchant_uid: merchant_id,//+ new Date().getTime(),
-                // name:'E-Shop product', // 매 결제마다 상품관련해서 다른이름으로 바꿀 수 있다. 지금은 저거로 고정
+                merchant_uid: merchant_id,
                 name: $('input[name="item-1-name"]').val(),
                 buyer_name: $('input[name="name"]').val(),
                 buyer_email: $('input[name="email"]').val(),
@@ -47,6 +49,34 @@ $(function () {
     });
 });
 
+function OrderInt(cart_id, amount) {
+    let formData = new FormData();
+    formData.append("cart_id", cart_id);
+    let request = $.ajax({
+        url: orderInt,
+        type: 'POST',
+        data: formData,
+        headers: {"X-CSRFToken": CSRF_TOKEN,},
+        dataType: 'json',
+        async: false,
+        cache: false,
+        contentType: false,
+        processData: false,
+
+        success: function (response) {
+            if (response.error) {
+                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + response.error);
+            } else {
+                console.log("success")
+
+            }
+        },
+        error: function (err) {
+            alert('내부 오류가 발생하였습니다.\n' + err);
+        }
+    });
+}
+
 function OrderCreateAjax(e) {
     e.preventDefault();
     let order_id = '';
@@ -62,6 +92,7 @@ function OrderCreateAjax(e) {
         }
     });
     request.fail(function (jqXHR, textStatus) {
+        console.log(jqXHR)
         if (jqXHR.status === 404) {
             alert("페이지가 존재하지 않습니다.");
         } else if (jqXHR.status === 403) {
@@ -73,7 +104,8 @@ function OrderCreateAjax(e) {
     return order_id;
 }
 
-function OrderCheckoutAjax(e, order_id, amount) { //, type
+
+function OrderCheckoutAjax(e, cart_id, order_id, amount) { //, type
     e.preventDefault();
     let merchant_id = '';
     let request = $.ajax({
@@ -84,6 +116,7 @@ function OrderCheckoutAjax(e, order_id, amount) { //, type
             "X-CSRFToken": CSRF_TOKEN,
         },
         data: {
+            cart_id: cart_id,
             order_id: order_id,
             amount: amount,
             //type:type,
@@ -104,9 +137,9 @@ function OrderCheckoutAjax(e, order_id, amount) { //, type
         } else if (jqXHR.status === 403) {
             alert("OrderCheckoutAjax 로그인 해주세요.");
         } else {
-            console.log('OrderCheckoutAjax 문제 발생.\\n다시 시도해주세요.')
-            alert("OrderCheckoutAjax 문제 발생.\n다시 시도해주세요.");
+            alert(jqXHR.responseJSON._message);
             console.log('jqXHR', jqXHR);
+            console.log('jqXHR responseJSON', jqXHR.responseJSON._message);
             console.log('jqXHR.status', jqXHR.status);
             console.log('textStatus', textStatus);
         }
@@ -134,8 +167,7 @@ function OrderImpTransaction(e, cart_id, order_id, merchant_id, imp_id, amount) 
     });
     request.done(function (data) {
         if (data.works) {
-            console.log('윈도우 리로드 url만들면 완료된다.')
-            $(location).attr('href', location.origin + orderCompleteDetailUrl + '?order_id=' + order_id);
+            $(location).attr('href', location.origin + orderCompleteDetailUrl + '?order_id=' + order_id + '&merchant_order_id=' + merchant_id);
         }
     });
     request.fail(function (jqXHR, textStatus) {
@@ -151,5 +183,3 @@ function OrderImpTransaction(e, cart_id, order_id, merchant_id, imp_id, amount) 
         }
     });
 }
-
-// 마이페이지 만들어서 결제리스트 만들기는 어떻게 하는 건가?

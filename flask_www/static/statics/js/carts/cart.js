@@ -825,9 +825,13 @@ function pointCouponFlashTagRemove(response){
         }
     }
 
-    const eachUsedCouponAll = document.getElementsByClassName("each");
-    const usedCouponCancelModalAll = document.getElementsByClassName("usedcoupon-cancel-modal");
+    const usedCouponLabel = document.querySelector(".usedcoupon-container.main-width .label");
+    const eachUsedCouponAll = document.querySelectorAll(".each");
+    const usedCouponCancelModalAll = document.querySelectorAll(".usedcoupon-cancel-modal");
     if (response.coupon_total === 0) {
+        if (usedCouponLabel) {
+            usedCouponLabel.remove();
+        }
         if (eachUsedCouponAll.length > 0) {
             for (let i = 0; i < eachUsedCouponAll.length; i++) {
                 eachUsedCouponAll[i].remove();

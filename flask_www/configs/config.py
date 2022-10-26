@@ -28,7 +28,6 @@ def read_secret(secret_name):
 
 
 class Config(object):
-    # DEBUG = True
     DEBUG = False
     TESTING = False
 
@@ -36,7 +35,6 @@ class Config(object):
     TIMEOUT = 1200  # 초
 
     SESSION_COOKIE_NAME = 'FDK_project0.5'
-    # TIMEZONE = datetime.datetime.now(timezone('Asia/Seoul'))
     TIMEZONE = 'Asia/Seoul'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False

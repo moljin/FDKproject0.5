@@ -33,6 +33,8 @@ class UsedCoupon(BaseModel):
 
     code = db.Column(db.String(250))
     amount = db.Column(db.Integer, default=0)
+    is_used = db.Column(db.Boolean(), nullable=False, default=True)
+    is_cancel = db.Column(db.Boolean(), nullable=False, default=False)
 
     owner_id = db.Column(db.Integer, nullable=True)
     owner = db.relationship('User', backref=db.backref('usedcoupon_owner_set'),
@@ -72,11 +74,14 @@ class PointLog(BaseModel):
     user = db.relationship('User', backref=db.backref('pointlog_user_set'))
 
     cart_id = db.Column(db.Integer)
+    order_id = db.Column(db.Integer)
     point_id = db.Column(db.Integer)
 
     prep_point = db.Column(db.Integer, default=0)
     used_point = db.Column(db.Integer, default=0)
     new_remained_point = db.Column(db.Integer, default=0)
+
+    is_cancel = db.Column(db.Boolean(), nullable=False, default=False)
 
     def __repr__(self):
         return f"<PointLog('ID:{self.id}', cart_id:'{self.cart_id}')>"

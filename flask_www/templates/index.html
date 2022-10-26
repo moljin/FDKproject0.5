@@ -31,7 +31,28 @@
             최초 배포시에 db migrate시행하고 난후 <br>
             다시 models를 수정하는 경우는 다시 완전 db 초기화 migrate를 해야 한다. <br>
             최초 migrate시에 판매수수료율, 포인트율, 기본 최소 결제금액, 로또 최근 탑10 번호는 직접 워크벤치를 통해 입력해놔야 한다. <br>
-            그래야 카트에 담고 뷰를 할때 internal error가 발생하지 않는다. <br>
+            그래야 카트에 담고 뷰를 할때 internal error가 발생하지 않는다. <br><br>
+
+            [[[ 결제과정의 미완결시 수정 내용 ]]]<br>
+            즉, 결제완료는 됐지만, order_imp_transaction과정이 제대로 완결되지 않은 경우<br>
+            order_imp_transaction은 상점과 아임포트사이의 일치를 확인하고, 상점의 서버에 최종저장하는 과정이다.<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;첫번째, 실제 결제는 완료된것이기 때문에....카트를 살려둬야 하나?<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;카트를 살려두면 아임포트에서 결제가 실제 완료된 것이기 때문에<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;한번더 결제 할 수 있기는 하지만.....<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;두번째, 이용자가 취소할 때는 imp_uid가 필요한데...<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;아임포트에서 결제가 완료되면 보내주기 때문에<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이것을 먼저 저장해두기는 과정을 해놓기는 했다. <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;그래서 이용자가 직접 결제 취소를 할 수 있기는 하다.....<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;## 아니면, 상점관리자가 아임포트에 들어가서<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;직접 결제취소 하도록 하는 것도 방법이다. 아니면<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;상점 관리자 모드에서 결제취소를 할 수 있게 하든지....<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;이용자에게는 결제취소 노출을 없애고...<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;세번째, 결국 order_imp_transaction과정에서는 에러가 없어야만 한다. <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;코드를 재정비해서 에러를 없애는 것이 관건이기는 하다.<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;아임포트측에서 결제가 완료된 것이기 때문에, <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;상점의 서버에 최종저장하는 과정인 <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;order_imp_transaction을 완벽히 하는 것이 매우 중요하겠다.<br><br>
+
             <a href="https://chai-iamport.gitbook.io/iamport/" target="_blank" style="color: #c23616">New 아임포트 결제 연동 Docs</a> <br>
             <a href="https://docs.iamport.kr/implementation/subscription#issue-billing-b" target="_blank" style="color: red">카드를 등록하여 빌링키를 발급 받은 후 결제(정기결제) 연동하기(아임포트)</a><br>
             <a href="https://iamport.gitbooks.io/iamport/content/rest_api.html" target="_blank">아임포트 비인증 결제모듈, REST API</a><br>
@@ -42,10 +63,7 @@
             <a href="https://github.com/iamport/iamport-manual/tree/master/%EB%B9%84%EC%9D%B8%EC%A6%9D%EA%B2%B0%EC%A0%9C" target="_blank">PG사별 정기결제(빌링) 연동 가이드</a><br>
             <a href="https://velog.io/@silmxmail/%EC%95%84%EC%9E%84%ED%8F%AC%ED%8A%B8-%EA%B2%B0%EC%A0%9C-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0" target="_blank">블로그]로직 설명::: 아임포트 결제 구현하기</a><br>
             <a href="https://guide.iamport.kr/d5e9a573-c083-4c0e-bec4-edd894c520b7" target="_blank">아임포트 테스트모드 설정</a><br>
-            <a href="" target="_blank"></a><br>
-            <a href="" target="_blank"></a><br>
-            <a href="" target="_blank"></a><br>
-            <a href="" target="_blank"></a><br>
+            <a href="https://chlost.tistory.com/40" target="_blank">아임포트 결제모듈 사용시 주의사항</a><br>
             <hr>
             <a href="https://m.blog.naver.com/tius1234/220615180031" target="_blank" style="color: red">flask 웹 브라우저 정보를 통해, iphone / android 구분하기.</a><br>
             <a href="" target="_blank"></a><br>
@@ -66,7 +84,7 @@
             {% endif %}
             <a href="{{ url_for("products.product_list") }}">상품 리스트</a><br>
             <hr>
-current_cart::: {{ current_cart }} <br>
+            current_cart::: {{ current_cart }} <br><br>
             {% if current_user.is_authenticated %}
                 {% if (current_cart != None) and (current_cart.cart_total_price != 0) %}
                     <a href="{{ url_for("carts.cart_view") }}">cart 에 상품이 담겼을때 카트보기: {{ current_cart }}</a><br>
@@ -97,9 +115,9 @@ current_cart::: {{ current_cart }} <br>
             <a href="https://ffoorreeuunn.tistory.com/462" target="_blank">[ Python ] 파이썬 비동기 처리 | asyncio | 비동기란 무엇인가 | 비동기 예제</a><br>
             <a href="https://www.google.com/search?q=%EB%B9%84%EB%8F%99%EA%B8%B0+%ED%8C%8C%EC%9D%B4%EC%8D%AC&sxsrf=ALiCzsal-YxakNPKDPO3hGqcEfBwkSDWvQ%3A1664542405910&ei=xeY2Y6uSN-HGmAXDyKOIAQ&ved=0ahUKEwjriMXWx7z6AhVhI6YKHUPkCBEQ4dUDCA4&uact=5&oq=%EB%B9%84%EB%8F%99%EA%B8%B0+%ED%8C%8C%EC%9D%B4%EC%8D%AC&gs_lcp=Cgdnd3Mtd2l6EAMyBAgjECcyBQgAEIAEMgYIABAeEAUyBggAEB4QCDIGCAAQHhAIMgYIABAeEAgyBggAEB4QCDIGCAAQHhAIMgYIABAeEAgyBggAEB4QCDoKCAAQRxDWBBCwA0oECEEYAEoECEYYAFCTZliTZmCxaGgCcAB4AIABYYgBYZIBATGYAQCgAQHIAQrAAQE&sclient=gws-wiz" target="_blank" style="color: red">구글링====비동기 파이썬</a><br>
             <a href="https://blog.naver.com/PostView.naver?blogId=duqrlwjddns1&logNo=222268635237&parentCategoryNo=&categoryNo=&viewDate=&isShowPopularPosts=false&from=postView" target="_blank">asyncio로 비동기 처리하기</a><br>
-
-            <a href="" target="_blank"></a><br>
-            <a href="" target="_blank"></a><br>
+            <hr>
+            <a href="https://bluese05.tistory.com/21" target="_blank">docker container에 접속하기</a><br>
+            <a href="https://devjh.tistory.com/165" target="_blank">[Docker] 컨테이너 안에 파일 수정하기 (container config)</a><br>
             <a href="" target="_blank"></a><br>
             <a href="" target="_blank"></a><br>
             <a href="" target="_blank"></a><br>
@@ -137,6 +155,11 @@ current_cart::: {{ current_cart }} <br>
             <a href="https://intrepidgeeks.com/tutorial/example-description-and-selection-of-backref-lazy-parameter-in-flame-sql-chemy" target="_blank" style="color: crimson; font-weight: bolder">Flask - SQLAlchemy 에서 backref lazy 의 매개 변수 인스턴스 설명과 선택</a><br>
             <a href="https://weejw.tistory.com/84" target="_blank">2017년/Database::: sqlalchemy relationship</a><br>
             <a href="https://velog.io/@inourbubble2/SQLAlchemy%EC%9D%98-backref%EC%99%80-backpopulates%EC%9D%98-%EC%B0%A8%EC%9D%B4" target="_blank">SQLAlchemy의 backref와 back_populates의 차이</a><br>
+            <hr>
+            <a href="https://lightrun.com/answers/mozilla-nunjucks-loop-controls" target="_blank">Jinja] Loop Controls</a><br>
+            <a href="https://ash84.io/2018/01/09/jinja-break-for-loop-controls/" target="_blank">jinja - break 사용하기</a><br>
+            <a href="https://kkamikoon.tistory.com/entry/Jinja2-break%EB%AC%B8-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95" target="_blank">jinja2.ext.loopcontrols 적용</a><br>
+
             <a href="" target="_blank"></a><br>
             <a href="" target="_blank"></a><br>
             <a href="" target="_blank"></a><br>

@@ -3,9 +3,11 @@ from flask import abort, request
 
 from flask_www.accounts.utils import login_required
 from flask_www.configs import db
+from flask_www.ecomm.orders.models import ORDER_STATUS
 from flask_www.ecomm.promotions.models import Coupon, PointLog, Point
 
 coupon_obj = ''
+used_coupon = ""
 new_point_log_obj = ''
 
 
@@ -41,11 +43,28 @@ def coupon_save(coupon, req_code, use_from, use_to, amount, is_active, available
 
 @login_required
 def coupon_count_update(used_coupons):
-    global coupon_obj
+    global coupon_obj, used_coupon
     for used_coupon in used_coupons:
         coupon_obj = Coupon.query.get_or_404(used_coupon.coupon_id)
+        used_coupon.is_used = True
         coupon_obj.used_count += 1
         coupon_obj.available_count -= 1
+    # db.session.bulk_save_objects([used_coupon])
+    db.session.add(used_coupon)
+    db.session.bulk_save_objects([coupon_obj])
+    db.session.commit()
+
+
+@login_required
+def coupon_count_cancel_update(used_coupons):
+    global coupon_obj, used_coupon
+    for used_coupon in used_coupons:
+        coupon_obj = Coupon.query.get_or_404(used_coupon.coupon_id)
+        used_coupon.is_cancel = True
+        coupon_obj.available_count += 1
+        coupon_obj.used_count -= 1
+    # db.session.bulk_save_objects([used_coupon])
+    db.session.add(used_coupon)
     db.session.bulk_save_objects([coupon_obj])
     db.session.commit()
 
@@ -138,7 +157,7 @@ def point_log_update(cart, point_obj, point_log, used_point, new_prep_point):
 
 
 @login_required
-def order_point_update(cart, point_obj):
+def order_point_update(cart, order, point_obj):
     """결제하면 order_imp_transaction 에서 적용된다."""
     exist_total_accum_point = point_obj.total_accum_point #old
     exist_remained_point = point_obj.remained_point #old
@@ -147,8 +166,13 @@ def order_point_update(cart, point_obj):
         print('if cart.point_log_id')
         point_obj.total_accum_point += point_log_obj.prep_point
         point_obj.remained_point = point_log_obj.new_remained_point
-        current_db_sessions = db.session.object_session(point_log_obj)
-        current_db_sessions.add(point_log_obj)
+        # current_db_sessions = db.session.object_session(point_obj)
+        # current_db_sessions.add(point_obj)
+        db.session.add(point_obj)
+
+        point_log_obj.order_id = order.id
+        db.session.add(point_log_obj)
+
         db.session.commit()
         # old_total_accum_point = point_obj.total_accum_point
         # Point.query.update(total_accum_point=old_total_accum_point + point_log_obj.prep_point,
@@ -174,6 +198,51 @@ def order_point_update(cart, point_obj):
         db.session.add(point_obj)
         db.session.commit()
 
-        point_log_obj.remained_point = point_obj.remained_point  ## 최종 적립후 로그기록  거꾸로 보완 추가저장
+        point_log_obj.new_remained_point = point_obj.remained_point  ## 최종 적립후 로그기록  거꾸로 보완 추가저장
+        db.session.add(point_log_obj)
+        db.session.commit()
+
+
+@login_required
+def order_point_cancel_update(cart, order, point_obj):
+    exist_total_accum_point = point_obj.total_accum_point #old
+    exist_remained_point = point_obj.remained_point #old
+    point_log_obj = PointLog.query.get(cart.point_log_id)
+    used_point = point_log_obj.used_point
+    if cart.point_log_id and point_log_obj:
+        point_obj.total_accum_point -= point_log_obj.prep_point
+        point_obj.remained_point += used_point - point_log_obj.prep_point
+        db.session.add(point_obj)
+
+        point_log_obj.is_cancel = True
+        point_log_obj.new_remained_point = point_obj.remained_point  # 동기화
+        # current_db_sessions = db.session.object_session(point_log_obj)
+        # current_db_sessions.add(point_log_obj)
+        db.session.add(point_log_obj)
+
+        order.order_status = ORDER_STATUS[8]
+        db.session.add(order)
+
+        db.session.commit()
+
+    if not cart.point_log_id:
+        '''이런 경우는 존재하지 않겠네... 로직상 이 지점에 도달하지도 않겠네...
+                카트에 담는 순간에 (add_to_cart_ajax)
+                point_log 객체와 cart 에 그에 따른 point_log_id를 생성해버리니까...'''
+        point_log_obj = PointLog.query.filter_by(point_id=point_obj.id, cart_id=cart.id).first()  # add_to_cart_ajax때 이미 생성해왔다.
+        try:
+            ot_ap = int(exist_total_accum_point)
+        except TypeError:
+            ot_ap = 0  # point가 아예 없는 초출인 경우 old_total_accum_point은 None--->0으로 바꾸는 과정
+        try:
+            o_rp = int(exist_remained_point)
+        except TypeError:
+            o_rp = 0  # point가 아예 없는 초출인 경우 old_remained_point은 None--->0으로 바꾸는 과정
+        point_obj.total_accum_point = ot_ap - point_log_obj.prep_point
+        point_obj.remained_point = o_rp - point_log_obj.prep_point
+        db.session.add(point_obj)
+        db.session.commit()
+
+        point_log_obj.new_remained_point = point_obj.remained_point  ## 최종 적립후 로그기록  거꾸로 보완 추가저장
         db.session.add(point_log_obj)
         db.session.commit()

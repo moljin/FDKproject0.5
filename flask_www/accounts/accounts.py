@@ -89,7 +89,7 @@ def register():
 
             add_if = "register"
             subject = "β-0.0.2 회원등록 인증용 메일"
-            """
+
             msg_txt = 'accounts/send_mails/mail.txt'
             msg_html = 'accounts/send_mails/accounts_mail.html'
             send_mail_for_any(subject, new_user, email, auth_token, msg_txt, msg_html, add_if)
@@ -98,6 +98,7 @@ def register():
             msg_html = 'accounts/send_mails/register/account_register_mail.html'
             send_mail_for_verification(subject, email, auth_token, msg_txt, msg_html)
             return redirect(url_for('accounts.token_send', email=email))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
+            """
         else:
             print("flash_form_errors(form)")
             flash_form_errors(form)

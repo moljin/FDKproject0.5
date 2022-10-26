@@ -124,6 +124,10 @@ def confirm_email(add_if, token):
             flash('이메일 인증이 완료되었습니다.')
             return redirect(url_for('accounts.login'))
 
+        if user_obj and (add_if == "email_update") and user_obj.is_verified:
+            flash('이메일 인증이 이미 되어 있어요! 새로운 이메일로 로그인 가능해요!')
+            return redirect(url_for('accounts.login'))
+
         if user_obj and (add_if == "email_update") and not user_obj.is_verified:
             is_verified_true_save(user_obj)
             flash('이메일 인증이 완료되었습니다. 새로운 이메일로 로그인 가능해요!')
@@ -132,6 +136,10 @@ def confirm_email(add_if, token):
         if user_obj and (add_if == "forget_password"):
             session['password_token'] = token
             return redirect(url_for('accounts.forget_password_update', _id=user_obj.id, password_token=token))
+
+        if user_obj and (add_if == "not_verified") and user_obj.is_verified:
+            flash('이메일 인증이 이미 되어 있어요! 새로운 비밀번호로 로그인 가능해요!')
+            return redirect(url_for('accounts.login'))
 
         if user_obj and (add_if == "not_verified") and not user_obj.is_verified:
             # 가입 미인증 & 비번 재설정 이메일에서 "여기"클릭 ==> confirm_email 을 타고 여기로 지나간다.

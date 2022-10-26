@@ -84,7 +84,6 @@ def register():
             from flask_www.configs import safe_time_serializer
             auth_token = safe_time_serializer.dumps(email, salt='email-confirm')
             new_user.auth_token = auth_token
-            new_user.is_verified = False
             db.session.add(new_user)
             db.session.commit()
 

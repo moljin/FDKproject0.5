@@ -229,7 +229,7 @@ def order_complete_mobile():
         """아임포트에서 imp_success 키에 string 으로 true 를 담아서 보내준다.
          모바일 결제완료시에는 order_imp_transaction 을 거치지 않으므로 여기에서 시행해줘야 한다."""
         order_complete_transaction(m_trans, imp_uid, m_order, cart)
-        order_items_complete_transaction(order_id, cart, m_order_coupons)
+        order_items_complete_transaction(m_order, cart, m_order_coupons)
 
     return render_template('ecomm/orders/order_complete_detail.html',
                            cart=cart,

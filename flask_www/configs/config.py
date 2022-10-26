@@ -54,8 +54,9 @@ class Config(object):
     """
     MAIL_SERVER = "mw-002.cafe24.com"
     MAIL_PORT = 587#25
-    MAIL_USERNAME = "rgmong@rgmong.kr"
-    MAIL_PASSWORD = "rmg@004277"
+    MAIL_USERNAME = "flask05@rgmong.kr"
+    MAIL_PASSWORD = "rgmoljin!@1011"
+    # MAIL_PASSWORD = "rmg@004277"
     MAIL_USE_TLS = False
     MAIL_USE_SSL = False
 

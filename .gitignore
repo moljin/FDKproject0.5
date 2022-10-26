@@ -171,3 +171,4 @@ flask_www/configs/.env
 .idea/
 migrations/
 flask_www/static/media/
+flask_docker.txt

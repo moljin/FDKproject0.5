@@ -93,7 +93,7 @@ def send_mail_for_any(subject, user, email, token, msg_txt, msg_html, add_if):
     msg.html = render_template(msg_html, link=link, img_link=img_link, user=user, email=email, add_if=add_if)# , token=token
     mail.send(msg)
 
-    return True
+    # return True
 
 
 def send_mail_for_verification(subject, email, auth_token, msg_txt, msg_html):  #, **kwargs

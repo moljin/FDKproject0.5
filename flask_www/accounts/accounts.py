@@ -9,7 +9,7 @@ from werkzeug import security
 
 from flask_www.accounts.forms import LoginForm, AccountsForm, AccountsUpdateForm, PasswordUpdateForm
 from flask_www.accounts.models import User, Profile, ProfileCoverImage
-from flask_www.accounts.utils import login_required, send_mail_for_any, profile_delete, optimal_password_check, existing_email_check, is_verified_true_save
+from flask_www.accounts.utils import login_required, send_mail_for_any, profile_delete, optimal_password_check, existing_email_check, is_verified_true_save, send_mail_for_verification
 from flask_www.commons.ownership_required import account_ownership_required
 from flask_www.commons.utils import flash_form_errors
 from flask_www.configs import db
@@ -89,9 +89,14 @@ def register():
 
             add_if = "register"
             subject = "β-0.0.2 회원등록 인증용 메일"
+            """
             msg_txt = 'accounts/send_mails/mail.txt'
             msg_html = 'accounts/send_mails/accounts_mail.html'
             send_mail_for_any(subject, new_user, email, auth_token, msg_txt, msg_html, add_if)
+            """
+            msg_txt = 'accounts/send_mails/register/account_register_mail.txt'
+            msg_html = 'accounts/send_mails/register/account_register_mail.html'
+            send_mail_for_verification(subject, email, auth_token, msg_txt, msg_html)
             return redirect(url_for('accounts.token_send', email=email))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
         else:
             print("flash_form_errors(form)")
@@ -105,6 +110,31 @@ def register():
 @accounts_bp.route('/verification/token/send/<email>', methods=['GET'])
 def token_send(email):
     return render_template("accounts/users/etc/token_send.html", email=email)
+
+
+@accounts_bp.route('/confirm-email/<token>', methods=['GET'])
+def accounts_confirm_email(token):
+    """add_if 을 기준으로 redirect 페이지들이 결정된다."""
+    try:
+        from flask_www.configs import safe_time_serializer
+        email = safe_time_serializer.loads(token, salt='email-confirm', max_age=86400)  # 24시간 cf. 60 == 60초 즉, 1분
+        user_obj = User.query.filter_by(email=email).first()
+
+        if user_obj and user_obj.is_verified:
+            flash('이메일 인증이 이미 되어 있어요!')
+            return redirect(url_for('accounts.login'))
+
+        if user_obj and not user_obj.is_verified:
+            is_verified_true_save(user_obj)
+            flash('이메일 인증이 완료되었습니다.')
+            return redirect(url_for('accounts.login'))
+
+        else:
+            flash('가입한 내용이 없거나 . . . 문제가 발생했습니다.')
+    except SignatureExpired:
+        confirm_expired_msg = '토큰이 죽었어요...!'
+        return confirm_expired_msg
+    return redirect(url_for('accounts.register'))
 
 
 @accounts_bp.route('/confirm-email/<add_if>/<token>', methods=['GET'])

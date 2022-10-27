@@ -43,7 +43,7 @@ def auth_permit_request(email):
         is_admin = request.form.get("is_admin")
         admin = request.form.get("admin")  # 관리자가 본인 관리자 권한 해제 요청시
         from flask_www.configs import safe_time_serializer
-        admin_token = safe_time_serializer.dumps(email, salt='email-confirm')
+        admin_token = safe_time_serializer.dumps(email, salt='email-confirm', max_age=86400)
         user_obj.admin_token = admin_token
         db.session.add(user_obj)
         db.session.commit()

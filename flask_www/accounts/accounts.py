@@ -67,7 +67,7 @@ def register():
                 password=hashed_password,
             )
             from flask_www.configs import safe_time_serializer
-            auth_token = safe_time_serializer.dumps(email, salt='email-confirm')
+            auth_token = safe_time_serializer.dumps(email, salt='email-confirm', max_age=86400)
             new_user.auth_token = auth_token
             db.session.add(new_user)
             db.session.commit()
@@ -239,7 +239,7 @@ def email_update(_id):
                 return redirect(request.referrer)
             user.email = new_email
             from flask_www.configs import safe_time_serializer
-            auth_token = safe_time_serializer.dumps(new_email, salt='email-confirm')
+            auth_token = safe_time_serializer.dumps(new_email, salt='email-confirm', max_age=86400)
             user.auth_token = auth_token
             user.is_verified = False
             db.session.commit()
@@ -296,7 +296,7 @@ def forget_password_email():
         if user_obj:
             # if user_obj.is_verified:
             from flask_www.configs import safe_time_serializer
-            password_token = safe_time_serializer.dumps(email, salt='email-confirm')
+            password_token = safe_time_serializer.dumps(email, salt='email-confirm', max_age=86400)
             user_obj.password_token = password_token
             db.session.commit()
             if user_obj.is_verified:
@@ -345,12 +345,13 @@ def forget_password_update(_id, password_token):
                     # 비번 재설정이 되면서 가입인증메일이 날라가도록 한다.
                     email = user_obj.email
                     from flask_www.configs import safe_time_serializer
-                    auth_token = safe_time_serializer.dumps(email, salt='email-confirm')
+                    auth_token = safe_time_serializer.dumps(email, salt='email-confirm', max_age=86400)
                     add_if = "not_verified"
                     subject = "β-0.4 비번재설정후 가입인증 메일"
                     msg_txt = 'accounts/send_mails/mail.txt'
                     msg_html = 'accounts/send_mails/accounts_mail.html'
                     send_mail_for_any(subject, user_obj, email, auth_token, msg_txt, msg_html, add_if)
+                    flash('이메일을 전송하였습니다. 메일을 확인하세요')
                     return redirect(url_for('accounts.token_send', user=user_obj, email=email, add_if=add_if))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
             else:
                 flash_form_errors(form)

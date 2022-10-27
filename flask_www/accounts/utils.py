@@ -82,10 +82,10 @@ def send_mail_for_any(subject, user, email, token, msg_txt, msg_html, add_if):
     """통합: 회원등록 인증메일, 비밀번호 분실시 재설정 인증메일, vendor update 알림메일"""
     global link, img_link
     msg = Message(subject, sender=Config().MAIL_USERNAME, recipients=[email])
-    if (add_if == "register") or (add_if == "email_update"):
+    if (add_if == "register") or (add_if == "email_update") or (add_if == "not_verified"):
         link = url_for('accounts.confirm', token=token, add_if=add_if, _external=True)
         img_link = url_for('static', filename='statics/images/product_1.jpg', _external=True)
-    elif (add_if == "forget_password") or (add_if == "not_verified"):
+    elif add_if == "forget_password":
         link = url_for('accounts.confirm_email', token=token, add_if=add_if, _external=True)#, _anchor="here", _method="POST")
         img_link = url_for('static', filename='statics/images/product_1.jpg', _external=True)
     elif add_if == "vendor_update":

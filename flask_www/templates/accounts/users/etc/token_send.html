@@ -35,17 +35,24 @@
                     {{ email }}님! <br>
                     가입인증 절차를 다시 신청하셨습니다.
                 </div>
+            {% elif add_if == "email_update" %}
+                <h4>로그인 등록이메일 변경신청</h4>
+                <div class="mt-20">
+                    {{ email }}님! <br>
+                    등록이메일 변경신청하셨습니다.
+                </div>
             {% endif %}
             <div>
                 <div class="mt-20">
                     {% if add_if == "register" %}
-                        가입에 등록한 이메일
+                        가입에 등록한 이메일 {% if email %}{{ email }}{% endif %}을 확인하고, 24시간 이내에 인증 절차를 완료해 주세요.
                     {% elif add_if == "forget_password" %}
-                        보내주신 등록 이메일
+                        보내주신 등록 이메일 {% if email %}{{ email }}{% endif %}을 확인하고, 24시간 이내에 비밀번호 변경을 완료해 주세요.
                     {% elif add_if == "not_verified" %}
-                        등록 이메일
+                        등록 이메일 {% if email %}{{ email }}{% endif %}을 확인하고, 24시간 이내에 인증 절차를 완료해 주세요.
+                    {% elif add_if == "email_update" %}
+                        변경한 이메일 {% if email %}{{ email }}{% endif %}을 확인하고, 24시간 이내에 인증 절차를 완료해 주세요.
                     {% endif %}
-                    {% if email %}{{ email }}{% endif %}을 확인하고, 24시간 이내에 인증 절차를 완료해 주세요.
                 </div>
                 <div class="mt-20">
                     인증메일이 오지 않았다면, 스팸편지함을 확인해보세요. 거기에도 없다면
@@ -53,15 +60,23 @@
                         가입에 사용한
                     {% elif add_if == "forget_password" %}
                         보내주신 등록
+                    {% elif add_if == "email_update" %}
+                        변경한
                     {% endif %}
                     이메일이 정확한지 확인해보세요!
                 </div>
                 <div class="mt-20">
-                    24시간내에 이메일 인증 절차를 완료하지 않으면, 정상적인 로그인이 불가능해요 . . .
+                    {% if (add_if == "register") or (add_if == "not_verified") or (add_if == "email_update") %}
+                        24시간내에 이메일 인증 절차를 완료하지 않으면, 정상적인 로그인이 불가능해요 . . .
+                    {% elif add_if == "forget_password" %}
+                        24시간내에 비밀번호 변경을 완료하지 않으면, 다시 비밀번호 변경신청을 하셔야 해요 . . .
+                    {% endif %}
                 </div>
                 <div class="mt-20">
-                    24시간내에 인증절차를 완료하지 못하셨다면,
-                    로그인 화면의 <a class="uk-link-reset" href="{{ url_for('accounts.forget_password_email') }}">비밀번호를 잊으셨나요?</a>를 클릭하여 등록한 이메일을 보내주세요. 인증메일이 재발송됩니다.
+                    {% if (add_if == "register") or (add_if == "not_verified") or (add_if == "email_update") %}
+                        24시간내에 인증절차를 완료하지 못하셨다면,
+                        로그인 화면의 <a class="uk-link-reset" href="{{ url_for('accounts.forget_password_email') }}">비밀번호를 잊으셨나요?</a>를 클릭하여 등록한 이메일을 보내주세요. 인증메일이 재발송됩니다.
+                    {% endif %}
                 </div>
             </div>
         </div>

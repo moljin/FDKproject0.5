@@ -252,7 +252,8 @@ def email_update(_id):
             send_mail_for_any(subject, user, new_email, auth_token, msg_txt, msg_html, add_if)
             # 이미 session.get('email')까지 None 으로 됐기 때문에 session.pop('email', None)은 필요없다.
             logout_user()
-            return redirect(url_for('accounts.token_send', email=new_email))
+            flash('이메일을 전송하였습니다. 메일을 확인하세요')
+            return redirect(url_for('accounts.token_send', user=user, email=new_email, add_if=add_if))
         else:
             flash('가입된 이메일과 동일해요 . . . ')
     return render_template('accounts/resetting/email_update.html', user=user, form=form)
@@ -298,14 +299,22 @@ def forget_password_email():
             password_token = safe_time_serializer.dumps(email, salt='email-confirm')
             user_obj.password_token = password_token
             db.session.commit()
-
-            add_if = "forget_password"
-            subject = "β-0.0.2 비밀번호 변경 메일"
+            if user_obj.is_verified:
+                add_if = "forget_password"
+                subject = "β-0.0.2 비밀번호 변경 메일"
+                # msg_txt = 'accounts/send_mails/mail.txt'
+                # msg_html = 'accounts/send_mails/accounts_mail.html'
+                # send_mail_for_any(subject, user_obj, email, password_token, msg_txt, msg_html, add_if)
+                # flash('이메일을 전송하였습니다. 메일을 확인하세요')
+                # return redirect(url_for('accounts.token_send', user=user_obj, email=email, add_if=add_if))
+            else:
+                add_if = "forget_password"
+                subject = "β-0.0.2 비밀번호 변경 및 가입인증 신청메일"
             msg_txt = 'accounts/send_mails/mail.txt'
             msg_html = 'accounts/send_mails/accounts_mail.html'
             send_mail_for_any(subject, user_obj, email, password_token, msg_txt, msg_html, add_if)
             flash('이메일을 전송하였습니다. 메일을 확인하세요')
-            return redirect(url_for('accounts.token_send', email=email, add_if=add_if))
+            return redirect(url_for('accounts.token_send', user=user_obj, email=email, add_if=add_if))
         else:
             flash('등록된 이메일이 없어요!')
             return redirect(url_for('accounts.register', form=AccountsForm()))

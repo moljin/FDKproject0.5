@@ -35,6 +35,17 @@
                 </div>
                 <p>버튼을 클릭하면, 인증이 완료되고 변경된 이메일로 로그인이 가능합니다.</p>
                 감사합니다.
+            {% elif add_if == "not_verified" %}
+                <h3 class="mb-20">인증 완료하기</h3>
+                <div>
+                    24시간 이내에 인증 절차를 완료하셔야 해요 . . . <br>
+                    이 인증 절차를 완료하지 않으면, 정상적인 로그인이 불가능합니다. <br>
+                </div>
+                <div class="mt-20 mb-20">
+                    <a href="{{ url_for("accounts.confirm_email", add_if=add_if, token=token) }}"><button class="uk-button uk-button-default uk-button-primary width-100">가입인증 완료하기</button></a>
+                </div>
+                <p>버튼을 클릭하면, 인증이 완료되고 로그인이 가능합니다.</p>
+                감사합니다.
             {% endif %}
         </div>
     </section>

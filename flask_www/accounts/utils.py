@@ -92,9 +92,9 @@ def send_mail_for_any(subject, user, email, token, msg_txt, msg_html, add_if):
     msg.body = render_template(msg_txt)
     # msg.html = render_template(msg_html, link=link, user=user, email=email, add_if=add_if)
     msg.html = render_template(msg_html, link=link, img_link=img_link, user=user, email=email, add_if=add_if)# , token=token
+    mail.send(msg)
     print("msg.html = render_template(msg_html, link=link, img_link=img_link, user=user, email=email, add_if=add_if)")
     is_verified_false_save(user)
-    mail.send(msg)
 
     # return True
 

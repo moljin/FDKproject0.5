@@ -98,20 +98,6 @@ def send_mail_for_any(subject, user, email, token, msg_txt, msg_html, add_if):
     # return True
 
 
-def send_mail_for_verification(subject, email, auth_token, msg_txt, msg_html):  #, **kwargs
-    # msg = Message('Goggle0.0.1의 인증 메일입니다.', sender=Config().MAIL_USERNAME, recipients=[email])
-    msg = Message(subject, sender=Config().MAIL_USERNAME, recipients=[email])
-    a_link = url_for('accounts.accounts_confirm_email', token=auth_token, _external=True)
-    # msg.body = 'Hi paste the link to verify your account {}'.format(link)
-    # msg.body = f'Hi paste the link to verify your account {link}'
-    # content = f'Hi paste the link to verify your account {link}'
-    msg.body = render_template(msg_txt) #, **kwargs
-    msg.html = render_template(msg_html, link=a_link, email=email)#, content=content, **kwargs
-    mail.send(msg)
-
-    return True
-
-
 def profile_delete(profile):
     profile_image_path = profile.image_path
     profile_corp_image_path = profile.corp_image_path
@@ -141,7 +127,6 @@ def is_verified_true_save(user_obj):
 
 
 def is_verified_false_save(user_obj):
-    print("is_verified_false_save(user_obj)")
     user_obj.is_verified = False
     db.session.add(user_obj)
     db.session.commit()

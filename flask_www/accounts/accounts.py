@@ -67,7 +67,7 @@ def register():
                 password=hashed_password,
             )
             from flask_www.configs import safe_time_serializer
-            auth_token = safe_time_serializer.dumps(email, salt='email-confirm', max_age=86400)
+            auth_token = safe_time_serializer.dumps(email, salt='email-confirm')
             new_user.auth_token = auth_token
             db.session.add(new_user)
             db.session.commit()
@@ -78,11 +78,6 @@ def register():
             msg_txt = 'accounts/send_mails/mail.txt'
             msg_html = 'accounts/send_mails/accounts_mail.html'
             send_mail_for_any(subject, new_user, email, auth_token, msg_txt, msg_html, add_if)
-            """
-            msg_txt = 'accounts/send_mails/register/account_register_mail.txt'
-            msg_html = 'accounts/send_mails/register/account_register_mail.html'
-            send_mail_for_verification(subject, email, auth_token, msg_txt, msg_html)
-            """
             flash('이메일을 전송하였습니다. 메일을 확인하세요')
             return redirect(url_for('accounts.token_send', email=email, add_if=add_if))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
 
@@ -100,31 +95,6 @@ def token_send(email):
     user_obj = User.query.filter_by(email=email).first()
     add_if = request.args.get("add_if")
     return render_template("accounts/users/etc/token_send.html", user=user_obj, email=email, add_if=add_if)
-
-
-@accounts_bp.route('/confirm-email/<token>', methods=['GET'])
-def accounts_confirm_email(token):
-    """add_if 을 기준으로 redirect 페이지들이 결정된다."""
-    try:
-        from flask_www.configs import safe_time_serializer
-        email = safe_time_serializer.loads(token, salt='email-confirm', max_age=86400)  # 24시간 cf. 60 == 60초 즉, 1분
-        user_obj = User.query.filter_by(email=email).first()
-
-        if user_obj and user_obj.is_verified:
-            flash('이메일 인증이 이미 되어 있어요!')
-            return redirect(url_for('accounts.login'))
-
-        if user_obj and not user_obj.is_verified:
-            is_verified_true_save(user_obj)
-            flash('이메일 인증이 완료되었습니다.')
-            return redirect(url_for('accounts.login'))
-
-        else:
-            flash('가입한 내용이 없거나 . . . 문제가 발생했습니다.')
-    except SignatureExpired:
-        confirm_expired_msg = '토큰이 죽었어요...!'
-        return confirm_expired_msg
-    return redirect(url_for('accounts.register'))
 
 
 @accounts_bp.route('/confirm/<add_if>/<token>', methods=['GET', 'POST'])
@@ -239,7 +209,7 @@ def email_update(_id):
                 return redirect(request.referrer)
             user.email = new_email
             from flask_www.configs import safe_time_serializer
-            auth_token = safe_time_serializer.dumps(new_email, salt='email-confirm', max_age=86400)
+            auth_token = safe_time_serializer.dumps(new_email, salt='email-confirm')
             user.auth_token = auth_token
             user.is_verified = False
             db.session.commit()
@@ -296,7 +266,7 @@ def forget_password_email():
         if user_obj:
             # if user_obj.is_verified:
             from flask_www.configs import safe_time_serializer
-            password_token = safe_time_serializer.dumps(email, salt='email-confirm', max_age=86400)
+            password_token = safe_time_serializer.dumps(email, salt='email-confirm')
             user_obj.password_token = password_token
             db.session.commit()
             if user_obj.is_verified:
@@ -345,7 +315,7 @@ def forget_password_update(_id, password_token):
                     # 비번 재설정이 되면서 가입인증메일이 날라가도록 한다.
                     email = user_obj.email
                     from flask_www.configs import safe_time_serializer
-                    auth_token = safe_time_serializer.dumps(email, salt='email-confirm', max_age=86400)
+                    auth_token = safe_time_serializer.dumps(email, salt='email-confirm')
                     add_if = "not_verified"
                     subject = "β-0.4 비번재설정후 가입인증 메일"
                     msg_txt = 'accounts/send_mails/mail.txt'

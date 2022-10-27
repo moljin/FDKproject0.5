@@ -93,6 +93,9 @@ def register():
             msg_txt = 'accounts/send_mails/mail.txt'
             msg_html = 'accounts/send_mails/accounts_mail.html'
             send_mail_for_any(subject, new_user, email, auth_token, msg_txt, msg_html, add_if)
+            new_user.is_verified = False
+            db.session.add(new_user)
+            db.session.commit()
             """
             msg_txt = 'accounts/send_mails/register/account_register_mail.txt'
             msg_html = 'accounts/send_mails/register/account_register_mail.html'

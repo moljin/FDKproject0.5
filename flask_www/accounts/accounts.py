@@ -54,12 +54,6 @@ def register():
     form = AccountsForm()
     email = form.email.data
     try:
-        """
-        existing_email_user = User.query.filter_by(email=email).first()
-        if existing_email_user:
-            flash("가입된 이메일이 존재합니다.")
-        """
-
         if request.method == 'POST':#form.validate_on_submit():
             if existing_email_check(email) == "Existing":
                 flash("가입된 이메일이 존재합니다.")
@@ -67,15 +61,6 @@ def register():
             if optimal_password_check(form.password.data) == "Not Optimal":
                 flash('비밀번호는 알파벳, 특수문자와 숫자를 모두 포함한 9자리 이상이어야 합니다.')
                 return redirect(request.referrer)
-
-            """
-            password_reg = "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{9,30}$"
-            regex = re.compile(password_reg)
-            password_reg_mat = re.search(regex, str(form.password.data))
-            if not password_reg_mat:
-                flash('비밀번호는 알파벳, 특수문자와 숫자를 모두 포함한 9자리 이상이어야 합니다.')
-                return redirect(request.path)
-            """
             hashed_password = security.generate_password_hash(form.password.data)
             new_user = User(
                 email=request.form.get('email'),
@@ -139,7 +124,12 @@ def accounts_confirm_email(token):
     return redirect(url_for('accounts.register'))
 
 
-@accounts_bp.route('/confirm-email/<add_if>/<token>', methods=['GET', 'POST']) # 원래는 get만
+@accounts_bp.route('/confirm/<add_if>/<token>', methods=['GET', 'POST'])
+def confirm(add_if, token):
+    return render_template('accounts/users/confirm.html', add_if=add_if, token=token)
+
+
+@accounts_bp.route('/confirm-email/<add_if>/<token>', methods=['GET']) # 원래는 get만
 def confirm_email(add_if, token):
     """add_if 을 기준으로 redirect 페이지들이 결정된다."""
     print(request.method)

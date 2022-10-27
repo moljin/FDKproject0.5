@@ -83,18 +83,21 @@ def send_mail_for_any(subject, user, email, token, msg_txt, msg_html, add_if):
     global link, img_link
     msg = Message(subject, sender=Config().MAIL_USERNAME, recipients=[email])
     # add_if: "템플릿단에서 조건을 추가하고자 할 때... 이게 False 이면 회원등록완료하기 html 을 준다."
-    if add_if == "register" or "email_update" or "forget_password" or "not_verified":
+    print('add_if == "register" or "email_update1"', add_if)
+    if add_if == "register" or "email_update":
+        print('add_if == "register" or "email_update2"', add_if)
+        link = url_for('accounts.confirm', token=token, add_if=add_if, _external=True)
+        img_link = url_for('static', filename='statics/images/product_1.jpg', _external=True)
+    elif add_if == "forget_password" or "not_verified":
+        print('add_if == "forget_password" or "not_verified"', add_if)
         link = url_for('accounts.confirm_email', token=token, add_if=add_if, _external=True)#, _anchor="here", _method="POST")
         img_link = url_for('static', filename='statics/images/product_1.jpg', _external=True)
-        # is_verified_false_save(user)
     elif add_if == "vendor_update":
         link = None
     msg.body = render_template(msg_txt)
     # msg.html = render_template(msg_html, link=link, user=user, email=email, add_if=add_if)
     msg.html = render_template(msg_html, link=link, img_link=img_link, user=user, email=email, add_if=add_if)# , token=token
     mail.send(msg)
-    print("msg.html = render_template(msg_html, link=link, img_link=img_link, user=user, email=email, add_if=add_if)")
-    return is_verified_false_save(user)
 
     # return True
 

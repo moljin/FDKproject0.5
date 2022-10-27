@@ -41,6 +41,8 @@ footer, header, hgroup, menu, nav, section {
 
 main, .main-width {max-width: 1280px; margin: auto;}/*padding-top: 10px; */
 .width-100 {width: 100%}
+.text-center {text-align: center}
+.display-flex-justify-between {display: flex; justify-content: space-between}
 .section-container, .padding10 {padding: 10px}
 .above-main .flashes {border-radius: 0}
 #flashes-close-btn, #flashes-close-btn2 {padding-top: 5px}
@@ -88,6 +90,7 @@ button.check-btn:hover {background: #ecf0f1; color: #eb2f06}
 .pl-15 {padding-left: 15px}
 .pl-20 {padding-left: 20px}
 .pl-30 {padding-left: 30px}
+.pl-40 {padding-left: 40px}
 
 .pr-5 {padding-right: 5px}
 .pr-7 {padding-right: 7px}

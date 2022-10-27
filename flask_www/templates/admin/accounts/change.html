@@ -35,7 +35,7 @@
     <section class="admin-section">
         <div class="accounts-container">
             <div class="form-container">
-                <form class="accounts" method="POST" action="{{ url_for('admin_accounts.save') }}">
+                <form class="accounts" method="POST" action="{{ url_for('admin_accounts.change_save') }}">
                     {{ form.csrf_token }}
                     <fieldset class="uk-fieldset">
                         <div class="uk-margin" uk-grid>
@@ -52,7 +52,8 @@
                                 비밀번호:
                             </div>
                             <div class="uk-width-expand pl-10">
-                                {{ form.password(class="uk-input mt-5", value=target_user.password) }}
+{#                                <input readonly class="uk-input mt-5" id="password" maxlength="20" minlength="9" name="password" placeholder="비밀번호" type="password" value="{{ target_user.password }}">#}
+                                {{ form.password(readonly="readonly", class="uk-input mt-5", value=target_user.password) }}
                             </div>
                         </div>
                         <div class="uk-margin" uk-grid>
@@ -60,7 +61,8 @@
                                 비밀번호 확인:
                             </div>
                             <div class="uk-width-expand pl-10">
-                                {{ form.repassword(class="uk-input mt-5") }}
+{#                                <input readonly class="uk-input mt-5" id="repassword" maxlength="20" minlength="9" name="repassword" placeholder="비밀번호 확인" type="password" value="{{ target_user.password }}">#}
+                                {{ form.repassword(readonly="readonly", class="uk-input mt-5", value=target_user.password) }}
                             </div>
                         </div>
                         <div class="uk-margin" uk-grid>

@@ -70,27 +70,40 @@ def auth_permit_request(email):
             is_admin = "n"
         admin_send_mail(subject, authorizer_email, admin_token, msg_txt, msg_html, add_if, req_email, is_staff, is_admin)
         return redirect(url_for('accounts.token_send', email=email))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
-    if user_obj and current_user.is_authenticated:
-        print("current_user.is_admin", current_user.is_admin)
-        # 로그인한 이메일 입력(이걸 서버에 저장해야 되나? 저장하지 않는 방법은?)
-        # 저장하지 않고 그냥 html 에 id=email span tag 에 넣어서 보낸다.
-        # 관리자에게 관리자로 인증요청 메일발송(일단 몰진네이버메일(moljin@naver.com) 사용): send_mail_for_any
-        # 메일 수신한 관리자가 인증 클릭하면 서버에 저장된 가입이메일인지 체크: permit_confirm
-        # 이메일 존재 체크완료되면 관리자 is_admin=True 로 저장되면서 인증완료: permit_confirm
-        if (email == current_user.email) and current_user.is_admin:
-            return render_template('admin/accounts/auth.html', target_user=user_obj, form=form, admin="관리자 자신")
-        if email == current_user.email and not current_user.is_admin:
-            return render_template('admin/accounts/auth.html', target_user=user_obj, form=form)
-        else:
-            abort(401)
+    else:
+        if user_obj and current_user.is_authenticated:
+            if (email == current_user.email) and current_user.is_admin:
+                return render_template('admin/accounts/auth.html', target_user=user_obj, form=form, admin="관리자 자신")
+            if (email == current_user.email) and not current_user.is_admin:
+                return render_template('admin/accounts/auth.html', target_user=user_obj, form=form, admin="not admin")
+            else:
+                abort(401)
 
 
-@admin_accounts_bp.route('auth/permission/confirm/<add_if>/<token>')
+@admin_accounts_bp.route('auth/confirm/<add_if>/<token>')
+@admin_required
+def auth_confirm(add_if, token):
+    req_email = request.args.get("req_email")
+    print("auth_confirm(add_if, token): req_email", req_email)
+    is_staff = request.args.get("is_staff")
+    is_admin = request.args.get("is_admin")
+    return render_template('admin/accounts/auth_confirm.html',
+                           add_if=add_if,
+                           token=token,
+                           req_email=req_email,
+                           is_staff=is_staff,
+                           is_admin=is_admin)
+
+
+@admin_accounts_bp.route('auth/confirm/email/<add_if>/<token>')
+@admin_required
 def auth_confirm_email(add_if, token):
     from flask_www.configs import safe_time_serializer
     email = safe_time_serializer.loads(token, salt='email-confirm', max_age=86400)  # 24시간 cf. 60 == 60초 즉, 1분
     try:
         user_obj = User.query.filter_by(email=email).first()
+        req_email = request.args.get("req_email")
+        print("req_email", req_email)
         is_staff = request.args.get("is_staff")
         is_admin = request.args.get("is_admin")
         if (is_admin == "y") and (is_staff == "y"):
@@ -271,6 +284,35 @@ def save():
             else:
                 flash("비밀번호가 일치하지 않아요")
                 return redirect(request.referrer)
+        return redirect(url_for("admin_accounts.change", _id=target_user_id))
+    else:
+        abort(404)
+
+
+@admin_accounts_bp.route('/accounts/change/save', methods=['POST'])
+@admin_required
+def change_save():
+    if request.method == 'POST':
+        target_user_id = request.form.get("_id")
+        req_email = request.form.get("email")
+        is_verified = request.form.get("is_verified")
+        is_staff = request.form.get("is_staff")
+        is_admin = request.form.get("is_admin")
+        if target_user_id:
+            target_user = User.query.get_or_404(target_user_id)
+            if is_admin is None:  # 관리자 자신이 관리자 권한 해제 요청을 진행하는 경우
+                if target_user.is_admin and current_user == target_user:
+                    flash("관리자님의 관리자 권한 해제는 SUPER ADMIN만 가능합니다..")
+                    return redirect(url_for("admin_accounts.auth_permit_request", email=current_user.email, is_admin="관리자 자신"))
+                    # 관리자 자신은 is_admin 이외의 것은 수정할 수 있지만,
+                    # is_admin 해제는 최고 관리자에게 메일 요청으로 할 수 있도록 한다.
+            if target_user.email != req_email:
+                if existing_email_check(req_email) == "Existing":
+                    flash("가입된 이메일이 존재합니다.")
+                    return redirect(request.referrer)
+            target_user.email = req_email
+            admin_user_save(target_user, auth_token=None, password_token=None, admin_token=None, is_verified=is_verified, is_staff=is_staff, is_admin=is_admin)
+            flash("변경내용이 저장되었습니다.")
         return redirect(url_for("admin_accounts.change", _id=target_user_id))
     else:
         abort(404)

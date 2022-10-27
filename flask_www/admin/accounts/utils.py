@@ -5,9 +5,12 @@ from flask_www.configs.config import Config
 
 
 def admin_user_save(user, auth_token, password_token, admin_token, is_verified, is_staff, is_admin):
-    user.auth_token = auth_token
-    user.password_token = password_token
-    user.admin_token = admin_token
+    if auth_token is not None:
+        user.auth_token = auth_token
+    if password_token is not None:
+        user.password_token = password_token
+    if admin_token is not None:
+        user.admin_token = admin_token
     print("is_verified", is_verified)
     print("is_staff", is_staff)
     print("is_admin", is_admin)
@@ -37,7 +40,7 @@ def admin_send_mail(subject, authorizer_email, token, msg_txt, msg_html, add_if,
     global link
     msg = Message(subject, sender=Config().MAIL_USERNAME, recipients=[authorizer_email])
     if add_if == "auth_permission" or "not_admin":
-        link = url_for('admin_accounts.auth_confirm_email',
+        link = url_for('admin_accounts.auth_confirm',
                        token=token,
                        add_if=add_if,
                        req_email=req_email,
@@ -56,7 +59,7 @@ def admin_send_mail(subject, authorizer_email, token, msg_txt, msg_html, add_if,
                                is_admin=is_admin)
     mail.send(msg)
 
-    return True
+    # return True
 
 
 def is_admin_true_save(user_obj):

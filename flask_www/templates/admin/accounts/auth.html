@@ -39,7 +39,7 @@
 
 {% block main %}
     <section class="admin-section">
-        <div class="accounts-container">
+        <div class="accounts-container mt-20">
             <div class="form-container">
                 <form method="POST" action="{{ url_for("admin_accounts.auth_permit_request", email=target_user.email) }}">
                  {{ form.csrf_token }}
@@ -64,7 +64,7 @@
                         <a href="{{ url_for("admin_accounts.index") }}"><button class="uk-button uk-button-danger" type="button">취소</button></a>
                         <button class="uk-button uk-button-primary ml-10" type="submit">관리자 해제요청</button>
                         </div>
-                    {% else %}
+                    {% elif admin == "not admin" %}
                         <br>
                         {{ target_user.email }}님! <br>
                         관리자 권한 요청을 원하면, 관리자 권한요청을 체크하고 인증요청을 클릭하세요! <br>

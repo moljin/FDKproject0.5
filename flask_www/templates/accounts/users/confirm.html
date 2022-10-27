@@ -1,24 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{{ add_if }} <br>
-{{ token }}
-    {% if add_if == "register" %}
-        <h3>회원 등록 완료하기</h3>
-        <p><a href="{{ url_for("accounts.confirm_email", add_if=add_if, token=token) }}">여기를</a> 누르면 승인이 완료됩니다. </p>
-        <p>승인이 완료되면 로그인이 가능합니다.</p>
-        감사합니다.
-    {% endif %}
+{% extends "base.html" %}
+{% block title %}
+    가입인증
+{% endblock %}
 
-    {% if add_if == "email_update" %}
-        <h3>이메일 변경 인증 완료하기</h3>
-        <p><a href="{{ url_for("accounts.confirm_email", add_if=add_if, token=token) }}" id="a-link">여기를</a> 누르면 승인이 완료됩니다. </p>
-        <p>승인이 완료되면 변경된 이메일로 로그인이 가능합니다.</p>
-        감사합니다.
-    {% endif %}
-</body>
-</html>
+{% block head_account %}
+    <link href="{{ url_for('static', filename='statics/css/account.css') }}" rel="stylesheet">
+{% endblock %}
+
+
+{% block body %}
+
+    <section class="sign-section">
+        <div class="form-container">
+            {% if add_if == "register" %}
+                <h3 class="mb-20">회원 등록 완료하기</h3>
+                <div>
+                    24시간 이내에 인증 절차를 완료하셔야 해요 . . . <br>
+                    이 인증 절차를 완료하지 않으면, 정상적인 로그인이 불가능합니다. <br>
+                </div>
+                <div class="mt-20 mb-20">
+                    <a href="{{ url_for("accounts.confirm_email", add_if=add_if, token=token) }}"><button class="uk-button uk-button-default uk-button-primary width-100">가입인증 완료하기</button></a>
+                </div>
+                <p>버튼을 클릭하면, 인증이 완료되고 로그인이 가능합니다.</p>
+                감사합니다.
+
+            {% elif add_if == "email_update" %}
+                <h3 class="mb-20">이메일 변경 인증 완료하기</h3>
+                <div>
+                    24시간 이내에 인증 절차를 완료하셔야 해요 . . . <br>
+                    이 인증 절차를 완료하지 않으면, 변경하신 로그인 이메일이나 예전의 이메일로도 로그인이 불가능합니다. <br>
+                </div>
+                <div class="mt-20 mb-20">
+                    <a href="{{ url_for("accounts.confirm_email", add_if=add_if, token=token) }}"><button class="uk-button uk-button-default uk-button-primary width-100">이메일변경 인증 완료하기</button></a>
+                </div>
+                <p>버튼을 클릭하면, 인증이 완료되고 변경된 이메일로 로그인이 가능합니다.</p>
+                감사합니다.
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

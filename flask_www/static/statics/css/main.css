@@ -40,6 +40,7 @@ footer, header, hgroup, menu, nav, section {
 /*.above_main {padding-top: 55px}*/
 
 main, .main-width {max-width: 1280px; margin: auto;}/*padding-top: 10px; */
+.width-100 {width: 100%}
 .section-container, .padding10 {padding: 10px}
 .above-main .flashes {border-radius: 0}
 #flashes-close-btn, #flashes-close-btn2 {padding-top: 5px}

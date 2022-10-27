@@ -83,7 +83,8 @@ def register():
             msg_html = 'accounts/send_mails/register/account_register_mail.html'
             send_mail_for_verification(subject, email, auth_token, msg_txt, msg_html)
             """
-            return redirect(url_for('accounts.token_send', email=email))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
+            flash('이메일을 전송하였습니다. 메일을 확인하세요')
+            return redirect(url_for('accounts.token_send', email=email, add_if=add_if))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
 
         else:
             print("flash_form_errors(form)")
@@ -96,7 +97,9 @@ def register():
 
 @accounts_bp.route('/verification/token/send/<email>', methods=['GET'])
 def token_send(email):
-    return render_template("accounts/users/etc/token_send.html", email=email)
+    user_obj = User.query.filter_by(email=email).first()
+    add_if = request.args.get("add_if")
+    return render_template("accounts/users/etc/token_send.html", user=user_obj, email=email, add_if=add_if)
 
 
 @accounts_bp.route('/confirm-email/<token>', methods=['GET'])
@@ -301,9 +304,8 @@ def forget_password_email():
             msg_txt = 'accounts/send_mails/mail.txt'
             msg_html = 'accounts/send_mails/accounts_mail.html'
             send_mail_for_any(subject, user_obj, email, password_token, msg_txt, msg_html, add_if)
-            # send_mail_for_password_verification(email, password_token)
             flash('이메일을 전송하였습니다. 메일을 확인하세요')
-            return redirect(url_for('accounts.token_send', email=email))
+            return redirect(url_for('accounts.token_send', email=email, add_if=add_if))
         else:
             flash('등록된 이메일이 없어요!')
             return redirect(url_for('accounts.register', form=AccountsForm()))
@@ -340,7 +342,7 @@ def forget_password_update(_id, password_token):
                     msg_txt = 'accounts/send_mails/mail.txt'
                     msg_html = 'accounts/send_mails/accounts_mail.html'
                     send_mail_for_any(subject, user_obj, email, auth_token, msg_txt, msg_html, add_if)
-                    return redirect(url_for('accounts.token_send', email=email))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
+                    return redirect(url_for('accounts.token_send', user=user_obj, email=email, add_if=add_if))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
             else:
                 flash_form_errors(form)
         else:

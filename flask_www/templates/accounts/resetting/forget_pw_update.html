@@ -18,17 +18,16 @@
                 <fieldset class="uk-fieldset">
 
                     {% if user.is_verified %}
-                        <legend class="uk-legend">비밀번호 재설정 하기</legend>
+                        <h4>비밀번호 재설정 하기</h4>
                         <br>
                         <p>[{{ user.email }}]님의 비밀번호를 재설정 할 수 있어요!</p>
                         <br>
                         <p>비밀번호를 재설정하면, 추후 로그인시 새로운 비밀번호로 로그인이 가능해요!</p>
                     {% else %}
-                        <legend class="uk-legend">비밀번호 재설정후 이메일 가입인증</legend>
+                        {{ user.email }}님! <br>
+                        <h4 class="mt-10">아직 이메일 인증을 못하셨군요!</h4>
                         <br>
-                        <p>[{{ user.email }}]님의 비밀번호를 재설정 할 수 있어요!</p>
-                        <br>
-                        <p>비밀번호를 재설정하면, 가입 인증용 메일이 재발송됩니다.
+                        <p>[{{ user.email }}]님의 비밀번호를 재설정하면, 인증용 메일이 재발송됩니다.
                         등록된 이메일의 스팸편지함도 확인바랍니다.</p>
                         <br>
                         <p>가입인증을 완료하면 추후 로그인시 새로운 비밀번호로 로그인이 가능해요!</p>

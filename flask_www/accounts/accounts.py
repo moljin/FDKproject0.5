@@ -93,9 +93,6 @@ def register():
             msg_txt = 'accounts/send_mails/mail.txt'
             msg_html = 'accounts/send_mails/accounts_mail.html'
             send_mail_for_any(subject, new_user, email, auth_token, msg_txt, msg_html, add_if)
-            new_user.is_verified = False
-            db.session.add(new_user)
-            db.session.commit()
             """
             msg_txt = 'accounts/send_mails/register/account_register_mail.txt'
             msg_html = 'accounts/send_mails/register/account_register_mail.html'
@@ -142,9 +139,10 @@ def accounts_confirm_email(token):
     return redirect(url_for('accounts.register'))
 
 
-@accounts_bp.route('/confirm-email/<add_if>/<token>', methods=['GET'])
+@accounts_bp.route('/confirm-email/<add_if>/<token>', methods=['GET', 'POST']) # 원래는 get만
 def confirm_email(add_if, token):
     """add_if 을 기준으로 redirect 페이지들이 결정된다."""
+    print(request.method)
     try:
         from flask_www.configs import safe_time_serializer
         email = safe_time_serializer.loads(token, salt='email-confirm', max_age=86400)  # 24시간 cf. 60 == 60초 즉, 1분

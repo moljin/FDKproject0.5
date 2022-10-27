@@ -84,13 +84,16 @@ def send_mail_for_any(subject, user, email, token, msg_txt, msg_html, add_if):
     msg = Message(subject, sender=Config().MAIL_USERNAME, recipients=[email])
     # add_if: "템플릿단에서 조건을 추가하고자 할 때... 이게 False 이면 회원등록완료하기 html 을 준다."
     if add_if == "register" or "email_update" or "forget_password" or "not_verified":
-        link = url_for('accounts.confirm_email', token=token, add_if=add_if, _external=True)
+        link = url_for('accounts.confirm_email', token=token, add_if=add_if, _external=True)#, _anchor="here", _method="POST")
         img_link = url_for('static', filename='statics/images/product_1.jpg', _external=True)
+        # is_verified_false_save(user)
     elif add_if == "vendor_update":
         link = None
     msg.body = render_template(msg_txt)
     # msg.html = render_template(msg_html, link=link, user=user, email=email, add_if=add_if)
     msg.html = render_template(msg_html, link=link, img_link=img_link, user=user, email=email, add_if=add_if)# , token=token
+    print("msg.html = render_template(msg_html, link=link, img_link=img_link, user=user, email=email, add_if=add_if)")
+    is_verified_false_save(user)
     mail.send(msg)
 
     # return True
@@ -134,6 +137,13 @@ def profile_delete(profile):
 
 def is_verified_true_save(user_obj):
     user_obj.is_verified = True
+    db.session.add(user_obj)
+    db.session.commit()
+
+
+def is_verified_false_save(user_obj):
+    print("is_verified_false_save(user_obj)")
+    user_obj.is_verified = False
     db.session.add(user_obj)
     db.session.commit()
 

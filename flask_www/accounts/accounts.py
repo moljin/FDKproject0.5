@@ -9,11 +9,10 @@ from werkzeug import security
 
 from flask_www.accounts.forms import LoginForm, AccountsForm, AccountsUpdateForm, PasswordUpdateForm
 from flask_www.accounts.models import User, Profile, ProfileCoverImage
-from flask_www.accounts.utils import login_required, send_mail_for_any, profile_delete, optimal_password_check, existing_email_check, is_verified_true_save, send_mail_for_verification
+from flask_www.accounts.utils import login_required, send_mail_for_any, profile_delete, optimal_password_check, existing_email_check, is_verified_true_save
 from flask_www.commons.ownership_required import account_ownership_required
 from flask_www.commons.utils import flash_form_errors
 from flask_www.configs import db
-from flask_www.configs.config import BASE_DIR
 from flask_www.ecomm.products.models import ShopCategory, Product
 from flask_www.ecomm.products.utils import shop_disable_save, product_disable_save
 

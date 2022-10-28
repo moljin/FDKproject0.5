@@ -75,6 +75,7 @@ def order_create_ajax():
 
         g.db.add(order)
         g.db.commit()
+
         used_coupons = UsedCoupon.query.filter_by(cart_id=cart.id, consumer_id=current_user.id).all()
         if used_coupons:
             for used_coupon in used_coupons:
@@ -134,6 +135,34 @@ def order_create_ajax():
                     )
                     g.db.bulk_save_objects([new_order_optionitem])
             g.db.commit()
+
+        """여기서부터는 기존 오더에서 변경된 오더를 반영한다.
+        카트에서 삭제된 오더상품과 오더옵션을 제거하는 과정이다."""
+        order_productitems = OrderProduct.query.filter_by(order_id=order.id).all()
+        order_optionitems = OrderProductOption.query.filter_by(order_id=order.id).all()
+        
+        real_order_products = []
+        real_order_options = []
+        for cart_product in cart_productitems:
+            for order_product in order_productitems:
+                if order_product.product_id == cart_product.product_id:
+                    real_order_products.append(order_product)
+        for cart_option in cart_optionitems:
+            for order_option in order_optionitems:
+                if order_option.option_id == cart_option.option_id:
+                    real_order_options.append(order_option)
+
+        deleted_order_products = set(order_productitems) - set(real_order_products)
+        if deleted_order_products:
+            for deleted in deleted_order_products:
+                db.session.delete(deleted)
+                db.session.commit()
+        deleted_order_options = set(order_optionitems) - set(real_order_options)
+        if deleted_order_options:
+            for deleted in deleted_order_options:
+                db.session.delete(deleted)
+                db.session.commit()
+
         data = {'order_id': order.id}
         # data = {'order_id': new_order.id}
         return make_response(jsonify(data), 200)

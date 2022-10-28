@@ -78,43 +78,49 @@ def order_create_ajax():
         used_coupons = UsedCoupon.query.filter_by(cart_id=cart.id, consumer_id=current_user.id).all()
         if used_coupons:
             for used_coupon in used_coupons:
-                new_order_coupon = OrderCoupon(
-                    order_id=order.id,
-                    coupon_id=used_coupon.coupon_id,
-                    code=used_coupon.code,
-                    amount=used_coupon.amount,
-                    owner_id=used_coupon.owner_id,
-                    consumer_id=used_coupon.consumer_id
-                )
-                g.db.bulk_save_objects([new_order_coupon])
+                existing_order_coupon = OrderCoupon.query.filter_by(coupon_id=used_coupon.coupon_id).first()
+                if existing_order_coupon:
+                    new_order_coupon = OrderCoupon(
+                        order_id=order.id,
+                        coupon_id=used_coupon.coupon_id,
+                        code=used_coupon.code,
+                        amount=used_coupon.amount,
+                        owner_id=used_coupon.owner_id,
+                        consumer_id=used_coupon.consumer_id
+                    )
+                    g.db.bulk_save_objects([new_order_coupon])
             g.db.commit()
         for cart_productitem in cart_productitems:
-            new_order_productitem = OrderProduct(
-                buyer_id=user_id,
-                order_id=order.id,
-                product_id=cart_productitem.product_id,
-                shopcategory_id=cart_productitem.shopcategory_id,
-                pd_price=cart_productitem.price,
-                pd_subtotal_price=cart_productitem.product_subtotal_price,
-                pd_subtotal_quantity=cart_productitem.product_subtotal_quantity,
-                op_subtotal_price=cart_productitem.op_subtotal_price,
-                line_price=cart_productitem.line_price
-            )
-            g.db.bulk_save_objects([new_order_productitem])
+            existing_order_product = OrderProduct.query.filter_by(product_id=cart_productitem.product_id).first()
+            if existing_order_product:
+                new_order_productitem = OrderProduct(
+                    buyer_id=user_id,
+                    order_id=order.id,
+                    product_id=cart_productitem.product_id,
+                    shopcategory_id=cart_productitem.shopcategory_id,
+                    pd_price=cart_productitem.price,
+                    pd_subtotal_price=cart_productitem.product_subtotal_price,
+                    pd_subtotal_quantity=cart_productitem.product_subtotal_quantity,
+                    op_subtotal_price=cart_productitem.op_subtotal_price,
+                    line_price=cart_productitem.line_price
+                )
+                g.db.bulk_save_objects([new_order_productitem])
         g.db.commit()
         if cart_optionitems:
             for cart_optionitem in cart_optionitems:
-                new_order_optionitem = OrderProductOption(
-                    buyer_id=user_id,
-                    order_id=order.id,
-                    product_id=cart_optionitem.product_id,
-                    option_id=cart_optionitem.option_id,
-                    op_title=cart_optionitem.title,
-                    op_price=cart_optionitem.price,
-                    op_quantity=cart_optionitem.op_quantity,
-                    op_line_price=cart_optionitem.op_line_price
-                )
-                g.db.bulk_save_objects([new_order_optionitem])
+                existing_order_option = OrderProductOption.query.filter_by(option_id=cart_optionitem.option_id).first()
+                if existing_order_option:
+                    new_order_optionitem = OrderProductOption(
+                        buyer_id=user_id,
+                        order_id=order.id,
+                        product_id=cart_optionitem.product_id,
+                        option_id=cart_optionitem.option_id,
+                        op_title=cart_optionitem.title,
+                        op_price=cart_optionitem.price,
+                        op_quantity=cart_optionitem.op_quantity,
+                        op_line_price=cart_optionitem.op_line_price
+                    )
+                    g.db.bulk_save_objects([new_order_optionitem])
             g.db.commit()
             pass
         data = {'order_id': order.id}
@@ -142,6 +148,8 @@ def order_checkout_ajax():
         (템플릿단에서 금액을 조작해서 결제요청하는 것을 차단하기 위해서)"""
         if cart.get_real_pay_price() == int(req_amount):
             merchant_order_id = order_transaction_create(order_id=order_id, amount=req_amount)
+            order_products = OrderProduct.query.filter_by(order_id=order_id).all()
+            order_options = OrderProductOption.query.filter_by(order_id=order_id).all()
         else:
             merchant_order_id = None
     except Exception as e:
@@ -229,7 +237,8 @@ def order_complete_mobile():
             m_trans.device = "mobile"
             db.session.add(m_trans)
             db.session.commit()
-            
+            """첫 결제시에는 if 문을 통과 하면서 iamport_client_validation(m_trans)을 거친다.
+            그리고, 같은 페이지를 리로드시 if 문을 통과하지 않아야 에러 없다."""
             order_complete_transaction(m_trans, imp_uid, m_order, cart)
             order_items_complete_transaction(m_order, cart, m_order_coupons)
 

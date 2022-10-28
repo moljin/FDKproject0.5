@@ -78,7 +78,7 @@ def order_create_ajax():
         used_coupons = UsedCoupon.query.filter_by(cart_id=cart.id, consumer_id=current_user.id).all()
         if used_coupons:
             for used_coupon in used_coupons:
-                existing_order_coupon = OrderCoupon.query.filter_by(coupon_id=used_coupon.coupon_id).first()
+                existing_order_coupon = OrderCoupon.query.filter_by(order_id=order.id, coupon_id=used_coupon.coupon_id).first()
                 if not existing_order_coupon:
                     new_order_coupon = OrderCoupon(
                         order_id=order.id,
@@ -91,7 +91,7 @@ def order_create_ajax():
                     g.db.bulk_save_objects([new_order_coupon])
             g.db.commit()
         for cart_productitem in cart_productitems:
-            existing_order_product = OrderProduct.query.filter_by(product_id=cart_productitem.product_id).first()
+            existing_order_product = OrderProduct.query.filter_by(order_id=order.id, product_id=cart_productitem.product_id).first()
             if existing_order_product:
                 existing_order_product.pd_price = cart_productitem.price,
                 existing_order_product.pd_subtotal_price = cart_productitem.product_subtotal_price,
@@ -115,7 +115,7 @@ def order_create_ajax():
         g.db.commit()
         if cart_optionitems:
             for cart_optionitem in cart_optionitems:
-                existing_order_option = OrderProductOption.query.filter_by(option_id=cart_optionitem.option_id).first()
+                existing_order_option = OrderProductOption.query.filter_by(order_id=order.id, option_id=cart_optionitem.option_id).first()
                 if existing_order_option:
                     existing_order_option.op_price = cart_optionitem.price,
                     existing_order_option.op_quantity = cart_optionitem.op_quantity,

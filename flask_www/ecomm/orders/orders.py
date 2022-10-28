@@ -79,7 +79,7 @@ def order_create_ajax():
         if used_coupons:
             for used_coupon in used_coupons:
                 existing_order_coupon = OrderCoupon.query.filter_by(coupon_id=used_coupon.coupon_id).first()
-                if existing_order_coupon:
+                if not existing_order_coupon:
                     new_order_coupon = OrderCoupon(
                         order_id=order.id,
                         coupon_id=used_coupon.coupon_id,
@@ -93,6 +93,13 @@ def order_create_ajax():
         for cart_productitem in cart_productitems:
             existing_order_product = OrderProduct.query.filter_by(product_id=cart_productitem.product_id).first()
             if existing_order_product:
+                existing_order_product.pd_price = cart_productitem.price,
+                existing_order_product.pd_subtotal_price = cart_productitem.product_subtotal_price,
+                existing_order_product.pd_subtotal_quantity = cart_productitem.product_subtotal_quantity,
+                existing_order_product.op_subtotal_price = cart_productitem.op_subtotal_price,
+                existing_order_product.line_price = cart_productitem.line_price
+                g.db.bulk_save_objects([existing_order_product])
+            else:
                 new_order_productitem = OrderProduct(
                     buyer_id=user_id,
                     order_id=order.id,
@@ -110,6 +117,11 @@ def order_create_ajax():
             for cart_optionitem in cart_optionitems:
                 existing_order_option = OrderProductOption.query.filter_by(option_id=cart_optionitem.option_id).first()
                 if existing_order_option:
+                    existing_order_option.op_price = cart_optionitem.price,
+                    existing_order_option.op_quantity = cart_optionitem.op_quantity,
+                    existing_order_option.op_line_price = cart_optionitem.op_line_price
+                    g.db.bulk_save_objects([existing_order_option])
+                else:
                     new_order_optionitem = OrderProductOption(
                         buyer_id=user_id,
                         order_id=order.id,
@@ -122,7 +134,6 @@ def order_create_ajax():
                     )
                     g.db.bulk_save_objects([new_order_optionitem])
             g.db.commit()
-            pass
         data = {'order_id': order.id}
         # data = {'order_id': new_order.id}
         return make_response(jsonify(data), 200)

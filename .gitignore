@@ -172,3 +172,4 @@ flask_www/configs/.env
 migrations/
 flask_www/static/media/
 flask_docker.txt
+_test/

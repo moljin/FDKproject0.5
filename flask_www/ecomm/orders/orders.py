@@ -9,8 +9,9 @@ from flask_www.ecomm.carts.models import Cart, CartProduct, CartProductOption
 from flask_www.ecomm.orders.forms import OrderCreateForm
 from flask_www.ecomm.orders.iamport import req_cancel_pay, onetime_pay_billing_key
 from flask_www.ecomm.orders.models import Order, OrderCoupon, OrderProduct, OrderProductOption, OrderTransaction, CancelPayOrder, CustomerUid, ORDER_STATUS
-from flask_www.ecomm.orders.utils import order_transaction_create, check_customer_uid, order_items_complete_transaction, order_complete_transaction, order_items_cancel_transaction
-from flask_www.ecomm.promotions.models import PointLog, UsedCoupon
+from flask_www.ecomm.orders.utils import order_transaction_create, check_customer_uid, order_items_complete_transaction, order_complete_transaction, order_items_cancel_transaction, \
+    new_order_coupon_create
+from flask_www.ecomm.promotions.models import PointLog, UsedCoupon, Coupon
 
 NAME = 'orders'
 orders_bp = Blueprint(NAME, __name__, url_prefix='/orders')
@@ -77,20 +78,23 @@ def order_create_ajax():
         g.db.commit()
 
         used_coupons = UsedCoupon.query.filter_by(cart_id=cart.id, consumer_id=current_user.id).all()
-        if used_coupons:
+        old_order_coupons = OrderCoupon.query.filter_by(order_id=order.id, consumer_id=current_user.id).all()
+        if used_coupons and old_order_coupons:
+            for old_order_coupon in old_order_coupons:
+                db.session.delete(old_order_coupon)
+            db.session.commit()
             for used_coupon in used_coupons:
-                existing_order_coupon = OrderCoupon.query.filter_by(order_id=order.id, coupon_id=used_coupon.coupon_id).first()
-                if not existing_order_coupon:
-                    new_order_coupon = OrderCoupon(
-                        order_id=order.id,
-                        coupon_id=used_coupon.coupon_id,
-                        code=used_coupon.code,
-                        amount=used_coupon.amount,
-                        owner_id=used_coupon.owner_id,
-                        consumer_id=used_coupon.consumer_id
-                    )
-                    g.db.bulk_save_objects([new_order_coupon])
+                new_order_coupon_create(order, used_coupon)
             g.db.commit()
+        elif used_coupons and (not old_order_coupons):
+            for used_coupon in used_coupons:
+                new_order_coupon_create(order, used_coupon)
+            g.db.commit()
+        elif (not used_coupons) and old_order_coupons:
+            for order_coupon in old_order_coupons:
+                db.session.delete(order_coupon)
+            db.session.commit()
+
         for cart_productitem in cart_productitems:
             existing_order_product = OrderProduct.query.filter_by(order_id=order.id, product_id=cart_productitem.product_id).first()
             if existing_order_product:
@@ -140,7 +144,7 @@ def order_create_ajax():
         카트에서 삭제된 오더상품과 오더옵션을 제거하는 과정이다."""
         order_productitems = OrderProduct.query.filter_by(order_id=order.id).all()
         order_optionitems = OrderProductOption.query.filter_by(order_id=order.id).all()
-        
+
         real_order_products = []
         real_order_options = []
         for cart_product in cart_productitems:
@@ -156,12 +160,12 @@ def order_create_ajax():
         if deleted_order_products:
             for deleted in deleted_order_products:
                 db.session.delete(deleted)
-                db.session.commit()
+            db.session.commit()
         deleted_order_options = set(order_optionitems) - set(real_order_options)
         if deleted_order_options:
             for deleted in deleted_order_options:
                 db.session.delete(deleted)
-                db.session.commit()
+            db.session.commit()
 
         data = {'order_id': order.id}
         # data = {'order_id': new_order.id}

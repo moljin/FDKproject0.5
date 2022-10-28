@@ -7,13 +7,25 @@ from flask_login import current_user
 from flask_www.commons.utils import random_word
 from flask_www.configs import db
 from flask_www.ecomm.orders.iamport import payments_prepare, find_transaction
-from flask_www.ecomm.orders.models import Order, OrderTransaction, CustomerUid, OrderProduct, OrderProductOption, PAY_TYPE, ORDER_STATUS, VALIDATION_STATUS
+from flask_www.ecomm.orders.models import Order, OrderTransaction, CustomerUid, OrderProduct, OrderProductOption, PAY_TYPE, ORDER_STATUS, VALIDATION_STATUS, OrderCoupon
 from flask_www.ecomm.products.models import Product, ProductOption
 from flask_www.ecomm.promotions.models import UsedCoupon, Point
 from flask_www.ecomm.promotions.utils import coupon_count_update, order_point_update, coupon_count_cancel_update, order_point_cancel_update
 
 prod = ''
 option = ''
+
+
+def new_order_coupon_create(order, used_coupon):
+    new_order_coupon = OrderCoupon(
+        order_id=order.id,
+        coupon_id=used_coupon.coupon_id,
+        code=used_coupon.code,
+        amount=used_coupon.amount,
+        owner_id=used_coupon.owner_id,
+        consumer_id=used_coupon.consumer_id
+    )
+    g.db.bulk_save_objects([new_order_coupon])
 
 
 def order_transaction_create(order_id, amount, success=None, transaction_status=None):

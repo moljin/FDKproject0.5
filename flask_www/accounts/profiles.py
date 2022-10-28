@@ -11,7 +11,7 @@ from flask_www.accounts.utils import login_required, send_mail_for_any, profile_
 from flask_www.commons.ownership_required import profile_ownership_required
 from flask_www.commons.utils import save_file, ajax_post_key, flash_form_errors, existing_img_and_dir_delete_for_update, existing_img_and_dir_delete_without_update, existing_cover_image_save
 from flask_www.configs import db
-from flask_www.configs.config import NOW, BASE_DIR
+from flask_www.configs.config import NOW, BASE_DIR, SUPER_ADMIN_EMAIL
 from flask_www.ecomm.products.models import ShopCategory, Product
 from flask_www.ecomm.products.utils import shop_disable_save, product_disable_save
 
@@ -252,12 +252,15 @@ def vendor_update_ajax(_id):
                 db.session.commit()
 
                 add_if = "vendor_update"
+                add_if_admin = "vendor_update_admin"
                 subject = "판매사업자 신청 메일"
                 user_email = current_user.email
+                admin_email = SUPER_ADMIN_EMAIL
                 token = "None"
                 msg_txt = 'accounts/send_mails/mail.txt'
                 msg_html = 'accounts/send_mails/accounts_mail.html'
                 send_mail_for_any(subject, current_user, user_email, token, msg_txt, msg_html, add_if)
+                send_mail_for_any(subject, current_user, admin_email, token, msg_txt, msg_html, add_if_admin)
 
                 data_response = {
                     "corp_brand": profile.corp_brand,

@@ -9,10 +9,11 @@ from werkzeug import security
 
 from flask_www.accounts.forms import LoginForm, AccountsForm, AccountsUpdateForm, PasswordUpdateForm
 from flask_www.accounts.models import User, Profile, ProfileCoverImage
-from flask_www.accounts.utils import login_required, send_mail_for_any, profile_delete, optimal_password_check, existing_email_check, is_verified_true_save
+from flask_www.accounts.utils import login_required, send_mail_for_any, profile_delete, optimal_password_check, existing_email_check, is_verified_true_save#, send_mail_for_verification
 from flask_www.commons.ownership_required import account_ownership_required
 from flask_www.commons.utils import flash_form_errors
 from flask_www.configs import db
+from flask_www.configs.config import BASE_DIR
 from flask_www.ecomm.products.models import ShopCategory, Product
 from flask_www.ecomm.products.utils import shop_disable_save, product_disable_save
 
@@ -77,6 +78,11 @@ def register():
             msg_txt = 'accounts/send_mails/mail.txt'
             msg_html = 'accounts/send_mails/accounts_mail.html'
             send_mail_for_any(subject, new_user, email, auth_token, msg_txt, msg_html, add_if)
+            """
+            msg_txt = 'accounts/send_mails/register/account_register_mail.txt'
+            msg_html = 'accounts/send_mails/register/account_register_mail.html'
+            send_mail_for_verification(subject, email, auth_token, msg_txt, msg_html)
+            """
             flash('이메일을 전송하였습니다. 메일을 확인하세요')
             return redirect(url_for('accounts.token_send', email=email, add_if=add_if))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
 
@@ -94,6 +100,31 @@ def token_send(email):
     user_obj = User.query.filter_by(email=email).first()
     add_if = request.args.get("add_if")
     return render_template("accounts/users/etc/token_send.html", user=user_obj, email=email, add_if=add_if)
+
+
+# @accounts_bp.route('/confirm-email/<token>', methods=['GET'])
+# def accounts_confirm_email(token):
+#     """add_if 을 기준으로 redirect 페이지들이 결정된다."""
+#     try:
+#         from flask_www.configs import safe_time_serializer
+#         email = safe_time_serializer.loads(token, salt='email-confirm', max_age=86400)  # 24시간 cf. 60 == 60초 즉, 1분
+#         user_obj = User.query.filter_by(email=email).first()
+#
+#         if user_obj and user_obj.is_verified:
+#             flash('이메일 인증이 이미 되어 있어요!')
+#             return redirect(url_for('accounts.login'))
+#
+#         if user_obj and not user_obj.is_verified:
+#             is_verified_true_save(user_obj)
+#             flash('이메일 인증이 완료되었습니다.')
+#             return redirect(url_for('accounts.login'))
+#
+#         else:
+#             flash('가입한 내용이 없거나 . . . 문제가 발생했습니다.')
+#     except SignatureExpired:
+#         confirm_expired_msg = '토큰이 죽었어요...!'
+#         return confirm_expired_msg
+#     return redirect(url_for('accounts.register'))
 
 
 @accounts_bp.route('/confirm/<add_if>/<token>', methods=['GET', 'POST'])
@@ -308,6 +339,7 @@ def forget_password_update(_id, password_token):
                 user_obj.password_token = password_token
                 db.session.commit()
                 if user_obj.is_verified:
+                    flash('비밀번호변경이 완료되었어요!')
                     return redirect(url_for('accounts.login'))
                 else:
                     # 인증하지 않은 경우 비번을 잊어먹어서, 다시 비번 재설정메일을 보내면

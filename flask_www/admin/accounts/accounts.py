@@ -52,6 +52,7 @@ def auth_permit_request(email):
             add_if = "auth_permission"
         else:  # 관리자가 본인 관리자 권한 해제 요청시
             add_if = "not_admin"
+
         subject = "β-0.4 관리자 인증용 메일"
         authorizer_email = SUPER_ADMIN_EMAIL
         req_email = email  # 관리자로 승인을 요청한 회원의 메일이다.
@@ -69,7 +70,8 @@ def auth_permit_request(email):
         else:
             is_admin = "n"
         admin_send_mail(subject, authorizer_email, admin_token, msg_txt, msg_html, add_if, req_email, is_staff, is_admin)
-        return redirect(url_for('accounts.token_send', email=email))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
+        flash('이메일을 전송하였습니다. 메일을 확인하세요')
+        return redirect(url_for('accounts.token_send', user=user_obj, email=email, add_if=add_if))  # 이렇게 token_send로 이메일을 넘겨 줄수도 있다.
     else:
         if user_obj and current_user.is_authenticated:
             if (email == current_user.email) and current_user.is_admin:

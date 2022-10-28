@@ -175,47 +175,47 @@
                     {% endfor %}
 
                     <hr>
-                    {% if imp_success == "true" %}
-                        {% if point_log %}
-                            {% if point_log.is_cancel == True %}
-                                결제취소시 적용취소된 포인트:<br>
-                                {{ point_log.used_point|intcomma }}원<br>
-                            {% else %}
-                                할인 적용된 포인트: <br>
-                                {{ point_log.used_point|intcomma }}원<br>
-                            {% endif %}
-                        {% endif %}
-
-                        {% if order_coupons %}
-                            <!--적용취소쿠폰 cancel-->
-                            {% for order_coupon in order_coupons %}
-                                {% if order_coupon.is_cancel == True %}
-                                    결제취소시 적용취소된 쿠폰:<br>{% break %}
-                                {% endif %}
-                            {% endfor %}
-                            {% for order_coupon in order_coupons %}
-                                {% if order_coupon.is_cancel == True %}
-                                    {{ order_coupon.coupon.code }}({{ order_coupon.coupon.amount|intcomma }}원) <br>
-                                {% endif %}
-                            {% endfor %}
-
-                            <!--적용쿠폰 no cancel-->
-                            {% for order_coupon in order_coupons %}
-                                {% if order_coupon.is_cancel == False %}
-                                    쿠폰 할인금액:: {{ order.order_coupon_total()|intcomma }}원 <br>
-                                    사용된 쿠폰: <br>{% break %}
-                                {% endif %}
-                            {% endfor %}
-
-                            {% for order_coupon in order_coupons %}
-                                {% if order_coupon.is_cancel == False %}
-                                    {{ order_coupon.coupon.code }}({{ order_coupon.coupon.amount|intcomma }}원) <br>
-                                {% endif %}
-                            {% endfor %}
+                    {% if point_log %}
+                        {% if point_log.is_cancel == True %}
+                            결제취소시 적용취소된 포인트:<br>
+                            {{ point_log.used_point|intcomma }}원<br>
                         {% else %}
-                            사용한 쿠폰이 없어요! <br>
+                            할인 적용된 포인트: <br>
+                            {{ point_log.used_point|intcomma }}원<br>
                         {% endif %}
+                    {% endif %}
 
+                    {% if order_coupons %}
+                        <!--적용취소쿠폰 cancel-->
+                        {% for order_coupon in order_coupons %}
+                            {% if order_coupon.is_cancel == True %}
+                                결제취소시 적용취소된 쿠폰:<br>{% break %}
+                            {% endif %}
+                        {% endfor %}
+                        {% for order_coupon in order_coupons %}
+                            {% if order_coupon.is_cancel == True %}
+                                {{ order_coupon.coupon.code }}({{ order_coupon.coupon.amount|intcomma }}원) <br>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!--적용쿠폰 no cancel-->
+                        {% for order_coupon in order_coupons %}
+                            {% if order_coupon.is_cancel == False %}
+                                쿠폰 할인금액:: {{ order.order_coupon_total()|intcomma }}원 <br>
+                                사용된 쿠폰: <br>{% break %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for order_coupon in order_coupons %}
+                            {% if order_coupon.is_cancel == False %}
+                                {{ order_coupon.coupon.code }}({{ order_coupon.coupon.amount|intcomma }}원) <br>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        사용한 쿠폰이 없어요! <br>
+                    {% endif %}
+
+                    {% if imp_success == "true" %}
                         주문금액: {{ order.total_order_amount|intcomma }}원<br>
                         총 할인금액 : {{ order.total_discount_amount|intcomma }}원<br>
                         배송비: {{ cart.get_total_delivery_pay()|intcomma }}원 <br>

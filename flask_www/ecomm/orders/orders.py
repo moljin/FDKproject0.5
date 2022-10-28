@@ -211,10 +211,6 @@ def order_complete_mobile():
 
     m_trans = OrderTransaction.query.filter_by(merchant_order_id=merchant_uid).first()
     """일단 결제가 승인되어 완료되면 transaction_id는 저장을 해둬야 이용자가 취소 가능하다."""
-    # m_trans.transaction_id = imp_uid
-    m_trans.device = "mobile"
-    db.session.add(m_trans)
-    db.session.commit()
 
     order_id = m_trans.order_id
     m_order = Order.query.filter_by(id=order_id).first()
@@ -229,8 +225,13 @@ def order_complete_mobile():
     if imp_success == "true":
         """아임포트에서 imp_success 키에 string 으로 true 를 담아서 보내준다.
          모바일 결제완료시에는 order_imp_transaction 을 거치지 않으므로 여기에서 시행해줘야 한다."""
-        order_complete_transaction(m_trans, imp_uid, m_order, cart)
-        order_items_complete_transaction(m_order, cart, m_order_coupons)
+        if not m_trans.device:
+            m_trans.device = "mobile"
+            db.session.add(m_trans)
+            db.session.commit()
+            
+            order_complete_transaction(m_trans, imp_uid, m_order, cart)
+            order_items_complete_transaction(m_order, cart, m_order_coupons)
 
     return render_template('ecomm/orders/order_complete_detail.html',
                            cart=cart,
@@ -258,12 +259,11 @@ def order_complete_detail():
     order_id = request.args.get("order_id")
     pc_order = Order.query.filter_by(id=order_id).first()
     cart = Cart.query.filter_by(id=pc_order.cart_id).first()
-    point_log = PointLog.query.filter_by(order_id=order_id, cart_id=cart.id).first()
 
     pc_order_products = OrderProduct.query.filter_by(order_id=order_id).all()
     pc_order_options = OrderProductOption.query.filter_by(order_id=order_id).all()
-
     pc_order_coupons = OrderCoupon.query.filter_by(order_id=order_id, is_paid=True).all()
+    point_log = PointLog.query.filter_by(order_id=order_id, cart_id=cart.id).first()
     pc_cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
 
     pc_trans = OrderTransaction.query.filter_by(order_id=order_id, merchant_order_id=merchant_uid).first()

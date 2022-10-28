@@ -173,12 +173,14 @@
                     {% endfor %}
 
                     <hr>
-                    {% if point_log.is_cancel == True %}
-                        결제취소시 적용취소된 포인트:<br>
-                        {{ point_log.used_point|intcomma }}원<br>
-                    {% else %}
-                        할인 적용된 포인트: <br>
-                        {{ point_log.used_point|intcomma }}원<br>
+                    {% if point_log %}
+                        {% if point_log.is_cancel == True %}
+                            결제취소시 적용취소된 포인트:<br>
+                            {{ point_log.used_point|intcomma }}원<br>
+                        {% else %}
+                            할인 적용된 포인트: <br>
+                            {{ point_log.used_point|intcomma }}원<br>
+                        {% endif %}
                     {% endif %}
 
                     {% if order_coupons %}

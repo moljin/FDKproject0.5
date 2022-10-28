@@ -242,6 +242,7 @@ def order_complete_mobile():
                            order_coupons=m_order_coupons,
                            cancel_pay=m_cancel_pay,
                            device="mobile",
+
                            imp_uid=imp_uid,
                            merchant_uid=merchant_uid,
                            imp_success=imp_success,
@@ -275,10 +276,10 @@ def order_complete_detail():
     return render_template('ecomm/orders/order_complete_detail.html',
                            cart=cart,
                            order=pc_order,
-                           point_log=point_log,
                            order_productitems=pc_order_products,
                            order_optionitems=pc_order_options,
                            order_transaction=pc_trans,
+                           point_log=point_log,
                            order_coupons=pc_order_coupons,
                            cancel_pay=pc_cancel_pay,
                            device="pc")

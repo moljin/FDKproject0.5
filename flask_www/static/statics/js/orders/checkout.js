@@ -67,12 +67,14 @@ function OrderInt(cart_id, amount) {
             if (response.error) {
                 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + response.error);
             } else {
-                console.log("success")
-
+                console.log("success");
             }
         },
         error: function (err) {
-            alert('내부 오류가 발생하였습니다.\n' + err);
+            // alert('내부 오류가 발생하였습니다.\n' + err);
+            alert('내부 오류가 발생하였습니다.\n다시 시도해주세요');
+            console.log(err);
+            window.location.reload();
         }
     });
 }
@@ -96,9 +98,12 @@ function OrderCreateAjax(e) {
         if (jqXHR.status === 404) {
             alert("페이지가 존재하지 않습니다.");
         } else if (jqXHR.status === 403) {
-            alert("AjaxCreateOrder 로그인 해주세요.");
+            alert("[Error 403] 로그인 해주세요.");
         } else {
-            alert("AjaxCreateOrder 문제 발생.\n다시 시도해주세요.");
+            // alert("AjaxCreateOrder 문제 발생.\n다시 시도해주세요.");
+            alert("주문생성 문제 발생.\n다시 시도해주세요.");
+            console.log("AjaxCreateOrder 문제 발생. 다시 시도해주세요.");
+            window.location.reload();
         }
     });
     return order_id;
@@ -125,21 +130,21 @@ function OrderCheckoutAjax(e, cart_id, order_id, amount) { //, type
 
     request.done(function (data) {
         console.log('00000000 여기3 OrderCheckoutAjax "Success" data', data);
-        // if(data.works) { // 원본::: 아래처럼해도 작동한다. 연습으로 확인
+        // if(data.works) { // 원본::: 아래처럼해도 작동한다. 확인됨
         if (data.merchant_id) {
             merchant_id = data.merchant_id;
-            console.log('"OrderCheckoutAjax Success" merchant_id = data.merchant_id;', merchant_id)
         }
     });
     request.fail(function (jqXHR, textStatus) {
         if (jqXHR.status === 404) {
             alert("페이지가 존재하지 않습니다.");
         } else if (jqXHR.status === 403) {
-            alert("OrderCheckoutAjax 로그인 해주세요.");
+            alert("[Error 403] 로그인 해주세요.");
         } else {
+            // 조작한 요청을 보내는 경우
             alert(jqXHR.responseJSON._message);
             console.log('jqXHR', jqXHR);
-            console.log('jqXHR responseJSON', jqXHR.responseJSON._message);
+            console.log('jqXHR responseJSON._message', jqXHR.responseJSON._message);
             console.log('jqXHR.status', jqXHR.status);
             console.log('textStatus', textStatus);
         }
@@ -149,7 +154,6 @@ function OrderCheckoutAjax(e, cart_id, order_id, amount) { //, type
 
 function OrderImpTransaction(e, cart_id, order_id, merchant_id, imp_id, amount) {
     e.preventDefault();
-    console.log('OrderImpTransaction:::merchant_id:::', merchant_id);
     let request = $.ajax({
         method: "POST",
         url: orderImpTransaction,
@@ -160,7 +164,7 @@ function OrderImpTransaction(e, cart_id, order_id, merchant_id, imp_id, amount) 
         data: {
             cart_id: cart_id,
             order_id: order_id,
-            merchant_id: merchant_id, //origin_merchant_id,
+            merchant_id: merchant_id,
             imp_id: imp_id,
             amount: amount,
         }
@@ -174,12 +178,16 @@ function OrderImpTransaction(e, cart_id, order_id, merchant_id, imp_id, amount) 
         if (jqXHR.status === 404) {
             alert("페이지가 존재하지 않습니다.");
         } else if (jqXHR.status === 403) {
-            alert("OrderImpTransaction 로그인 해주세요.");
+            alert("[Error 403] 로그인 해주세요.");
         } else {
-            alert("OrderImpTransaction 문제 발생.\n다시 시도해주세요.");
+            // alert("OrderImpTransaction 문제 발생.\n다시 시도해주세요.");
+            console.log("OrderImpTransaction 문제 발생. 다시 시도해주세요.");
             console.log('jqXHR', jqXHR);
             console.log('jqXHR.status', jqXHR.status);
             console.log('textStatus', textStatus);
+            alert("결제완료 정보 저장에 문제 발생.\n관리자에 확인바랍니다.");
+            window.location.reload();
+
         }
     });
 }

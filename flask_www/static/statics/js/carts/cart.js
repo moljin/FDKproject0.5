@@ -83,7 +83,9 @@ function cartInit () {
                         }
                     },
                     error: function (err) {
-                        alert('내부 오류가 발생하였습니다.\n' + err);
+                        alert('내부 오류가 발생하였습니다.\n 확인후 다시 시도해주세요.');
+                        // alert('내부 오류가 발생하였습니다.\n확인후 다시 시도해주세요.' + err);
+                        window.location.reload();
                     }
                 });
             }
@@ -150,7 +152,9 @@ function cartInit () {
                         }
                     },
                     error: function (err) {
-                        alert('내부 오류가 발생하였습니다.\n' + err);
+                        alert('내부 오류가 발생하였습니다.\n 확인후 다시 시도해주세요.');
+                        // alert('내부 오류가 발생하였습니다.\n확인후 다시 시도해주세요.' + err);
+                        window.location.reload();
                     }
                 });
             }, false);
@@ -282,8 +286,9 @@ function cartInit () {
                     }
                 },
                 error: function (err) {
-                    console.log(err)
-                    alert('내부 오류가 발생하였습니다.\n' + err);
+                    alert('내부 오류가 발생하였습니다.\n 확인후 다시 시도해주세요.');
+                        // alert('내부 오류가 발생하였습니다.\n확인후 다시 시도해주세요.' + err);
+                    window.location.reload();
                 }
             });
         }, false);
@@ -362,8 +367,9 @@ function cartInit () {
                     }
                 },
                 error: function (err) {
-                    console.log(err)
-                    alert('내부 오류가 발생하였습니다.\n' + err);
+                    alert('내부 오류가 발생하였습니다.\n 확인후 다시 시도해주세요.');
+                        // alert('내부 오류가 발생하였습니다.\n확인후 다시 시도해주세요.' + err);
+                    window.location.reload();
                 }
             });
         }, false);
@@ -428,7 +434,9 @@ function cartInit () {
                         }
                     },
                     error: function (err) {
-                        alert('내부 오류가 발생하였습니다.\n' + err);
+                        alert('내부 오류가 발생하였습니다.\n 확인후 다시 시도해주세요.');
+                        // alert('내부 오류가 발생하였습니다.\n확인후 다시 시도해주세요.' + err);
+                        window.location.reload();
                     }
                 });
             }, false);
@@ -486,7 +494,9 @@ function cartInit () {
                         }
                     },
                     error: function (err) {
-                        alert('내부 오류가 발생하였습니다.\n' + err);
+                        alert('내부 오류가 발생하였습니다.\n 확인후 다시 시도해주세요.');
+                        // alert('내부 오류가 발생하였습니다.\n확인후 다시 시도해주세요.' + err);
+                        window.location.reload();
                     }
                 });
             }, false);
@@ -549,7 +559,9 @@ function cartProductDelete(cartId, PdId){
             }
         },
         error: function (err) {
-            alert('내부 오류가 발생하였습니다.\n' + err);
+            alert('내부 오류가 발생하였습니다.\n 확인후 다시 시도해주세요.');
+            // alert('내부 오류가 발생하였습니다.\n확인후 다시 시도해주세요.' + err);
+            window.location.reload();
         }
     });
 
@@ -633,7 +645,9 @@ function cartUpdateAjax(cartUpdateAjaxBtn, pdId) {
                 }
             },
             error: function (err) {
-                alert('내부 오류가 발생하였습니다.\n' + err);
+                alert('내부 오류가 발생하였습니다.\n 확인후 다시 시도해주세요.');
+                // alert('내부 오류가 발생하였습니다.\n확인후 다시 시도해주세요.' + err);
+                window.location.reload();
             }
         });
 

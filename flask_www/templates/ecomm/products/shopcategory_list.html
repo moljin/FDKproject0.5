@@ -77,71 +77,125 @@
             </a>
         {% endfor %}
             <div>
-                <div class="uk-card uk-card-default">
-                    <div class="uk-card-media-top">
-                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
-                    </div>
-                    <div class="uk-card-body">
-                        <h3 class="uk-card-title">Media Top</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                    <div class="uk-card uk-card-default">
+                        <div class="uk-card-media-top uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow="autoplay: true; autoplay-interval: 3000">
+                            <ul class="uk-slideshow-items">
+                                    <li>
+                                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" uk-cover>
+                                    </li>
+                                    <li>
+                                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" uk-cover>
+                                    </li>
+                                    <li>
+                                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" uk-cover>
+                                    </li>
+                                </ul>
+                        </div>
+
+                        <div style="position: relative">
+                            <div style="position: absolute; top: 0; left: 10px">
+                                <span style="font-size: 15px; color: #57606f">조회: 100회</span>
+                            </div>
+                        </div>
+
+                        <div style="position: relative">
+                            <div style="position: absolute; top: 0; left: 120px">
+                                <span style="font-size: 15px; color: #57606f">구독: 100명</span>
+                            </div>
+                        </div>
+
+                        <div style="position: relative">
+                            <div style="position: absolute; top: -32.5px; right: 10px">
+                                <img src="{{ url_for('static', filename='statics/images/sample_logo.png') }}" style="width: 70px; height: 70px; object-fit: cover;border-radius: 50%; border: solid white 5px">
+                            </div>
+                        </div>
+
+                        <div class="uk-card-body">
+                            <h3 class="uk-card-title">임시로 상점 타이틀틀</h3>
+                           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
             <div>
-                <div class="uk-card uk-card-default">
-                    <div class="uk-card-media-top">
-                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
-                    </div>
-                    <div class="uk-card-body">
-                        <h3 class="uk-card-title">Media Top</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                    <div class="uk-card uk-card-default">
+                        <div class="uk-card-media-top uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow="autoplay: true; autoplay-interval: 3000">
+                            <ul class="uk-slideshow-items">
+                                    <li>
+                                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" uk-cover>
+                                    </li>
+                                    <li>
+                                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" uk-cover>
+                                    </li>
+                                    <li>
+                                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" uk-cover>
+                                    </li>
+                                </ul>
+                        </div>
+
+                        <div style="position: relative">
+                            <div style="position: absolute; top: 0; left: 10px">
+                                <span style="font-size: 15px; color: #57606f">조회: 100회</span>
+                            </div>
+                        </div>
+
+                        <div style="position: relative">
+                            <div style="position: absolute; top: 0; left: 120px">
+                                <span style="font-size: 15px; color: #57606f">구독: 100명</span>
+                            </div>
+                        </div>
+
+                        <div style="position: relative">
+                            <div style="position: absolute; top: -32.5px; right: 10px">
+                                <img src="{{ url_for('static', filename='statics/images/sample_logo.png') }}" style="width: 70px; height: 70px; object-fit: cover;border-radius: 50%; border: solid white 5px">
+                            </div>
+                        </div>
+
+                        <div class="uk-card-body">
+                            <h3 class="uk-card-title">임시로 상점 타이틀틀</h3>
+                           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
             <div>
-                <div class="uk-card uk-card-default">
-                    <div class="uk-card-media-top">
-                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
-                    </div>
-                    <div class="uk-card-body">
-                        <h3 class="uk-card-title">Media Top</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="uk-card uk-card-default">
-                    <div class="uk-card-media-top">
-                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
-                    </div>
-                    <div class="uk-card-body">
-                        <h3 class="uk-card-title">Media Top</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="uk-card uk-card-default">
-                    <div class="uk-card-media-top">
-                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
-                    </div>
-                    <div class="uk-card-body">
-                        <h3 class="uk-card-title">Media Top</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="uk-card uk-card-default">
-                    <div class="uk-card-media-top">
-                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
-                    </div>
-                    <div class="uk-card-body">
-                        <h3 class="uk-card-title">Media Top</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                    <div class="uk-card uk-card-default">
+                        <div class="uk-card-media-top uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow="autoplay: true; autoplay-interval: 3000">
+                            <ul class="uk-slideshow-items">
+                                    <li>
+                                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" uk-cover>
+                                    </li>
+                                    <li>
+                                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" uk-cover>
+                                    </li>
+                                    <li>
+                                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" uk-cover>
+                                    </li>
+                                </ul>
+                        </div>
+
+                        <div style="position: relative">
+                            <div style="position: absolute; top: 0; left: 10px">
+                                <span style="font-size: 15px; color: #57606f">조회: 100회</span>
+                            </div>
+                        </div>
+
+                        <div style="position: relative">
+                            <div style="position: absolute; top: 0; left: 120px">
+                                <span style="font-size: 15px; color: #57606f">구독: 100명</span>
+                            </div>
+                        </div>
+
+                        <div style="position: relative">
+                            <div style="position: absolute; top: -32.5px; right: 10px">
+                                <img src="{{ url_for('static', filename='statics/images/sample_logo.png') }}" style="width: 70px; height: 70px; object-fit: cover;border-radius: 50%; border: solid white 5px">
+                            </div>
+                        </div>
+
+                        <div class="uk-card-body">
+                            <h3 class="uk-card-title">임시로 상점 타이틀틀</h3>
+                           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
         </div>
     </section>
 

@@ -74,71 +74,107 @@
                 </div>
             </a>
         {% endfor %}
-            <div>
-                <div class="uk-card uk-card-default">
-                    <div class="uk-card-media-top">
-                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
-                    </div>
-                    <div class="uk-card-body">
-                        <h3 class="uk-card-title">Media Top</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="uk-card uk-card-default">
-                    <div class="uk-card-media-top">
-                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
-                    </div>
-                    <div class="uk-card-body">
-                        <h3 class="uk-card-title">Media Top</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="uk-card uk-card-default">
-                    <div class="uk-card-media-top">
-                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
-                    </div>
-                    <div class="uk-card-body">
-                        <h3 class="uk-card-title">Media Top</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="uk-card uk-card-default">
-                    <div class="uk-card-media-top">
-                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
-                    </div>
-                    <div class="uk-card-body">
-                        <h3 class="uk-card-title">Media Top</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+            <div class="each-product">
+                    <div class="uk-card uk-card-default uk-card-body">
+                        <div class="uk-card-media-top uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow="ratio: 1:1; autoplay: true; autoplay-interval: 3000">
+                            <ul class="uk-slideshow-items">
+                                <li>
+                                    <img src="{{ url_for('static', filename='statics/images/product_1.jpg') }}" style="object-fit: cover" uk-cover>
+                                </li>
+                                <li>
+                                    <img src="{{ url_for('static', filename='statics/images/product_2.jpg') }}" style="object-fit: cover" uk-cover>
+                                </li>
+                                <li>
+                                    <img src="{{ url_for('static', filename='statics/images/product_3.jpg') }}" style="object-fit: cover" uk-cover>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="view">
+                            <div class="count">
+                                <span>조회: 100회</span>
+                            </div>
+                        </div>
+
+                        <div class="vote">
+                            <div class="count">
+                                <span>추천: 100명</span>
+                            </div>
+                        </div>
+
+                        <div class="content uk-card-body">
+                            <h3 class="uk-card-title mt-10">임시로 상품의 타이틀</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div>
-                <div class="uk-card uk-card-default">
-                    <div class="uk-card-media-top">
-                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
-                    </div>
-                    <div class="uk-card-body">
-                        <h3 class="uk-card-title">Media Top</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+            <div class="each-product">
+                    <div class="uk-card uk-card-default uk-card-body">
+                        <div class="uk-card-media-top uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow="ratio: 1:1; autoplay: true; autoplay-interval: 3000">
+                            <ul class="uk-slideshow-items">
+                                <li>
+                                    <img src="{{ url_for('static', filename='statics/images/product_1.jpg') }}" style="object-fit: cover" uk-cover>
+                                </li>
+                                <li>
+                                    <img src="{{ url_for('static', filename='statics/images/product_2.jpg') }}" style="object-fit: cover" uk-cover>
+                                </li>
+                                <li>
+                                    <img src="{{ url_for('static', filename='statics/images/product_3.jpg') }}" style="object-fit: cover" uk-cover>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="view">
+                            <div class="count">
+                                <span>조회: 100회</span>
+                            </div>
+                        </div>
+
+                        <div class="vote">
+                            <div class="count">
+                                <span>추천: 100명</span>
+                            </div>
+                        </div>
+
+                        <div class="content uk-card-body">
+                            <h3 class="uk-card-title mt-10">임시로 상품의 타이틀</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div>
-                <div class="uk-card uk-card-default">
-                    <div class="uk-card-media-top">
-                        <img src="{{ url_for('static', filename='statics/images/shop-cover.jpg') }}" width="1800" height="1200" alt="">
+            <div class="each-product">
+                    <div class="uk-card uk-card-default uk-card-body">
+                        <div class="uk-card-media-top uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slideshow="ratio: 1:1; autoplay: true; autoplay-interval: 3000">
+                            <ul class="uk-slideshow-items">
+                                <li>
+                                    <img src="{{ url_for('static', filename='statics/images/product_1.jpg') }}" style="object-fit: cover" uk-cover>
+                                </li>
+                                <li>
+                                    <img src="{{ url_for('static', filename='statics/images/product_2.jpg') }}" style="object-fit: cover" uk-cover>
+                                </li>
+                                <li>
+                                    <img src="{{ url_for('static', filename='statics/images/product_3.jpg') }}" style="object-fit: cover" uk-cover>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="view">
+                            <div class="count">
+                                <span>조회: 100회</span>
+                            </div>
+                        </div>
+
+                        <div class="vote">
+                            <div class="count">
+                                <span>추천: 100명</span>
+                            </div>
+                        </div>
+
+                        <div class="content uk-card-body">
+                            <h3 class="uk-card-title mt-10">임시로 상품의 타이틀</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                        </div>
                     </div>
-                    <div class="uk-card-body">
-                        <h3 class="uk-card-title">Media Top</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                </div>
             </div>
         </div>
     </section>

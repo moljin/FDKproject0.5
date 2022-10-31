@@ -245,18 +245,18 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="shop-cont">
+                                            <a href="{{ url_for("products.product_list") }}"><button class="uk-button uk-button-default cont">쇼핑 계속</button></a>
+                                        </div>
                                     {% endif %}
                                 {% endif %}
-                                <div class="shop-cont">
+                                <div class="shop-cont-single">
                                     <a href="{{ url_for("products.product_list") }}"><button class="uk-button uk-button-default cont">쇼핑 계속</button></a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 {% else %} <!--모바일-->
-{#                    <hr>#}
-{#                    모바일#}
-{#                    <hr>#}
                     <div class="padding10 day-num">
                         {% if imp_success != "true" %}
                             <div class="main-width flashes" uk-alert>
@@ -498,7 +498,7 @@
                                             </div>
                                         {% endif %}
                                     {% endif %}
-                                    <div class="shop-cont-cancel">
+                                    <div class="shop-cont-single">
                                         <a href="{{ url_for("products.product_list") }}"><button class="uk-button uk-button-default cont">쇼핑 계속</button></a>
                                     </div>
                                 {% else %}

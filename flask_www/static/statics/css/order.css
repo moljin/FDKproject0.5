@@ -6,7 +6,7 @@
 .cont-pay.upper {display: flex; justify-content: center!important; margin-bottom: 10px!important;}
 .cont-pay.lower {margin-top: 20px}
 .cont-pay.lower .cont-cancel .cancel-btn, .cont-pay.lower .cont-cancel .cancel-input {padding-left: 10px}
-.decision.cont-cancel .shop-cont, .decision.cont-cancel .shop-cont-cancel, .decision.cont-cancel .shop-cont-false {padding-left: 15px}
+.decision.cont-cancel .shop-cont, .decision.cont-cancel .shop-cont-single, .decision.cont-cancel .shop-cont-false {padding-left: 15px}
 
 .main-width.receiver-buyer {margin-top: 20px; justify-content: space-between}
 .main-width.receiver-buyer .receiver-info .item {margin-top: 0}

@@ -272,7 +272,7 @@ def order_complete_mobile():
     m_order_productitems = OrderProduct.query.filter_by(order_id=order_id).all()
     m_order_optionitems = OrderProductOption.query.filter_by(order_id=order_id).all()
     m_order_coupons = OrderCoupon.query.filter_by(order_id=order_id).all()
-    m_point_log = PointLog.query.filter_by(order_id=order_id, cart_id=cart.id).first()
+    m_point_log = PointLog.query.filter_by(cart_id=cart.id).first()
     m_cancel_pay = CancelPayOrder.query.filter_by(order_id=order_id, is_success=True).first()
 
     if imp_success == "true":
@@ -336,7 +336,7 @@ def order_complete_detail():
                            point_log=point_log,
                            order_coupons=pc_order_coupons,
                            cancel_pay=pc_cancel_pay,
-                           imp_success="false",
+                           # imp_success="false",
                            device="pc")
 
 

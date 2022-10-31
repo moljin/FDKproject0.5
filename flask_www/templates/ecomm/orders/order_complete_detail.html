@@ -493,9 +493,12 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="shop-cont">
+                                                <a href="{{ url_for("products.product_list") }}"><button class="uk-button uk-button-default cont">쇼핑 계속</button></a>
+                                            </div>
                                         {% endif %}
                                     {% endif %}
-                                    <div class="shop-cont">
+                                    <div class="shop-cont-cancel">
                                         <a href="{{ url_for("products.product_list") }}"><button class="uk-button uk-button-default cont">쇼핑 계속</button></a>
                                     </div>
                                 {% else %}

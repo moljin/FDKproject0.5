@@ -107,6 +107,7 @@ def order_create_ajax():
             else:
                 new_order_productitem = OrderProduct(
                     buyer_id=user_id,
+                    cart_id=cart.id,
                     order_id=order.id,
                     product_id=cart_productitem.product_id,
                     shopcategory_id=cart_productitem.shopcategory_id,
@@ -335,6 +336,7 @@ def order_complete_detail():
                            point_log=point_log,
                            order_coupons=pc_order_coupons,
                            cancel_pay=pc_cancel_pay,
+                           imp_success="false",
                            device="pc")
 
 

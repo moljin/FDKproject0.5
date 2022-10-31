@@ -9,6 +9,8 @@ ORDER_STATUS = ('미결제',
                 '배송완료',
                 '거래완료',
                 '반송중',
+                '반송확인중',
+                '반송완료',
                 '결제취소',
                 '주문취소완료')
 
@@ -101,6 +103,10 @@ class OrderProduct(BaseModel):
     __tablename__ = 'order_products'
     buyer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     buyer = db.relationship('User', backref=db.backref('buyer_orderproduct_set'))
+
+    cart_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=True)
+    cart = db.relationship('Cart', backref=db.backref('cart_orderproduct_set'),
+                            primaryjoin='foreign(OrderProduct.cart_id) == remote(Cart.id)')
 
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=True)
     order = db.relationship('Order', backref=db.backref('order_orderproduct_set', cascade='all, delete-orphan'),

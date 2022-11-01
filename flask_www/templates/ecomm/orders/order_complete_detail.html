@@ -497,10 +497,11 @@
                                                 <a href="{{ url_for("products.product_list") }}"><button class="uk-button uk-button-default cont">쇼핑 계속</button></a>
                                             </div>
                                         {% endif %}
+                                    {% else %}
+                                        <div class="shop-cont-single">
+                                            <a href="{{ url_for("products.product_list") }}"><button class="uk-button uk-button-default cont">쇼핑 계속</button></a>
+                                        </div>
                                     {% endif %}
-                                    <div class="shop-cont-single">
-                                        <a href="{{ url_for("products.product_list") }}"><button class="uk-button uk-button-default cont">쇼핑 계속</button></a>
-                                    </div>
                                 {% else %}
                                     <div>
                                         <a href="{{ url_for('carts.cart_view') }}"><button class="uk-button uk-button-default cont">결제 하기</button></a>

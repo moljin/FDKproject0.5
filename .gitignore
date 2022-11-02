@@ -171,5 +171,7 @@ flask_www/configs/.env
 .idea/
 migrations/
 flask_www/static/media/
+git_memo.txt
 flask_docker.txt
-_test/
+tests/
+templates/tests/

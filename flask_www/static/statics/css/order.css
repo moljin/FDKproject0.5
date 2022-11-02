@@ -1,3 +1,14 @@
+/*list*/
+.order-lt {width: 55%}
+.order-rt {width: 45%}
+.order-lt, .order-rt {display: flex; align-items: center}
+.order-rt .pay {display: flex; flex: 1}
+.order-rt .pay-item {width: 50%}
+.order-rt .pay-item .total {border-left: solid 1px lightgrey; padding-left: 10px}
+.order-rt .method {border-left: solid 1px lightgrey; padding-left: 10px}
+.order-lt .day-num {flex: 1}
+.order-lt .pd-title {width: 65%}
+/*detail*/
 .cancel-pay-alert {display: none}
 .shop-info.upper {display: block}
 .shop-info.upper .title-del{display: flex; justify-content: space-between}

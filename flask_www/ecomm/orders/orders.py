@@ -11,7 +11,7 @@ from flask_www.ecomm.orders.iamport import req_cancel_pay, onetime_pay_billing_k
 from flask_www.ecomm.orders.models import Order, OrderCoupon, OrderProduct, OrderProductOption, OrderTransaction, CancelPayOrder, CustomerUid, ORDER_STATUS
 from flask_www.ecomm.orders.utils import order_transaction_create, check_customer_uid, order_items_complete_transaction, order_complete_transaction, order_items_cancel_transaction, \
     new_order_coupon_create
-from flask_www.ecomm.promotions.models import PointLog, UsedCoupon, Coupon
+from flask_www.ecomm.promotions.models import PointLog, UsedCoupon, Coupon, Point
 
 NAME = 'orders'
 orders_bp = Blueprint(NAME, __name__, url_prefix='/orders')
@@ -344,6 +344,7 @@ def order_complete_detail():
 @login_required
 def order_complete_list():
     orders = Order.query.filter_by(buyer_id=current_user.id, is_paid=True).order_by(desc(Order.created_at)).all()
+    point_obj = Point.query.filter_by(user_id=current_user.id).first()
     carts = Cart.query.filter_by(user_id=current_user.id).all()
     order_optionitems = OrderProductOption.query.filter_by(buyer_id=current_user.id).all()
     point_logs = PointLog.query.filter_by(user_id=current_user.id).all()
@@ -353,10 +354,11 @@ def order_complete_list():
 
     return render_template('ecomm/orders/order_complete_list.html',
                            orders=orders,
+                           point_obj=point_obj,
                            # carts=carts, # order.cart.get_total_delivery_pay() 를 사용
-                           order_optionitems=order_optionitems,
-                           point_logs=point_logs,
-                           order_coupons=order_coupons,
+                           # order_optionitems=order_optionitems,
+                           # point_logs=point_logs,
+                           # order_coupons=order_coupons,
                            # trans_all=trans_all, # order.order_ordertransaction_set 을 사용하면 된다.
                            # all_orders=all_orders_with_transaction_fail  # 임시로 볼려고 해놨다.
                            )

@@ -30,5 +30,8 @@ def routes_init(app):
     from flask_www.lotto import lotto
     app.register_blueprint(lotto.lotto_bp)
 
+    from flask_www.tests import tests
+    app.register_blueprint(tests.tests_bp)
+
 
 

@@ -29,3 +29,8 @@ def extra_dev():
             return render_template('extra_page/related_dev.html', orders=orders)
     else:
         return render_template('extra_page/related_dev.html')
+
+
+@common_bp.route('/server/dev')
+def server():
+    return render_template('extra_page/server.html')

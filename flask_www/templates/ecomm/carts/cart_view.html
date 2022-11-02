@@ -265,7 +265,7 @@
                             <div class="main-width" id="order_form_div">
                                 <form class="order-form" method="POST">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                    <input class="uk-input form-group" type="text" id="user-name" name="name" required placeholder="이름">
+                                    <input class="uk-input form-group" type="text" id="user-name" name="name" required placeholder="수령인 이름">
                                     <input class="uk-input form-group" type="email" id="user-email" name="email" required placeholder="이메일">
                                     <input class="uk-input form-group" type="text" id="user-phone" name="phonenumber" required placeholder="휴대전화번호">
                                     <div class="postcode form-group">
@@ -275,7 +275,7 @@
                                     <div id="juso-wrap">
                                         <img src="https://t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" onclick="foldDaumPostcode()" alt="접기 버튼">
                                     </div>
-                                    <input class="uk-input form-group" type="text" id="address" name="address" required placeholder="주소">
+                                    <input class="uk-input form-group" type="text" id="address" name="address" required placeholder="수령지 주소">
                                     <input class="uk-input form-group" type="text" id="detailAddress" name="detail_address" required placeholder="상세주소">
                                     <input class="uk-input form-group" type="text" id="extraAddress" name="extra_address" placeholder="주소참고항목">
                                     <input class="uk-input form-group" type="text" id="order-memo" name="order_memo" placeholder="주문메모">

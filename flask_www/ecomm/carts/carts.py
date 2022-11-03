@@ -45,6 +45,7 @@ def add_to_cart(_id):
 
         old_cartproduct = CartProduct.query.filter_by(cart_id=cart.id, product_id=_id).first()
         old_cartproductoptions = CartProductOption.query.filter_by(cart_id=cart.id, product_id=_id).all()
+        print("old_cartproductoptions", old_cartproductoptions)
 
         if option_objs and not old_cartproduct and not old_cartproductoptions:
             new_cartproduct = CartProduct(cart_id=cart.id, product_id=_id)
@@ -53,7 +54,7 @@ def add_to_cart(_id):
 
             if op_id:
                 for idx in range(len(op_id)):
-                    option_obj = ProductOption.query.get_or_404(op_id[idx])
+                    option_obj = ProductOption.query.get_or_404(int(op_id[idx]))
                     new_cartproductoption = CartProductOption(cart_id=cart.id, product_id=_id)
                     new_cartproductoption_create(new_cartproductoption, option_obj, idx, op_id, op_count, op_total_price)
                     db.session.bulk_save_objects([new_cartproductoption])
@@ -69,7 +70,7 @@ def add_to_cart(_id):
             db.session.add(old_cartproduct)
 
             for idx in range(len(op_id)):
-                option_obj = ProductOption.query.get_or_404(op_id[idx])
+                option_obj = ProductOption.query.get_or_404(int(op_id[idx]))
                 new_cartproductoption = CartProductOption(cart_id=cart.id, product_id=_id)
                 new_cartproductoption_create(new_cartproductoption, option_obj, idx, op_id, op_count, op_total_price)
                 db.session.bulk_save_objects([new_cartproductoption])
@@ -82,20 +83,18 @@ def add_to_cart(_id):
             db.session.add(old_cartproduct)
             if op_id:
                 for idx in range(len(op_id)):
-                    old_cartproductoption = CartProductOption.query.filter_by(option_id=op_id[idx]).first()
+                    old_cartproductoption = CartProductOption.query.filter_by(cart_id=cart.id, product_id=_id, option_id=int(op_id[idx])).first()
                     if old_cartproductoption:
                         old_cartproductoption.op_quantity += int(op_count[idx])
                         old_cartproductoption.op_line_price += int(op_total_price[idx])
                         db.session.bulk_save_objects([old_cartproductoption])
-
-                        cartproduct_update_remnant(old_cartproduct, idx, op_total_price)
                     else:
-                        option_obj = ProductOption.query.get_or_404(op_id[idx])
+                        option_obj = ProductOption.query.get_or_404(int(op_id[idx]))
                         new_cartproductoption = CartProductOption(cart_id=cart.id, product_id=_id)
                         new_cartproductoption_create(new_cartproductoption, option_obj, idx, op_id, op_count, op_total_price)
                         db.session.bulk_save_objects([new_cartproductoption])
 
-                        cartproduct_update_remnant(old_cartproduct, idx, op_total_price)
+                    cartproduct_update_remnant(old_cartproduct, idx, op_total_price)
             else:
                 old_cartproduct.line_price = old_cartproduct.product_subtotal_price + old_cartproduct.op_subtotal_price
                 db.session.add(old_cartproduct)

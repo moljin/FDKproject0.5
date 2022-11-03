@@ -7,7 +7,7 @@ from flask_www.configs import db
 from flask_www.configs.config import NOW
 from flask_www.ecomm.carts.models import Cart, CartProduct, CartProductOption
 from flask_www.ecomm.carts.utils import new_cartproduct_create, new_cartproductoption_create, cartproduct_update, cart_total_price, _cart_id, cart_active_check, \
-    cartproduct_update_remnant, over_discount_cart_apply, temp_op_list_for_cart_update
+    cartproduct_update_remnant, over_discount_cart_apply, temp_op_list_for_cart_update, cartproductoption_update
 from flask_www.ecomm.orders.models import CustomerUid
 from flask_www.ecomm.orders.utils import customer_uid_set
 from flask_www.ecomm.products.models import ProductOption, Product
@@ -33,6 +33,9 @@ def add_to_cart(_id):
         op_id = request.form.getlist("op-id")
         op_count = request.form.getlist("op-count")
         op_total_price = request.form.getlist("op-total-price")
+        print(op_id)
+        print(op_count)
+        print(op_total_price)
 
         total_price = request.form.get("total-price")
         cart = Cart.query.filter_by(user_id=current_user.id, is_active=True).first()
@@ -45,7 +48,6 @@ def add_to_cart(_id):
 
         old_cartproduct = CartProduct.query.filter_by(cart_id=cart.id, product_id=_id).first()
         old_cartproductoptions = CartProductOption.query.filter_by(cart_id=cart.id, product_id=_id).all()
-        print("old_cartproductoptions", old_cartproductoptions)
 
         if option_objs and not old_cartproduct and not old_cartproductoptions:
             new_cartproduct = CartProduct(cart_id=cart.id, product_id=_id)
@@ -57,8 +59,12 @@ def add_to_cart(_id):
                     option_obj = ProductOption.query.get_or_404(int(op_id[idx]))
                     new_cartproductoption = CartProductOption(cart_id=cart.id, product_id=_id)
                     new_cartproductoption_create(new_cartproductoption, option_obj, idx, op_id, op_count, op_total_price)
-                    db.session.bulk_save_objects([new_cartproductoption])
 
+                    if new_cartproduct.op_subtotal_price is None:
+                        new_cartproduct.op_subtotal_price = 0
+                        """cartproduct가 맨처음 만들어질때는 아직 op_subtotal_price이 default=0이 적용되있지 않기 때문에 
+                         명시적으로 0을 넣어주고 진행한다. 
+                         그렇지 않으면 cartproduct.op_subtotal_price 이 None 으로 +=를 적용시키지 못한다."""
                     cartproduct_update_remnant(new_cartproduct, idx, op_total_price)
             else:
                 new_cartproduct.line_price = new_cartproduct.product_subtotal_price
@@ -73,7 +79,6 @@ def add_to_cart(_id):
                 option_obj = ProductOption.query.get_or_404(int(op_id[idx]))
                 new_cartproductoption = CartProductOption(cart_id=cart.id, product_id=_id)
                 new_cartproductoption_create(new_cartproductoption, option_obj, idx, op_id, op_count, op_total_price)
-                db.session.bulk_save_objects([new_cartproductoption])
 
                 cartproduct_update_remnant(old_cartproduct, idx, op_total_price)
             db.session.commit()
@@ -85,14 +90,11 @@ def add_to_cart(_id):
                 for idx in range(len(op_id)):
                     old_cartproductoption = CartProductOption.query.filter_by(cart_id=cart.id, product_id=_id, option_id=int(op_id[idx])).first()
                     if old_cartproductoption:
-                        old_cartproductoption.op_quantity += int(op_count[idx])
-                        old_cartproductoption.op_line_price += int(op_total_price[idx])
-                        db.session.bulk_save_objects([old_cartproductoption])
+                        cartproductoption_update(old_cartproductoption, idx, op_count, op_total_price)
                     else:
                         option_obj = ProductOption.query.get_or_404(int(op_id[idx]))
                         new_cartproductoption = CartProductOption(cart_id=cart.id, product_id=_id)
                         new_cartproductoption_create(new_cartproductoption, option_obj, idx, op_id, op_count, op_total_price)
-                        db.session.bulk_save_objects([new_cartproductoption])
 
                     cartproduct_update_remnant(old_cartproduct, idx, op_total_price)
             else:
@@ -153,9 +155,6 @@ def cart_view():
                 point_log_obj = cart_point_log_create(cart, point_obj)
             else:
                 point_log_obj = cart_point_log_update(cart, point_obj)
-
-            # _used_coupons = UsedCoupon.query.filter_by(cart_id=cart.id, consumer_id=current_user.id).all()
-            print("used coupons======================", used_coupons)
             if used_coupons:
                 print("000000000000000000000000")
             else:
@@ -171,7 +170,6 @@ def cart_view():
             else:
                 customer_uid = customer_uid_set(cart.id)
 
-            print("customer_uid=========", customer_uid)
             context = {
                 "cart_id": cart.id,
                 'cart': cart,
@@ -219,10 +217,7 @@ def cart_update_ajax():
         cartproduct.product_subtotal_quantity = 0
         cartproduct.product_subtotal_price = 0
         cartproduct.op_subtotal_price = 0
-
-        cartproduct.product_subtotal_quantity += int(product_count)
-        cartproduct.product_subtotal_price += int(product_total_price)
-        cartproduct.line_price = cartproduct.product_subtotal_price
+        cartproduct_update(cartproduct, product_count, product_total_price)
         db.session.add(cartproduct)
 
         op_id = list()
@@ -231,14 +226,12 @@ def cart_update_ajax():
         op_price = list()
         if option_id:
             for idx in range(len(option_id)):
-                cartproductoption = CartProductOption.query.filter_by(cart_id=cart_id, option_id=option_id[idx]).first()
+                cartproductoption = CartProductOption.query.filter_by(cart_id=cart_id, option_id=int(option_id[idx])).first()
 
                 if cartproductoption:
                     cartproductoption.op_quantity = 0
                     cartproductoption.op_line_price = 0
-                    cartproductoption.op_quantity += int(option_count[idx])
-                    cartproductoption.op_line_price += int(option_line_price[idx])
-                    db.session.bulk_save_objects([cartproductoption])
+                    cartproductoption_update(cartproductoption, idx, option_count, option_line_price)
                     db.session.commit()
 
                     temp_op_list_for_cart_update(op_id, op_count, op_title, op_price, idx, option_id, option_count, cartproductoption)
@@ -246,15 +239,11 @@ def cart_update_ajax():
                     option_obj = ProductOption.query.get_or_404(option_id[idx])
                     new_cartproductoption = CartProductOption(cart_id=cart_id, product_id=product_id)
                     new_cartproductoption_create(new_cartproductoption, option_obj, idx, option_id, option_count, option_line_price)
-
-                    db.session.bulk_save_objects([new_cartproductoption])
                     db.session.commit()
 
                     temp_op_list_for_cart_update(op_id, op_count, op_title, op_price, idx, option_id, option_count, new_cartproductoption)
 
-                cartproduct.op_subtotal_price += int(option_line_price[idx])
-                cartproduct.line_price = cartproduct.product_subtotal_price + cartproduct.op_subtotal_price
-                db.session.add(cartproduct)
+                cartproduct_update_remnant(cartproduct, idx, option_line_price)
                 db.session.commit()
 
         base_pay_amount = BaseAmount.query.get(1).amount

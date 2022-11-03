@@ -38,6 +38,7 @@ def new_cartproductoption_create(new_cartproductoption, option_obj, idx, op_id, 
     new_cartproductoption.price = option_obj.price
     new_cartproductoption.op_quantity = int(op_count[idx])
     new_cartproductoption.op_line_price = int(op_total_price[idx])
+    db.session.bulk_save_objects([new_cartproductoption])
 
 
 def cartproduct_update(old_cartproduct, pd_count, pd_total_price):
@@ -49,6 +50,12 @@ def cartproduct_update_remnant(cartproduct, idx, op_total_price):
     cartproduct.op_subtotal_price += int(op_total_price[idx])
     cartproduct.line_price = cartproduct.product_subtotal_price + cartproduct.op_subtotal_price
     db.session.add(cartproduct)
+
+
+def cartproductoption_update(cartproductoption, idx, op_count, op_total_price):
+    cartproductoption.op_quantity += int(op_count[idx])
+    cartproductoption.op_line_price += int(op_total_price[idx])
+    db.session.bulk_save_objects([cartproductoption])
 
 
 @login_required

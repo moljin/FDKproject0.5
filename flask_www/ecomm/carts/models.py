@@ -142,10 +142,11 @@ class CartProductOption(BaseModel):
     SAWarning: Multiple rows returned with uselist=False for lazily-loaded attribute 'CartProductOption.cart_product'
     카트에 add_to_cart 할 때 아래 에러 발생
     sawarning: multiple rows returned with uselist=false for eagerly-loaded attribute 'CartProductOption.cart_product'
+    
     결국 db.relationship 적용하지 않고, product_id만 저장함
     """
-    cart_product = db.relationship('CartProduct', backref=db.backref('cartproduct_cartproductoption_set', cascade='all, delete-orphan'),
-                                   primaryjoin='foreign(CartProductOption.product_id) == remote(CartProduct.product_id)', lazy="joined")  #
+    # cart_product = db.relationship('CartProduct', backref=db.backref('cartproduct_cartproductoption_set', cascade='all, delete-orphan'),
+    #                                primaryjoin='foreign(CartProductOption.product_id) == remote(CartProduct.product_id)', lazy="joined")  #
 
     option_id = db.Column(db.Integer)
     option = db.relationship('ProductOption', backref=db.backref('productoption_cartproductoption_set'),

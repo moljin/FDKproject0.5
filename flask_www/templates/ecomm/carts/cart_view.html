@@ -172,7 +172,8 @@
                                                                 {% if cart_product.product_id == cart_option.product_id %}
                                                                     <div class="old op-select-insert" data-option-id="{{ cart_option.option_id }}" data-insert-product-id="{{ cart_product.product_id }}" uk-alert>
                                                                         <div class="op-title" data-id="op-{{ cart_option.option_id }}">{{ cart_option.title }} / {{ cart_option.price|intcomma }}원</div>
-                                                                        <button class="old op-cancel uk-alert-close uk-close" type="button" data-cancel-id="{{ cart_option.option_id }}" style="font-size: 20px">+</button>
+{#                                                                        <button class="old op-cancel uk-alert-close uk-close" type="button" data-cancel-id="{{ cart_option.option_id }}">+</button>#}
+                                                                        <a class="old op-cancel uk-alert-close" data-cancel-id="{{ cart_option.option_id }}" uk-close></a>
                                                                         <div>
                                                                             <button class="uk-button uk-button-default op-minus" data-minus-id="op-minus-{{ cart_option.option_id }}"><span uk-icon="minus"></span></button>
                                                                             <input readonly class="uk-input uk-form-width-xsmall op" id="op-count-{{ cart_option.option_id }}" name="op-count" type="text" value="{{ cart_option.op_quantity }}">

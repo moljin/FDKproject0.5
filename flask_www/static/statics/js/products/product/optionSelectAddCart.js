@@ -89,7 +89,8 @@ function insertSelectOption (selectTag, div, _id, title, price) {
     else {
         let newDiv = `<div class="op-select-insert" uk-alert>
                           <div class="op-title" data-id="op-${_id}">${title} / ${intComma(Number(price))}원</div>
-                          <button class="op-cancel uk-alert-close uk-close" type="button" data-cancel-id="${_id}" style="font-size: 20px">+</button>
+<!--                          <button class="op-cancel uk-alert-close uk-close" type="button" data-cancel-id="${_id}">+</button>-->
+                            <a class="op-cancel uk-alert-close" data-cancel-id="${_id}" uk-close></a>
                           <div>
                               <button class="uk-button uk-button-default op-minus" data-minus-id="op-minus-${_id}"><span uk-icon="minus"></span></button>
                               <input readonly class="uk-input uk-form-width-xsmall op" id="op-count-${_id}" name="op-count" type="text" value="1">

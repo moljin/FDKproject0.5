@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                         <button class="cancel-input-btn remove-input ml-7 uk-alert-close uk-close">옵션취소 <i class="fas fa-folder-minus ml-7"></i></button>
                                     </div>
                                 </div>
-                                <hr>
+<!--                                <hr>-->
                             </div>`;
     // const newInputOption = '<div class="option-form">' +
     //     '                                <div class="board-form mt-10">' +

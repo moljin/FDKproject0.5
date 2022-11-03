@@ -62,7 +62,7 @@ def add_to_cart(_id):
 
                     if new_cartproduct.op_subtotal_price is None:
                         new_cartproduct.op_subtotal_price = 0
-                        """cartproduct가 맨처음 만들어질때는 아직 op_subtotal_price이 default=0이 적용되있지 않기 때문에 
+                        """cartproduct가 맨처음 만들어질때는 아직 op_subtotal_price 에 default=0이 적용되있지 않기 때문에 
                          명시적으로 0을 넣어주고 진행한다. 
                          그렇지 않으면 cartproduct.op_subtotal_price 이 None 으로 +=를 적용시키지 못한다."""
                     cartproduct_update_remnant(new_cartproduct, idx, op_total_price)

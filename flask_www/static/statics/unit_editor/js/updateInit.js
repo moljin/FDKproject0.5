@@ -47,7 +47,7 @@ function mediaOverlayCreate(randomStringDataId) {
 }
 
 function mediaOverlayStyleAppend(newMediaOverlay, overlayContainer) {
-    newMediaOverlay.style.background = 'green'; //green  transparent
+    newMediaOverlay.style.background = 'transparent'; //green  transparent
     newMediaOverlay.style.opacity = '0.3';
     newMediaOverlay.style.position = 'absolute';
     newMediaOverlay.style.zIndex = "3";

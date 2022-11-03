@@ -433,7 +433,7 @@ function unitsEditorInit(el, opt) {
         let textarea = document.createElement('textarea');
         textarea.setAttribute('class', 'units-image-alt');
         textarea.setAttribute('placeholder', '이미지 설명글');
-        textarea.classList.add('selected'); // 추가
+        textarea.classList.add('selected'); // 추가 // 최종본 숨기기는 css에서 조절한다. unitsEditor.css:151 .units-image-alt{display:none}
         textarea.setAttribute('data-alt-id', `${dataId}`); // 추가
         textarea.innerText = imgTag.alt;
         textarea.addEventListener('focusout', imageAltChange)
@@ -459,7 +459,7 @@ function unitsEditorInit(el, opt) {
                 console.log(file.length)
                 console.log(newImgTag)
                 let newImgTagDataId = newImgTag.getAttribute('data-id'); // 추가
-                imageAltTextAreaApply(newImgTag, newImgTagDataId);
+                imageAltTextAreaApply(newImgTag, newImgTagDataId);  //최종본 변경
 
             } else { // 이미지 로드 없지만,  이미지 클릭할 때(newImgTag.onload = function () 는 거친다.)
                 console.log("if (e.target.onload !== null) e.target.onload", e.target.onload)
@@ -493,9 +493,6 @@ function unitsEditorInit(el, opt) {
                         imageAltTextAreaApply(targetImgTag, targetOverlayDataId);
 
                         mediaAndOverlaySelect(targetOverlay, targetImgTag);
-                        // Array.from(mediaOverlaysAll).forEach(function (mediaOverlay, index) {
-                        //     mediaOverlay.style.background = 'green'; //green
-                        // });
                         mediaOverlayTopReposition(mediaTagsAll);
                         mediaOverlaysAllReposition(mediaOverlaysAll);
                     }
@@ -634,8 +631,8 @@ function mediaOverlayCreate(randomStringDataId) {
 }
 
 function mediaOverlayStyleAppend(newMediaOverlay, overlayContainer) {
-    newMediaOverlay.style.background = 'green'; //green  transparent
-    newMediaOverlay.style.opacity = '0.3';
+    newMediaOverlay.style.background = 'transparent'; //green  transparent // 최종본에서는 죽인다.
+    // newMediaOverlay.style.opacity = '0.3';  // 최종본에서는 죽인다.
     newMediaOverlay.style.position = 'absolute';
     newMediaOverlay.style.zIndex = "3";
     overlayContainer.appendChild(newMediaOverlay);
@@ -715,9 +712,7 @@ function mediaSelectInit(mediaTagsAll) {
 function mediaAndOverlaySelect(targetOverlay, targetMediaTag) {
     targetOverlay.classList.add('selected');
     targetMediaTag.classList.add('selected');
-    targetMediaTag.style.border = 'solid #A0A0FF 5px';
-    // targetOverlay.style.background = 'green'; // 최종본에서는 죽인다.
-    // targetOverlay.style.opacity = '0.3'; // 최종본에서는 죽인다.
+    targetMediaTag.style.border = 'solid #A0A0FF 3px'; //최종본 변경
 
     let percentages = targetMediaTag.style.width.split('%')[0];
     setSlider(percentages);

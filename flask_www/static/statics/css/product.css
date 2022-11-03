@@ -86,16 +86,17 @@ body > main > section > div:nth-child(3) > div > div > div:nth-child(1) {text-al
 .product-option {padding: 0 7px}
 .product-option .option-add {position: sticky; top: 10px; z-index: 1}
 .product-option div.option-add {display: flex; justify-content: flex-end;}
-.product-option .option-add button.add-input-btn {width: 5.8rem; background: #0652DD; font-size: 14px; color: white; cursor: pointer;height: 35px; display: flex; align-items: center;border-radius: 5px}
+.product-option .option-add button.add-input-btn {width: 6rem; background: #0652DD; font-size: 14px; color: white; cursor: pointer;height: 35px; display: flex; align-items: center;border-radius: 5px}
 .product-option .option-add button.add-input-btn:hover {background: #1a73e8 }
 
 .product-option .option-form-wrapper {margin-left: 1px}
 .product-option .option-form-wrapper .option-form .form-group {display: flex; align-items: center}
+.product-option .option-form-wrapper  .option-form.uk-alert {padding-right: 15px}
 .product-option div.option-add i.fa-folder-plus {font-size: 20px}
-.product-option .option-form-wrapper .cancel-input-btn.remove-input {width: 5.8rem; background: #faa05a; font-size: 14px; color: white; cursor: pointer;height: 28px; display: flex; align-items: center;border-radius: 5px}
+.product-option .option-form-wrapper .cancel-input-btn.remove-input {width: 6rem; background: #faa05a; font-size: 14px; color: white; cursor: pointer;height: 35px; display: flex; align-items: center;border-radius: 5px}
 .product-option .option-form-wrapper .cancel-input-btn.remove-input:hover {background: coral}
 .product-option .option-form-wrapper i.fa-folder-minus {font-size: 20px}
-.cancel-input-btn.remove-input.uk-alert-close.uk-close {right: 30px; opacity: 1}
+.cancel-input-btn.remove-input.uk-alert-close.uk-close {right: 20px; opacity: 1}
 
 /*product detail*/
 .info-grid {padding-left: 20px}
@@ -117,8 +118,8 @@ body > main > section > div:nth-child(3) > div > div > div:nth-child(1) {text-al
 body > main > section > article > div > div.product-summary.uk-child-width-1-2\@s.uk-grid > div.info-grid > div > div > form > div.op-select-insert.uk-alert > button {margin-top: -20px; width: 28px; background: transparent; font-size: 35px !important; transform: rotate(45deg)}
 .total-price-container {text-align: right}
 .view-vote {font-size: 15px; color: #57606f}
-#product-voting-btn {width: 55px; height: 23px; margin-top: 4px; padding-bottom: 0.13rem; border-radius: 3px; background: #00008C; font-size: 13px; color: white; cursor: pointer}
-#product-vote-btn {width: 55px; height: 23px; margin-top: 4px; padding-bottom: 0.13rem; border-radius: 3px; background: #c23616; font-size: 13px; color: white; cursor: pointer}
+#product-voting-btn {width: 60px; height: 25px; margin-top: 4px; padding-bottom: 0.13rem; border-radius: 3px; background: #00008C; font-size: 13px; color: white; cursor: pointer}
+#product-vote-btn {width: 60px; height: 25px; margin-top: 4px; padding-bottom: 0.13rem; border-radius: 3px; background: #c23616; font-size: 13px; color: white; cursor: pointer}
 
 .add-to-cart {position: fixed; height: 45px; left: 0; bottom: 0; background: #0652DD; font-size: 16px; color: white;border: none; border-radius: 0; width: 100%; opacity: 0.8}
 .add-to-cart:hover {background: #0e6dcd; color: white}

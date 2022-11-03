@@ -149,7 +149,9 @@ HOVER 색   .units-btn button:hover /
 }
 
 .units-image-alt {
-    display: block;
+    /*최종본 숨기기*/
+    /*display: block; */
+    display: none;
     width: 100%;
     font-size: 1em;
     font-weight: 400;

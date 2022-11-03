@@ -34,22 +34,12 @@ function unitsEditorInit(el, opt) {
                     elementAutoClick (newDiv); // for overlay reposition
                     newDiv.tabIndex = '1';
                     newDiv.focus(); // 있어도 의미없다.
-                    // newDiv.style.outline = 'none';
-                    // setTimeout(function () {
-                    //     newDiv.focus();
-                    // }, 100);
-                    // console.log("document.activeElement", document.activeElement);
                 }
                 else {
                     unitsContent.append(newDiv);
                     elementAutoClick (newDiv); // for overlay reposition
                     newDiv.tabIndex = '1';
                     newDiv.focus(); // 있어도 의미없다.
-                    // newDiv.style.outline = 'none';
-                    // setTimeout(function () {
-                    //     newDiv.focus();
-                    // }, 100);
-                    // console.log("document.activeElement", document.activeElement);
                 }
 
 
@@ -186,14 +176,9 @@ function unitsEditorInit(el, opt) {
         unlink_btn.addEventListener('click', unLink);
         const mediaTagsAll = unitsContent.querySelectorAll('.media');
         const mediaOverlaysAll = overlayContainer.querySelectorAll('.overlay');
-        // image_btn.addEventListener('click',unitsImageInputTagCreate);
-        // video_btn.addEventListener('click',videoInsert);
         image_btn.addEventListener('click', function () {
             if (image_btn.classList.contains('inactivated') || video_btn.classList.contains('inactivated')) {
-                alert('크기조정 완료후 가능해요! 최소 혹은 빈여백 클릭!');
-                // mediaOverlaySelectInit(mediaOverlaysAll);
-                // mediaSelectInit(mediaTagsAll);
-                // setSliderInit();
+                alert('크기조정 완료후 가능해요! 취소 혹은 빈여백 클릭!');
             } else {
                 unitsImageInputTagCreate();
             }
@@ -201,12 +186,9 @@ function unitsEditorInit(el, opt) {
 
         video_btn.addEventListener('click', function () {
             if (image_btn.classList.contains('inactivated') || video_btn.classList.contains('inactivated')) {
-                alert('크기조정 완료후 가능해요! 최소 혹은 빈여백 클릭!');
-                // mediaOverlaySelectInit(mediaOverlaysAll);
-                // mediaSelectInit(mediaTagsAll);
-                // setSliderInit();
+                alert('크기조정 완료후 가능해요! 취소 혹은 빈여백 클릭!');
             } else {
-                console.log('videoInsert();')
+                console.log('videoInsert();');
                 videoInsert();
             }
         });
@@ -352,9 +334,6 @@ function unitsEditorInit(el, opt) {
             unitsContent.focus();
         }
         for (let i = 0; i < files.length; i++) {
-            // let src = URL.createObjectURL(files[i]);
-            // document.execCommand('insertImage',false, src);
-            // 아래로 변경
             const reader = new FileReader();
             reader.onload = function (e) {
                 let oldImgTag = document.querySelector('[src="' + `${reader.result}` + '"]')
@@ -450,7 +429,6 @@ function unitsEditorInit(el, opt) {
     function imageAltEdit(e, file, newImgTag) {
         const mediaTagsAll = unitsContent.querySelectorAll('.media');
         const mediaOverlaysAll = overlayContainer.querySelectorAll('.overlay');
-        console.log('무슨 이벤트이지? imageAltEdit e.target', e.target)
 
         if (e.target.onload !== null) { // 추가, 이미지 로드할 때 쓰인다. 여기서는 사용하지 않음
             if (file) {
